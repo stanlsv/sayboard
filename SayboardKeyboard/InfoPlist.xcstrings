@@ -1,0 +1,65 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "CFBundleDisplayName": {
+      "comment": "Keyboard extension display name — brand name, not translated",
+      "localizations": {
+        "cs": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "da": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "de": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "el": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "fi": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "hu": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "no": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "pt": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "sk": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "sv": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "uk": { "stringUnit": { "state": "translated", "value": "Sayboard" } },
+        "zh": { "stringUnit": { "state": "translated", "value": "Sayboard" } }
+      }
+    },
+    "CFBundleName": {
+      "comment": "Bundle name",
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "cs": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "da": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "de": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "el": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "en": { "stringUnit": { "state": "new", "value": "SayboardKeyboard" } },
+        "es": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "fi": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "hi": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "hu": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "it": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "nl": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "no": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "pl": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "pt": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "ro": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "ru": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "sk": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "sv": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "uk": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } },
+        "zh": { "stringUnit": { "state": "translated", "value": "SayboardKeyboard" } }
+      }
+    }
+  },
+  "version": "1.0"
+}

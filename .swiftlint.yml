@@ -1,0 +1,191 @@
+# SwiftLint Configuration
+# Base: Airbnb Style Guide (https://github.com/airbnb/swift)
+# Extended: additional code quality rules for solo development
+
+# ============================================================================
+# Excluded Paths
+# ============================================================================
+
+excluded:
+  - Carthage
+  - Pods
+  - .build
+
+# ============================================================================
+# Indentation
+# ============================================================================
+
+indentation: 2
+
+# ============================================================================
+# Opt-In Rules (beyond SwiftLint defaults)
+# ============================================================================
+
+opt_in_rules:
+  # Airbnb built-in rules
+  - fatal_error_message
+  - implicitly_unwrapped_optional
+  - legacy_cggeometry_functions
+  - legacy_constant
+  - legacy_constructor
+  - legacy_nsgeometry_functions
+  - unused_optional_binding
+  - unowned_variable_capture
+
+  # Safety
+  - force_unwrapping
+  - discouraged_optional_boolean
+  - discouraged_optional_collection
+  - overridden_super_call
+  - yoda_condition
+  # no_magic_numbers -- disabled: too noisy in SwiftUI views (padding, frame, cornerRadius)
+
+  # Clean code
+  - convenience_type
+  - empty_string
+  - redundant_type_annotation
+  - multiline_function_chains
+
+  # Encapsulation
+  - private_over_fileprivate
+  - weak_delegate
+
+  # Performance
+  - empty_count
+  - first_where
+  - contains_over_filter_count
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+  - flatmap_over_map_reduce
+  - last_where
+  - sorted_first_last
+
+  # Size limits
+  - closure_body_length
+  - function_body_length
+  - file_length
+  - type_body_length
+
+  # Style
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - literal_expression_end_indentation
+  - multiline_arguments
+  - multiline_parameters
+  - operator_usage_whitespace
+  - prefer_self_in_static_references
+  - redundant_nil_coalescing
+  - toggle_bool
+  - trailing_closure
+  - unneeded_parentheses_in_closure_argument
+
+# ============================================================================
+# Disabled Rules (handled by SwiftFormat -- avoid conflicts)
+# ============================================================================
+
+disabled_rules:
+  - trailing_whitespace
+  - trailing_comma
+  - opening_brace
+  - colon
+  - comma
+  - vertical_whitespace_opening_braces   # Conflicts with SwiftFormat --type-blank-lines preserve
+  - vertical_whitespace_closing_braces   # Conflicts with SwiftFormat --type-blank-lines preserve
+
+# ============================================================================
+# Rule Configuration
+# ============================================================================
+
+line_length:
+  warning: 130
+  error: 200
+  ignores_urls: true
+  ignores_function_declarations: false
+  ignores_comments: false
+
+file_length:
+  warning: 500
+  error: 800
+
+type_body_length:
+  warning: 300
+  error: 500
+
+function_body_length:
+  warning: 50
+  error: 80
+
+closure_body_length:
+  warning: 30
+  error: 50
+
+type_name:
+  min_length: 3
+  max_length: 50
+
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - x
+    - y
+    - z
+    - i
+    - j
+    - k
+
+force_cast: error
+force_try: error
+
+# ============================================================================
+# Analyzer Rules (require --fix or swiftlint analyze)
+# ============================================================================
+
+analyzer_rules:
+  - unused_import
+
+# ============================================================================
+# Custom Rules (Airbnb 1:1)
+# ============================================================================
+
+custom_rules:
+  no_objcMembers:
+    name: "@objcMembers"
+    regex: "@objcMembers"
+    message: "Explicitly use @objc on each member you want to expose to Objective-C"
+    severity: error
+  no_direct_standard_out_logs:
+    name: "Writing log messages directly to standard out is disallowed"
+    regex: "(\\bprint|\\bdebugPrint|\\bdump|Swift\\.print|Swift\\.debugPrint|Swift\\.dump|_printChanges)\\s*\\("
+    match_kinds:
+    - identifier
+    message: "Don't commit `print(...)`, `debugPrint(...)`, `dump(...)`, or `_printChanges()` as they write to standard out in release. Either log to a dedicated logging system or silence this warning in debug-only scenarios explicitly using `// swiftlint:disable:next no_direct_standard_out_logs`"
+    severity: error
+  no_file_literal:
+    name: "#file is disallowed"
+    regex: "(\\b#file\\b)"
+    match_kinds:
+    - identifier
+    message: "Instead of #file, use #fileID"
+    severity: error
+  no_filepath_literal:
+    name: "#filePath is disallowed"
+    regex: "(\\b#filePath\\b)"
+    match_kinds:
+    - identifier
+    message: "Instead of #filePath, use #fileID."
+    severity: error
+  no_unchecked_sendable:
+    name: "`@unchecked Sendable` is discouraged."
+    regex: "@unchecked Sendable"
+    match_kinds:
+    - attribute.builtin
+    - typeidentifier
+    message: "Instead of using `@unchecked Sendable`, consider a safe alternative like a standard `Sendable` conformance or using `@preconcurrency import`. If you really must use `@unchecked Sendable`, you can add a `// swiftlint:disable:next no_unchecked_sendable` annotation with an explanation for how we know the type is thread-safe, and why we have to use @unchecked Sendable instead of Sendable. More explanation and suggested safe alternatives are available at https://github.com/airbnb/swift#unchecked-sendable."
+    severity: error

@@ -1,0 +1,55 @@
+# Xcode -- generated project (XcodeGen)
+*.xcodeproj/
+*.xcworkspace/
+
+# Xcode -- build artifacts
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.hmap
+*.moved-aside
+xcuserdata/
+
+# Swift Package Manager
+.build/
+Package.resolved
+.swiftpm/
+
+# Local packages -- track Package.swift, ignore binary artifacts
+Packages/LlamaCpp/llama.xcframework/
+Packages/LlamaCpp/.build/
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editors
+*.swp
+*.swo
+*~
+
+# Tutorial generation -- preview output
+scripts/tutorials/output/
+
+# Claude Code
+.claude/
