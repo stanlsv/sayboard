@@ -106,6 +106,7 @@ extension ModelDownloadService {
 
     case .completed(_, let variantRawValue, _):
       guard let variant = ModelVariant(rawValue: variantRawValue) else { return }
+      self.enqueueTasks[variant] = nil
       Task {
         let modelReady = await self.loadModelAfterDownload(variant: variant)
         guard modelReady else { return }
@@ -116,6 +117,7 @@ extension ModelDownloadService {
 
     case .failed(_, let variantRawValue, let error):
       guard let variant = ModelVariant(rawValue: variantRawValue) else { return }
+      self.enqueueTasks[variant] = nil
       self.variantStates[variant] = .error(message: localizedDownloadError(error))
       self.removeVariantFromPersistence(variant)
     }

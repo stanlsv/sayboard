@@ -36,7 +36,7 @@ final class ModelDownloadService: ObservableObject {
   var cachedManifest: ModelManifest?
 
   var eventCancellable: AnyCancellable?
-  var enqueueTask: Task<Void, Never>?
+  var enqueueTasks = [ModelVariant: Task<Void, Never>]()
 
   var hasUsableModel: Bool {
     self.isDownloaded(SharedSettings().selectedVariant)
@@ -166,14 +166,14 @@ final class ModelDownloadService: ObservableObject {
 
     self.variantStates[variant] = .downloading(progress: 0)
 
-    self.enqueueTask = Task {
+    self.enqueueTasks[variant] = Task {
       await self.enqueueDownload(variant: variant)
     }
   }
 
   func cancelDownload(variant: ModelVariant) {
-    self.enqueueTask?.cancel()
-    self.enqueueTask = nil
+    self.enqueueTasks[variant]?.cancel()
+    self.enqueueTasks[variant] = nil
 
     BackgroundDownloadManager.shared.cancelDownload(
       variantRawValue: variant.rawValue,

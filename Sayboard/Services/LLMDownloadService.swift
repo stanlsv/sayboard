@@ -81,14 +81,14 @@ final class LLMDownloadService: ObservableObject {
     self.variantStates[variant] = .downloading(progress: 0)
     self.addVariantToPersistence(variant)
 
-    self.enqueueTask = Task {
+    self.enqueueTasks[variant] = Task {
       await self.enqueueDownload(variant: variant)
     }
   }
 
   func cancelDownload(variant: LLMModelVariant) {
-    self.enqueueTask?.cancel()
-    self.enqueueTask = nil
+    self.enqueueTasks[variant]?.cancel()
+    self.enqueueTasks[variant] = nil
 
     BackgroundDownloadManager.shared.cancelDownload(
       variantRawValue: variant.rawValue,
@@ -184,7 +184,7 @@ final class LLMDownloadService: ObservableObject {
 
   private var cachedManifest: ModelManifest?
   private var eventCancellable: AnyCancellable?
-  private var enqueueTask: Task<Void, Never>?
+  private var enqueueTasks = [LLMModelVariant: Task<Void, Never>]()
 
   private func subscribeToDownloadEvents() {
     self.eventCancellable = BackgroundDownloadManager.shared.eventSubject
@@ -210,6 +210,7 @@ final class LLMDownloadService: ObservableObject {
 
     case .completed(_, let variantRawValue, _):
       guard let variant = LLMModelVariant(rawValue: variantRawValue) else { return }
+      self.enqueueTasks[variant] = nil
       self.variantStates[variant] = .downloaded
       self.removeVariantFromPersistence(variant)
       self.autoSelectIfNeeded(variant: variant)
@@ -217,6 +218,7 @@ final class LLMDownloadService: ObservableObject {
 
     case .failed(_, let variantRawValue, let error):
       guard let variant = LLMModelVariant(rawValue: variantRawValue) else { return }
+      self.enqueueTasks[variant] = nil
       self.variantStates[variant] = .error(message: localizedDownloadError(error))
       self.removeVariantFromPersistence(variant)
       UIApplication.shared.isIdleTimerDisabled = false

@@ -4,11 +4,12 @@ import UIKit
 // MARK: - TranslateKeyStyle
 
 private struct TranslateKeyStyle: ButtonStyle {
+  let fixedWidth: CGFloat
   let isActive: Bool
 
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
-      .frame(width: 43, height: 45)
+      .frame(width: self.fixedWidth, height: 45)
       .background {
         RoundedRectangle(cornerRadius: 8.5, style: .continuous)
           .fill(self.backgroundColor(isPressed: configuration.isPressed))
@@ -27,6 +28,8 @@ private struct TranslateKeyStyle: ButtonStyle {
 // MARK: - TranslateToggleButton
 
 struct TranslateToggleButton: View {
+
+  let fixedWidth: CGFloat
 
   @ObservedObject var keyboardState: KeyboardState
 
@@ -49,7 +52,7 @@ struct TranslateToggleButton: View {
       }
       .animation(.easeOut(duration: 0.12), value: self.keyboardState.isTranslationMode)
     }
-    .buttonStyle(TranslateKeyStyle(isActive: self.keyboardState.isTranslationMode))
+    .buttonStyle(TranslateKeyStyle(fixedWidth: self.fixedWidth, isActive: self.keyboardState.isTranslationMode))
     .sensoryFeedback(.selection, trigger: self.keyboardState.isTranslationMode)
   }
 }

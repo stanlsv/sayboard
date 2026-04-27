@@ -37,7 +37,7 @@ struct KeyboardProxy {
 
 // MARK: - SetupBlocker
 
-private enum SetupBlocker {
+enum SetupBlocker {
   case fullAccessMissing
   case micDenied
   case noModel
@@ -122,7 +122,7 @@ struct KeyboardView: View {
 
   var body: some View {
     if let blocker = self.activeBlocker {
-      self.blockerPrompt(for: blocker)
+      BlockerPrompt(blocker: blocker)
     } else if let error = self.keyboardState.llmError {
       LLMErrorPrompt(error: error, keyboardState: self.keyboardState)
     } else {
@@ -164,18 +164,35 @@ struct KeyboardView: View {
       .onChange(of: self.keyboardState.showLLMActions) { _, visible in
         self.proxy.setActionBarVisible(visible)
       }
-      .onChange(of: self.keyboardState.isRecording) { _, isRecording in
+      .onChange(of: self.keyboardState.isRecording) { oldValue, isRecording in
         if isRecording { self.keyboardState.showLLMActions = false }
+        if isRecording, !oldValue, !self.isMorphing {
+          self.morphDirection = .toWave
+          self.isMorphing = true
+        } else if
+          !isRecording, oldValue, !self.isMorphing, !self.showSpinner, !self.isSpinnerMorphing,
+          !self.pendingSpinnerMorph
+        {
+          self.morphDirection = .toMic
+          self.isMorphing = true
+        }
       }
       .onChange(of: self.keyboardState.isLLMProcessing) { _, isProcessing in
         if isProcessing { self.keyboardState.showLLMActions = false }
       }
       .task(id: self.keyboardState.isProcessing) {
-        if self.keyboardState.isProcessing {
-          try? await Task.sleep(for: Self.spinnerDelay)
-          guard !Task.isCancelled else { return }
+        let isProcessing = self.keyboardState.isProcessing
+        if isProcessing {
+          do {
+            try await Task.sleep(for: Self.spinnerDelay)
+          } catch {
+            return
+          }
           self.showSpinner = true
         } else {
+          if self.showSpinner {
+            self.pendingSpinnerMorph = true
+          }
           self.showSpinner = false
         }
       }
@@ -189,13 +206,17 @@ struct KeyboardView: View {
 
   // MARK: Private
 
-  private static let promptIconSize: CGFloat = 40
-  private static let promptHorizontalPadding: CGFloat = 32
-  private static let capsuleHeight: CGFloat = 40
+  private static let wideButtonWidth: CGFloat = 92
+  private static let buttonSpacing: CGFloat = 6
+
   private static let spinnerDelay = Duration.milliseconds(600)
-  private static let idleWaveLevel: Float = 0.03
 
   @State private var showSpinner = false
+  @State private var isMorphing = false
+  @State private var isSpinnerMorphing = false
+  @State private var spinnerMorphCanStep = false
+  @State private var pendingSpinnerMorph = false
+  @State private var morphDirection = MicMorphAnimation.Direction.toWave
 
   @Environment(\.openURL) private var openURL
 
@@ -221,67 +242,61 @@ struct KeyboardView: View {
 
   @ViewBuilder
   private var micButtonLabel: some View {
-    let inDelayWindow = self.keyboardState.isProcessing && !self.showSpinner
-    let isWave = self.keyboardState.isRecording || inDelayWindow
+    let shouldShowWave = self.keyboardState.isRecording
     let isLoading = self.keyboardState.isModelLoading && !self.keyboardState.isRecording
-    let isSpin = self.showSpinner || isLoading
-    let isIdle = !isWave && !isSpin
-    let effectiveLevel = inDelayWindow ? Self.idleWaveLevel : self.keyboardState.audioLevel
-
+    let isSpin = self.showSpinner || (isLoading && !self.isSpinnerMorphing && !self.pendingSpinnerMorph)
+    let isIdle = !shouldShowWave && !isSpin && !self.isMorphing && !self.isSpinnerMorphing
+      && !self.pendingSpinnerMorph
     ZStack {
-      Image(systemName: "mic.fill")
-        .font(.system(size: 42))
+      MicMorphShape(frameIndex: 0)
+        .fill(.primary)
+        .frame(width: 56, height: 42)
         .opacity(isIdle ? 1 : 0)
-        .scaleEffect(isIdle ? 1 : 0.8)
-        .animation(.easeOut(duration: 0.1), value: isIdle)
+        .transaction { $0.animation = nil }
 
-      WaveformBars(level: effectiveLevel)
-        .opacity(isWave && !isSpin ? 1 : 0)
-        .scaleEffect(isWave && !isSpin ? 1 : 0.01)
+      if self.isMorphing {
+        MicMorphAnimation(direction: self.morphDirection, onComplete: self.handleMicMorphComplete)
+          .frame(width: 56, height: 42)
+          .transition(.identity)
+      }
 
-      MetaballSpinner(color: .primary, size: 42)
-        .opacity(isSpin ? 1 : 0)
-        .scaleEffect(isSpin ? 1 : 0.01)
+      if self.isSpinnerMorphing {
+        SpinnerMorphAnimation(canStep: self.spinnerMorphCanStep) {
+          self.isSpinnerMorphing = false
+          self.spinnerMorphCanStep = false
+        }
+        .frame(width: 56, height: 42)
+        .transition(.identity)
+      }
+
+      WaveformBars(level: self.keyboardState.audioLevel)
+        .opacity(
+          shouldShowWave && !isSpin && !self.isMorphing
+            && !self.isSpinnerMorphing && !self.pendingSpinnerMorph ? 1 : 0
+        )
+
+      self.spinnerView(isSpin: isSpin)
     }
   }
 
-  @ViewBuilder
   private var micButton: some View {
-    if self.keyboardState.isProcessing {
-      self.micButtonLabel
-        .frame(width: 106, height: 106)
-        .background {
-          Circle()
-            .fill(Color(.keyBackground))
-        }
-    } else if self.keyboardState.isRecording {
-      Button {
+    Button {
+      if self.keyboardState.isRecording {
         self.proxy.stopDictation()
-      } label: {
-        self.micButtonLabel
-      }
-      .buttonStyle(CircleKeyStyle())
-    } else if self.keyboardState.isSessionActive {
-      Button {
+      } else if self.keyboardState.isSessionActive {
         self.proxy.startDictation()
-      } label: {
-        self.micButtonLabel
-      }
-      .buttonStyle(CircleKeyStyle())
-    } else if let url = DeepLink.dictateURL {
-      Button {
+      } else if let url = DeepLink.dictateURL {
         let settings = SharedSettings()
         settings.keyboardRequestedDictation = true
         settings.dictationSessionToken = UUID().uuidString
         settings.synchronize()
         self.openURL(url)
-      } label: {
-        self.micButtonLabel
-          .frame(width: 106, height: 106)
-          .background { Circle().fill(Color(.keyBackground)) }
       }
-      .tint(.primary)
+    } label: {
+      self.micButtonLabel
     }
+    .buttonStyle(CircleKeyStyle())
+    .allowsHitTesting(!self.keyboardState.isProcessing)
   }
 
   private var showAIButton: Bool {
@@ -292,6 +307,12 @@ struct KeyboardView: View {
     (self.keyboardState.selectedVariantSupportsTranslation || self.showAIButton) ? 43 : 45
   }
 
+  private var returnButtonWidth: CGFloat {
+    self.keyboardState.needsInputModeSwitchKey
+      ? self.sideButtonWidth + Self.buttonSpacing + Self.wideButtonWidth
+      : Self.wideButtonWidth
+  }
+
   private var micRow: some View {
     ZStack(alignment: .bottom) {
       self.sideButtons
@@ -300,13 +321,35 @@ struct KeyboardView: View {
     .padding(.horizontal, 4)
   }
 
+  private var showPulseRings: Bool {
+    self.keyboardState.isRecording && !self.keyboardState.isProcessing
+  }
+
+  private var micButtonWithPulse: some View {
+    ZStack {
+      PulseRings()
+        .opacity(self.showPulseRings ? 1 : 0)
+        .scaleEffect(self.showPulseRings ? 1 : 0.69)
+        .animation(.easeOut(duration: 0.4), value: self.showPulseRings)
+
+      self.micButton
+    }
+    .frame(minHeight: PulseRings.maxDiameter)
+    .padding(.bottom, 6)
+  }
+
+}
+
+// MARK: - KeyboardView Helpers
+
+extension KeyboardView {
   private var sideButtons: some View {
-    HStack(alignment: .bottom, spacing: 6) {
+    HStack(alignment: .bottom, spacing: Self.buttonSpacing) {
       KeyButton(systemImage: "gearshape", fixedWidth: self.sideButtonWidth) {
         if let url = DeepLink.settingsURL { self.proxy.openURL(url) }
       }
       if self.keyboardState.selectedVariantSupportsTranslation {
-        TranslateToggleButton(keyboardState: self.keyboardState)
+        TranslateToggleButton(fixedWidth: self.sideButtonWidth, keyboardState: self.keyboardState)
           .transition(.opacity.combined(with: .scale))
       }
       Spacer()
@@ -315,7 +358,7 @@ struct KeyboardView: View {
           self.undoRedoRow
             .transition(.opacity.combined(with: .move(edge: .bottom)))
         }
-        HStack(spacing: 6) {
+        HStack(spacing: Self.buttonSpacing) {
           if self.showAIButton {
             self.aiButton.transition(.opacity.combined(with: .scale))
           }
@@ -331,7 +374,7 @@ struct KeyboardView: View {
   }
 
   private var undoRedoRow: some View {
-    HStack(spacing: 6) {
+    HStack(spacing: Self.buttonSpacing) {
       KeyButton(systemImage: "arrow.uturn.backward", fixedWidth: self.sideButtonWidth) {
         self.proxy.undoLLM()
       }
@@ -344,22 +387,6 @@ struct KeyboardView: View {
       .disabled(!self.keyboardState.canRedoLLM)
       .opacity(self.keyboardState.canRedoLLM ? 1 : 0.35)
     }
-  }
-
-  private var micButtonWithPulse: some View {
-    ZStack {
-      if self.keyboardState.isRecording, !self.keyboardState.isProcessing {
-        PulseRings()
-          .transition(.scale(scale: 0.69))
-          .animation(.easeOut(duration: 0.4), value: self.keyboardState.isRecording)
-      }
-      self.micButton
-    }
-    .animation(.easeOut(duration: 0.2), value: self.keyboardState.isRecording)
-    .animation(.easeOut(duration: 0.2), value: self.keyboardState.isProcessing)
-    .animation(.easeOut(duration: 0.2), value: self.showSpinner)
-    .frame(minHeight: PulseRings.maxDiameter)
-    .padding(.bottom, 6)
   }
 
   @ViewBuilder
@@ -387,8 +414,12 @@ struct KeyboardView: View {
   }
 
   private var bottomRow: some View {
-    HStack(spacing: 6) {
-      KeyButton(systemImage: "trash", fixedWidth: 92) {
+    HStack(spacing: Self.buttonSpacing) {
+      if self.keyboardState.needsInputModeSwitchKey {
+        GlobeKey(fixedWidth: self.sideButtonWidth)
+      }
+
+      KeyButton(systemImage: "trash", fixedWidth: Self.wideButtonWidth) {
         self.proxy.deleteAll()
       }
 
@@ -398,12 +429,41 @@ struct KeyboardView: View {
         onCursorMove: { self.proxy.adjustTextPosition($0) },
       )
 
-      KeyButton(systemImage: "return.left", fixedWidth: 92) {
+      KeyButton(systemImage: "return.left", fixedWidth: self.returnButtonWidth) {
         self.proxy.insertText("\n")
       }
     }
     .padding(.horizontal, 4)
     .padding(.bottom, 4)
+  }
+
+  private func spinnerView(isSpin: Bool) -> some View {
+    MetaballSpinner(color: .primary, size: 42)
+      .scaleEffect(isSpin ? 1 : 0.01)
+      .transaction(value: isSpin) { transaction in
+        transaction.animation = .easeOut(duration: 0.2)
+        if !isSpin {
+          transaction.addAnimationCompletion {
+            if self.pendingSpinnerMorph {
+              self.pendingSpinnerMorph = false
+              self.isSpinnerMorphing = true
+              self.spinnerMorphCanStep = true
+            }
+          }
+        }
+      }
+  }
+
+  private func handleMicMorphComplete() {
+    let wantWave = self.keyboardState.isRecording
+    self.isMorphing = false
+    if self.morphDirection == .toWave, !wantWave {
+      self.morphDirection = .toMic
+      self.isMorphing = true
+    } else if self.morphDirection == .toMic, wantWave {
+      self.morphDirection = .toWave
+      self.isMorphing = true
+    }
   }
 
   private func executeLongPressAction() {
@@ -418,31 +478,4 @@ struct KeyboardView: View {
       self.keyboardState.showLLMActions = true
     }
   }
-
-  private func blockerPrompt(for blocker: SetupBlocker) -> some View {
-    VStack(spacing: 12) {
-      Image(systemName: blocker.icon)
-        .font(.system(size: Self.promptIconSize))
-        .foregroundStyle(.blue)
-
-      Text(blocker.message)
-        .font(.subheadline.weight(.semibold))
-        .multilineTextAlignment(.center)
-        .padding(.horizontal, Self.promptHorizontalPadding)
-
-      if let url = blocker.linkURL {
-        Link(destination: url) {
-          Text(blocker.buttonTitle)
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(.white)
-            .padding(.horizontal, 20)
-            .frame(minHeight: Self.capsuleHeight)
-            .background(.blue, in: Capsule())
-        }
-        .padding(.horizontal, Self.promptHorizontalPadding)
-      }
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-  }
-
 }

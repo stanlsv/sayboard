@@ -57,6 +57,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
 
   let lock = NSLock()
   var activeMetadata = [String: DownloadMetadata]()
+  var activeTasks = [String: URLSessionDownloadTask]()
 
   static func computeSHA256(of fileURL: URL) throws -> String {
     let handle = try FileHandle(forReadingFrom: fileURL)
@@ -79,13 +80,9 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     self.lock.lock()
     defer { self.lock.unlock() }
 
-    // Cancel any existing download for the same variant+type
+    // Cancel any existing download for the same variant+type (synchronous, no async getAllTasks)
     let existingKey = self.metadataKey(for: metadata)
-    if let existingTaskId = self.activeMetadata[existingKey]?.taskIdentifier {
-      self.session.getAllTasks { tasks in
-        tasks.first { $0.taskIdentifier == existingTaskId }?.cancel()
-      }
-    }
+    self.activeTasks[existingKey]?.cancel()
 
     var request = URLRequest(url: metadata.sourceURL)
     request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -94,6 +91,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     var updatedMetadata = metadata
     updatedMetadata.taskIdentifier = task.taskIdentifier
     self.activeMetadata[existingKey] = updatedMetadata
+    self.activeTasks[existingKey] = task
 
     self.persistMetadata()
 
@@ -103,15 +101,12 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
   func cancelDownload(variantRawValue: String, downloadType: DownloadType) {
     self.lock.lock()
     let key = "\(downloadType.rawValue)/\(variantRawValue)"
-    let taskId = self.activeMetadata[key]?.taskIdentifier
     self.activeMetadata.removeValue(forKey: key)
+    let task = self.activeTasks.removeValue(forKey: key)
     self.persistMetadata()
     self.lock.unlock()
 
-    guard let taskId else { return }
-    self.session.getAllTasks { tasks in
-      tasks.first { $0.taskIdentifier == taskId }?.cancel()
-    }
+    task?.cancel()
   }
 
   /// Called at app launch to reconcile persisted metadata with live session tasks.
@@ -152,7 +147,24 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     }
     self.lock.unlock()
 
-    self.processCompletedDownload(location: location, key: key, metadata: metadata)
+    // Apple requires the file to be moved before this delegate method returns.
+    // Move synchronously here, then dispatch heavy work (SHA256 + unzip) to the
+    // processing queue so we don't block progress callbacks for other downloads.
+    let fm = FileManager.default
+    let tempURL = fm.temporaryDirectory
+      .appendingPathComponent(UUID().uuidString)
+      .appendingPathExtension("zip")
+
+    do {
+      try fm.moveItem(at: location, to: tempURL)
+    } catch {
+      self.completeWithFailure(key: key, metadata: metadata, error: R2DownloadError.downloadFailed(error))
+      return
+    }
+
+    self.processingQueue.async {
+      self.processDownloadedFile(tempURL: tempURL, key: key, metadata: metadata)
+    }
   }
 
   func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
@@ -166,6 +178,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
       self.lock.lock()
       if let (key, _) = self.findMetadata(for: taskId) {
         self.activeMetadata.removeValue(forKey: key)
+        self.activeTasks.removeValue(forKey: key)
         self.persistMetadata()
       }
       self.lock.unlock()
@@ -225,6 +238,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
   func completeWithFailure(key: String, metadata: DownloadMetadata, error: Error) {
     self.lock.lock()
     self.activeMetadata.removeValue(forKey: key)
+    self.activeTasks.removeValue(forKey: key)
     self.persistMetadata()
     self.lock.unlock()
 
@@ -250,6 +264,11 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
 
   private static let hashBufferSize = 1_048_576 // 1 MB
   private static let resourceTimeout: TimeInterval = 3600 // 1 hour
+
+  /// Serial queue for SHA-256 verification and zip extraction after download completes.
+  /// Keeps the URLSession delegate queue free so progress callbacks for other downloads
+  /// are not blocked by CPU-heavy processing (SHA-256 ~400ms, unzip ~4-8s for 500MB).
+  private let processingQueue = DispatchQueue(label: "app.sayboard.download-processing")
 
   private lazy var session: URLSession = {
     let config = URLSessionConfiguration.background(withIdentifier: Self.sessionIdentifier)

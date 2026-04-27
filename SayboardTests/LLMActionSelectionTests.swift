@@ -7,7 +7,7 @@ struct LLMActionSelectionTests {
   // MARK: Internal
 
   @Test
-  func codableRoundTripNone() throws {
+  func `codable round trip none`() throws {
     let original = LLMActionSelection.none
     let data = try JSONEncoder().encode(original)
     let decoded = try JSONDecoder().decode(LLMActionSelection.self, from: data)
@@ -15,7 +15,7 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func codableRoundTripPreset() throws {
+  func `codable round trip preset`() throws {
     let original = LLMActionSelection.preset(.formal)
     let data = try JSONEncoder().encode(original)
     let decoded = try JSONDecoder().decode(LLMActionSelection.self, from: data)
@@ -23,7 +23,7 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func codableRoundTripCustomPrompt() throws {
+  func `codable round trip custom prompt`() throws {
     let id = UUID()
     let original = LLMActionSelection.customPrompt(id)
     let data = try JSONEncoder().encode(original)
@@ -32,22 +32,22 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func isSetNone() {
+  func `is set none`() {
     #expect(!LLMActionSelection.none.isSet)
   }
 
   @Test
-  func isSetPreset() {
+  func `is set preset`() {
     #expect(LLMActionSelection.preset(.rewrite).isSet)
   }
 
   @Test
-  func isSetCustomPrompt() {
+  func `is set custom prompt`() {
     #expect(LLMActionSelection.customPrompt(UUID()).isSet)
   }
 
   @Test
-  func resolveNone() {
+  func `resolve none`() {
     let result = LLMActionSelection.none.resolve(
       defaultAction: .rewrite,
       customPrompts: Self.testPrompts,
@@ -56,7 +56,7 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func resolvePreset() {
+  func `resolve preset`() {
     let result = LLMActionSelection.preset(.formal).resolve(
       defaultAction: .rewrite,
       customPrompts: Self.testPrompts,
@@ -66,7 +66,7 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func resolveValidCustomPrompt() {
+  func `resolve valid custom prompt`() {
     let result = LLMActionSelection.customPrompt(Self.testPromptId).resolve(
       defaultAction: .rewrite,
       customPrompts: Self.testPrompts,
@@ -76,7 +76,7 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func resolveInvalidCustomPrompt() {
+  func `resolve invalid custom prompt`() {
     let result = LLMActionSelection.customPrompt(Self.missingPromptId).resolve(
       defaultAction: .rewrite,
       customPrompts: Self.testPrompts,
@@ -85,53 +85,53 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func allOptionsCount() {
+  func `all options count`() {
     let expectedCount = 1 + LLMAction.allCases.count + Self.testPrompts.count
     let options = LLMActionSelection.allOptions(customPrompts: Self.testPrompts)
     #expect(options.count == expectedCount)
   }
 
   @Test
-  func allOptionsStartsWithNone() {
+  func `all options starts with none`() {
     let options = LLMActionSelection.allOptions(customPrompts: Self.testPrompts)
     #expect(options.first == LLMActionSelection.none)
   }
 
   @Test
-  func allOptionsEmptyPrompts() {
+  func `all options empty prompts`() {
     let expectedCount = 1 + LLMAction.allCases.count
     let options = LLMActionSelection.allOptions(customPrompts: [])
     #expect(options.count == expectedCount)
   }
 
   @Test
-  func displayNamePreset() {
+  func `display name preset`() {
     let name = LLMActionSelection.preset(.formal).displayName(customPrompts: Self.testPrompts)
     #expect(!name.isEmpty)
   }
 
   @Test
-  func displayNameValidCustomPrompt() {
+  func `display name valid custom prompt`() {
     let name = LLMActionSelection.customPrompt(Self.testPromptId)
       .displayName(customPrompts: Self.testPrompts)
     #expect(name == "Summarize")
   }
 
   @Test
-  func displayNameInvalidCustomPromptFallsBack() {
+  func `display name invalid custom prompt falls back`() {
     let name = LLMActionSelection.customPrompt(Self.missingPromptId)
       .displayName(customPrompts: Self.testPrompts)
     #expect(!name.isEmpty)
   }
 
   @Test
-  func enabledActionsExcludingNone() {
+  func `enabled actions excluding none`() {
     let result = LLMAction.enabledActions(excluding: [])
     #expect(result == LLMAction.allCases)
   }
 
   @Test
-  func enabledActionsExcludingSome() {
+  func `enabled actions excluding some`() {
     let disabled: Set<LLMAction> = [.formal, .casual]
     let result = LLMAction.enabledActions(excluding: disabled)
     #expect(result == [
@@ -149,14 +149,14 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func enabledActionsExcludingAll() {
+  func `enabled actions excluding all`() {
     let disabled = Set(LLMAction.allCases)
     let result = LLMAction.enabledActions(excluding: disabled)
     #expect(result.isEmpty)
   }
 
   @Test
-  func allOptionsWithDisabledActions() {
+  func `all options with disabled actions`() {
     let disabled: Set<LLMAction> = [.formal, .casual]
     let enabledPresetCount = LLMAction.allCases.count - disabled.count
     let expectedCount = 1 + enabledPresetCount + Self.testPrompts.count
@@ -168,7 +168,7 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func resolvePresetDisabled() {
+  func `resolve preset disabled`() {
     let result = LLMActionSelection.preset(.formal).resolve(
       defaultAction: .rewrite,
       customPrompts: Self.testPrompts,
@@ -178,7 +178,7 @@ struct LLMActionSelectionTests {
   }
 
   @Test
-  func resolvePresetNotDisabled() {
+  func `resolve preset not disabled`() {
     let result = LLMActionSelection.preset(.formal).resolve(
       defaultAction: .rewrite,
       customPrompts: Self.testPrompts,

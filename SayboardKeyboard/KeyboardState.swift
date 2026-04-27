@@ -34,6 +34,7 @@ final class KeyboardState: ObservableObject {
   @Published var llmHistoryIndex = -1
   @Published var showLLMActions = false
   @Published var llmError: LLMError?
+  @Published var needsInputModeSwitchKey = false
 
   /// Called when audio level has been stale (unchanged) for too long during recording.
   /// Indicates the main app was likely killed.

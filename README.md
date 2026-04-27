@@ -35,6 +35,19 @@
 | <img src="assets/screenshot-1.png" alt="Text Processing" width="200" /> | <img src="assets/screenshot-2.png" alt="Privacy & Pricing" width="200" /> | <img src="assets/screenshot-3.png" alt="Writing Style" width="200" /> | <img src="assets/screenshot-4.png" alt="Local AI Models" width="200" /> |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 
+## Supported Languages
+
+Sayboard supports 90+ languages with automatic language detection:
+
+🇦🇫 🇦🇱 🇦🇩 🇦🇲 🇦🇿 🇧🇩 🇧🇾 🇧🇦 🇧🇬 🇰🇭 <br />
+🇨🇳 🇨🇩 🇭🇷 🇨🇿 🇩🇰 🇪🇪 🇪🇹 🇫🇴 🇫🇮 🇫🇷 <br />
+🇬🇪 🇩🇪 🇬🇷 🇭🇹 🇭🇰 🇭🇺 🇮🇸 🇮🇳 🇮🇩 🇮🇷 <br />
+🇮🇱 🇮🇹 🇯🇵 🇰🇿 🇰🇷 🇱🇦 🇱🇻 🇱🇹 🇱🇺 🇲🇰 <br />
+🇲🇬 🇲🇾 🇲🇹 🇲🇳 🇲🇲 🇳🇵 🇳🇱 🇳🇿 🇳🇬 🇳🇴 <br />
+🇵🇰 🇵🇭 🇵🇱 🇵🇹 🇷🇴 🇷🇺 🇸🇦 🇷🇸 🇸🇰 🇸🇮 <br />
+🇸🇴 🇿🇦 🇪🇸 🇱🇰 🇸🇪 🇹🇯 🇹🇿 🇹🇭 🇹🇲 🇹🇷 <br />
+🇺🇦 🇺🇸 🇺🇿 🇻🇦 🇻🇳 🏴󠁧󠁢󠁷󠁬󠁳󠁿 🇿🇼 🏳️ <br />
+
 ## Building
 
 To get started, you need a [Mac](https://www.apple.com/mac/), [Xcode](https://developer.apple.com/xcode/) 16.4+ (iOS 17.0+ deployment target), and a (free) [Apple Developer Account](https://developer.apple.com/programs/).

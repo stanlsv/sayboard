@@ -146,6 +146,8 @@ struct MainTabView: View {
 
   /// Cold-launch banner check (static, no environment objects available).
   private static func initialBanner() -> SetupBanner? {
+    let onboardingCompleted = UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding)
+    guard onboardingCompleted else { return nil }
     let settings = SharedSettings()
     if !settings.isMicrophoneAuthorized {
       return .micDenied
@@ -179,6 +181,8 @@ struct MainTabView: View {
   /// Recheck using live PermissionService values
   /// (refreshed by SayboardApp.handleScenePhaseChange on foreground return).
   private func recheckBanner() -> SetupBanner? {
+    let onboardingCompleted = UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding)
+    guard onboardingCompleted else { return nil }
     if self.permissionService.microphoneState != .granted {
       return .micDenied
     }

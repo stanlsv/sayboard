@@ -9,9 +9,13 @@ final class KeyboardViewController: UIInputViewController {
 
   // MARK: Internal
 
-  var llmCompleteObserver: DarwinNotificationObserver?
-  var llmFailedObserver: DarwinNotificationObserver?
-  var llmStartedObserver: DarwinNotificationObserver?
+  static var llmCompleteObserver: DarwinNotificationObserver?
+  static var llmFailedObserver: DarwinNotificationObserver?
+  static var llmStartedObserver: DarwinNotificationObserver?
+  /// Static observers: one set per process, dispatching to activeInstance.
+  /// Prevents observer leaks when iOS creates multiple VC instances in the same process.
+  nonisolated(unsafe) static weak var activeInstance: KeyboardViewController?
+
   var llmOriginalTextLength = 0
   var isPerformingHistoryNavigation = false
   var pendingAutoActionText: String?
@@ -47,6 +51,7 @@ final class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    Self.activeInstance = self
     self.setupTranscriptionObserver()
     self.setupSessionObservers()
     self.setupForegroundObserver()
@@ -59,10 +64,12 @@ final class KeyboardViewController: UIInputViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    Self.activeInstance = self
     if self.hostingController == nil {
       self.setupKeyboardView()
     }
     self.keyboardState.refresh()
+    self.keyboardState.needsInputModeSwitchKey = self.needsInputModeSwitchKey
     self.keyboardState.isTranslationMode = SharedSettings().isTranslationMode
     self.syncFullAccessIfChanged()
     self.pingMainAppForSessionStatus()
@@ -111,16 +118,17 @@ final class KeyboardViewController: UIInputViewController {
   private static let actionBarExtraHeight: CGFloat = 42
   private static let staleFallbackTimeout: TimeInterval = 5
 
+  private static var transcriptionObserver: DarwinNotificationObserver?
+  private static var dictationStartedObserver: DarwinNotificationObserver?
+  private static var dictationStoppedObserver: DarwinNotificationObserver?
+  private static var sessionStartedObserver: DarwinNotificationObserver?
+  private static var sessionEndedObserver: DarwinNotificationObserver?
+  private static var modelLoadingFailedObserver: DarwinNotificationObserver?
+
   private var heightConstraint: NSLayoutConstraint?
   private var hostingHeightConstraint: NSLayoutConstraint?
 
   private var hostingController: UIHostingController<KeyboardView>?
-  private var transcriptionObserver: DarwinNotificationObserver?
-  private var dictationStartedObserver: DarwinNotificationObserver?
-  private var dictationStoppedObserver: DarwinNotificationObserver?
-  private var sessionStartedObserver: DarwinNotificationObserver?
-  private var sessionEndedObserver: DarwinNotificationObserver?
-  private var modelLoadingFailedObserver: DarwinNotificationObserver?
   private var staleFallbackTimer: Timer?
   private var lastSyncedFullAccess = false
   private var hasPerformedInitialFullAccessSync = false
@@ -139,18 +147,19 @@ final class KeyboardViewController: UIInputViewController {
   }
 
   private func setupTranscriptionObserver() {
-    self.transcriptionObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.transcriptionObserver?.stopObserving()
+    Self.transcriptionObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.transcriptionReady
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        guard let self else {
+        guard let vc = Self.activeInstance else {
           return
         }
-        let isRec = self.keyboardState.isRecording
-        let isProc = self.keyboardState.isProcessing
-        self.cancelProcessingTimeout()
-        self.insertTranscribedText()
-        self.finalizeProcessingPipeline()
+        let isRec = vc.keyboardState.isRecording
+        let isProc = vc.keyboardState.isProcessing
+        vc.cancelProcessingTimeout()
+        vc.insertTranscribedText()
+        vc.finalizeProcessingPipeline()
       }
     }
   }
@@ -175,42 +184,44 @@ final class KeyboardViewController: UIInputViewController {
   }
 
   private func setupSessionObservers() {
-    self.dictationStartedObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.dictationStartedObserver?.stopObserving()
+    Self.dictationStoppedObserver?.stopObserving()
+    Self.dictationStartedObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.dictationStarted
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        guard let self else {
+        guard let vc = Self.activeInstance else {
           return
         }
-        self.staleFallbackTimer?.invalidate()
-        self.staleFallbackTimer = nil
-        self.pingValidator.cancel()
-        self.cancelProcessingTimeout()
-        self.keyboardState.isProcessing = false
-        self.keyboardState.isRecording = true
-        if !self.isPerformingHistoryNavigation {
-          self.keyboardState.clearLLMHistory()
+        vc.staleFallbackTimer?.invalidate()
+        vc.staleFallbackTimer = nil
+        vc.pingValidator.cancel()
+        vc.cancelProcessingTimeout()
+        vc.keyboardState.isProcessing = false
+        vc.keyboardState.isRecording = true
+        if !vc.isPerformingHistoryNavigation {
+          vc.keyboardState.clearLLMHistory()
         }
         // Dictation implies an active session for the Darwin mic-button path
-        self.keyboardState.isSessionActive = true
-        self.keyboardState.startLevelPolling()
+        vc.keyboardState.isSessionActive = true
+        vc.keyboardState.startLevelPolling()
       }
     }
 
-    self.dictationStoppedObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.dictationStoppedObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.dictationStopped
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        guard let self else {
+        guard let vc = Self.activeInstance else {
           return
         }
-        self.cancelProcessingTimeout()
-        self.keyboardState.stopLevelPolling()
-        self.keyboardState.isRecording = false
-        self.keyboardState.syncModelLoading()
+        vc.cancelProcessingTimeout()
+        vc.keyboardState.stopLevelPolling()
+        vc.keyboardState.isRecording = false
+        vc.keyboardState.syncModelLoading()
         // transcriptionReady may not have arrived yet due to cross-process ordering
-        self.insertTranscribedText()
-        self.finalizeProcessingPipeline()
+        vc.insertTranscribedText()
+        vc.finalizeProcessingPipeline()
       }
     }
 
@@ -299,44 +310,49 @@ extension KeyboardViewController {
   // MARK: Private
 
   private func setupSessionLifecycleObservers() {
-    self.sessionStartedObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.sessionStartedObserver?.stopObserving()
+    Self.sessionEndedObserver?.stopObserving()
+    Self.sessionStartedObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.sessionStarted
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        guard let self else { return }
-        let wasActive = self.keyboardState.isSessionActive
-        let isProc = self.keyboardState.isProcessing
-        self.pingValidator.cancel()
-        self.keyboardState.isSessionActive = true
-        if isProc || self.keyboardState.isLLMProcessing {
+        guard let vc = Self.activeInstance else { return }
+        let wasActive = vc.keyboardState.isSessionActive
+        let isProc = vc.keyboardState.isProcessing
+        vc.pingValidator.cancel()
+        vc.keyboardState.isSessionActive = true
+        if isProc || vc.keyboardState.isLLMProcessing {
           // App is alive — note the ping response but let processing timeout continue
-          self.receivedPingDuringProcessing = true
+          vc.receivedPingDuringProcessing = true
         } else {
-          self.cancelProcessingTimeout()
+          vc.cancelProcessingTimeout()
         }
       }
     }
 
-    self.sessionEndedObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.sessionEndedObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.sessionEnded
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        let wasActive = self?.keyboardState.isSessionActive ?? false
-        self?.cancelProcessingTimeout()
-        self?.keyboardState.stopLevelPolling()
-        self?.keyboardState.isSessionActive = false
-        self?.keyboardState.isRecording = false
-        self?.keyboardState.isProcessing = false
+        guard let vc = Self.activeInstance else { return }
+        let wasActive = vc.keyboardState.isSessionActive
+        vc.cancelProcessingTimeout()
+        vc.keyboardState.stopLevelPolling()
+        vc.keyboardState.isSessionActive = false
+        vc.keyboardState.isRecording = false
+        vc.keyboardState.isProcessing = false
       }
     }
   }
 
   private func setupModelLoadingObservers() {
-    self.modelLoadingFailedObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.modelLoadingFailedObserver?.stopObserving()
+    Self.modelLoadingFailedObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.modelLoadingFailed
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        self?.resetProcessingState()
+        guard let vc = Self.activeInstance else { return }
+        vc.resetProcessingState()
       }
     }
   }

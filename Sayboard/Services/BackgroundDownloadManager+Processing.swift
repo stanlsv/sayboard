@@ -42,19 +42,21 @@ extension BackgroundDownloadManager {
         DispatchQueue.main.async { self.eventSubject.send(failedEvent) }
       }
       self.activeMetadata.removeValue(forKey: key)
+      self.activeTasks.removeValue(forKey: key)
     }
   }
 
-  func processCompletedDownload(location: URL, key: String, metadata: DownloadMetadata) {
+  /// Verifies SHA-256 and extracts the zip to the destination.
+  /// Called on `processingQueue`, NOT on the delegate queue.
+  func processDownloadedFile(tempURL: URL, key: String, metadata: DownloadMetadata) {
     let fm = FileManager.default
-    let tempURL = fm.temporaryDirectory
-      .appendingPathComponent(UUID().uuidString)
-      .appendingPathExtension("zip")
 
-    do {
-      try fm.moveItem(at: location, to: tempURL)
-    } catch {
-      self.completeWithFailure(key: key, metadata: metadata, error: R2DownloadError.downloadFailed(error))
+    // If download was cancelled while queued, skip processing
+    self.lock.lock()
+    let stillActive = self.activeMetadata[key] != nil
+    self.lock.unlock()
+    guard stillActive else {
+      try? fm.removeItem(at: tempURL)
       return
     }
 
@@ -114,6 +116,7 @@ extension BackgroundDownloadManager {
   private func completeWithSuccess(key: String, metadata: DownloadMetadata) {
     self.lock.lock()
     self.activeMetadata.removeValue(forKey: key)
+    self.activeTasks.removeValue(forKey: key)
     self.persistMetadata()
     self.lock.unlock()
 

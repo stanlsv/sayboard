@@ -206,7 +206,7 @@ extension Notification.Name {
 // MARK: - AppLanguageConfig
 
 enum AppLanguageConfig {
-  static let supported: Set<String> = [
+  static let supported: Set = [
     "en",
     "ru",
     "cs",

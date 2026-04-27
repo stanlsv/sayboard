@@ -11,29 +11,35 @@ extension KeyboardViewController {
   // MARK: Internal
 
   func setupLLMObservers() {
-    self.llmStartedObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.llmStartedObserver?.stopObserving()
+    Self.llmCompleteObserver?.stopObserving()
+    Self.llmFailedObserver?.stopObserving()
+    Self.llmStartedObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.llmProcessingStarted
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        self?.keyboardState.isLLMProcessing = true
+        guard let vc = Self.activeInstance else { return }
+        vc.keyboardState.isLLMProcessing = true
       }
     }
 
-    self.llmCompleteObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.llmCompleteObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.llmProcessingComplete
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        self?.insertLLMResult()
+        guard let vc = Self.activeInstance else { return }
+        vc.insertLLMResult()
       }
     }
 
-    self.llmFailedObserver = TranscriptionBridge.observeDarwinNotification(
+    Self.llmFailedObserver = TranscriptionBridge.observeDarwinNotification(
       DarwinNotificationName.llmProcessingFailed
-    ) { [weak self] in
+    ) {
       DispatchQueue.main.async {
-        self?.insertPendingAutoActionFallback()
-        self?.keyboardState.isLLMProcessing = false
-        self?.keyboardState.isProcessing = false
+        guard let vc = Self.activeInstance else { return }
+        vc.insertPendingAutoActionFallback()
+        vc.keyboardState.isLLMProcessing = false
+        vc.keyboardState.isProcessing = false
       }
     }
   }

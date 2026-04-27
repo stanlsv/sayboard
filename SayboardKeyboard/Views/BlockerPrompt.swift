@@ -1,0 +1,43 @@
+import SwiftUI
+
+// BlockerPrompt -- Full-screen prompt shown when the keyboard cannot operate
+// (Full Access missing, microphone denied, or no speech model downloaded).
+
+struct BlockerPrompt: View {
+
+  // MARK: Internal
+
+  let blocker: SetupBlocker
+
+  var body: some View {
+    VStack(spacing: 12) {
+      Image(systemName: self.blocker.icon)
+        .font(.system(size: Self.promptIconSize))
+        .foregroundStyle(.blue)
+
+      Text(self.blocker.message)
+        .font(.subheadline.weight(.semibold))
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, Self.promptHorizontalPadding)
+
+      if let url = self.blocker.linkURL {
+        Link(destination: url) {
+          Text(self.blocker.buttonTitle)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 20)
+            .frame(minHeight: Self.capsuleHeight)
+            .background(.blue, in: Capsule())
+        }
+        .padding(.horizontal, Self.promptHorizontalPadding)
+      }
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+  }
+
+  // MARK: Private
+
+  private static let promptIconSize: CGFloat = 40
+  private static let promptHorizontalPadding: CGFloat = 32
+  private static let capsuleHeight: CGFloat = 40
+}
