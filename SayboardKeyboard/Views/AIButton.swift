@@ -59,13 +59,13 @@ struct AIButton: View {
 
   private var label: some View {
     Image(systemName: self.isActive ? "xmark" : "sparkles")
-      .font(.system(size: 18))
+      .font(.system(size: 18.kbScaled))
       .foregroundStyle(.primary)
       .contentTransition(.symbolEffect(.replace, options: .speed(2)))
       .animation(.easeOut(duration: 0.15), value: self.isActive)
-      .frame(width: self.fixedWidth, height: 45)
+      .frame(width: self.fixedWidth, height: 45.kbScaled)
       .background {
-        RoundedRectangle(cornerRadius: 8.5, style: .continuous)
+        RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(Color(self.isPressed ? .keyPressedBackground : .keyBackground))
           .animation(nil, value: self.isPressed)
       }

@@ -83,6 +83,8 @@ enum SharedKey {
   static let disabledLLMActions = "disabledLLMActions"
   static let snippets = "snippets"
   static let dictationSessionToken = "dictationSessionToken"
+  static let showGlobeKey = "showGlobeKey"
+  static let needsInputModeSwitchKey = "needsInputModeSwitchKey"
 }
 
 // MARK: - HistoryRetentionPolicy

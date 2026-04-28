@@ -420,6 +420,7 @@ struct SayboardApp: App {
     guard let hostId else {
       return
     }
+    let opened = HostAppOpener.open(bundleId: hostId)
   }
 
 }

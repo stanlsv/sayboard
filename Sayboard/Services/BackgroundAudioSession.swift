@@ -75,6 +75,22 @@ private func resampleBuffer(
   return Array(UnsafeBufferPointer(start: channelData[0], count: Int(convertedBuffer.frameLength)))
 }
 
+private let rmsPreFilterWindowSize = 4
+
+/// Sliding mean over recent RMS samples: absorbs single-sample outliers before EMA.
+private func preFilterRMS(
+  _ rms: Float,
+  ringBuffer: OSAllocatedUnfairLock<(buffer: [Float], index: Int)>,
+) -> Float {
+  ringBuffer.withLock { state -> Float in
+    state.buffer[state.index % state.buffer.count] = rms
+    state.index += 1
+    var mean: Float = 0
+    vDSP_meanv(state.buffer, 1, &mean, vDSP_Length(state.buffer.count))
+    return mean
+  }
+}
+
 /// Asymmetric EMA: fast attack (alpha 0.7) for speech onset, slow decay (0.3) for pauses.
 private func smoothLevel(
   _ scaled: Float,
@@ -126,7 +142,11 @@ final class BackgroundAudioSession: ObservableObject {
     }
 
     let audioSession = AVAudioSession.sharedInstance()
-    try audioSession.setCategory(.playAndRecord, mode: .default, options: [.mixWithOthers, .defaultToSpeaker])
+    try audioSession.setCategory(
+      .playAndRecord,
+      mode: .default,
+      options: [.mixWithOthers, .defaultToSpeaker, .allowBluetoothA2DP],
+    )
     try audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
     try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
 
@@ -148,9 +168,7 @@ final class BackgroundAudioSession: ObservableObject {
       return
     }
 
-    self.previousLevel.withLock { $0 = 0 }
-    self.levelBridge.writeLevel(0)
-    self.levelBridge.flushToDefaults()
+    self.resetLevelState()
     self.onSessionEnded?()
 
     self.inactivityTimer?.invalidate()
@@ -209,9 +227,7 @@ final class BackgroundAudioSession: ObservableObject {
 
   func deactivateTap() {
     self.tapState.withLock { $0 = nil }
-    self.previousLevel.withLock { $0 = 0 }
-    self.levelBridge.writeLevel(0)
-    self.levelBridge.flushToDefaults()
+    self.resetLevelState()
     self.resetInactivityTimer()
   }
 
@@ -229,7 +245,20 @@ final class BackgroundAudioSession: ObservableObject {
   private var inactivityTimer: Timer?
   private nonisolated let lastFlushTime = OSAllocatedUnfairLock<CFAbsoluteTime>(initialState: 0)
   private nonisolated let previousLevel = OSAllocatedUnfairLock<Float>(initialState: 0)
+  private nonisolated let rmsRingBuffer = OSAllocatedUnfairLock<(buffer: [Float], index: Int)>(
+    initialState: (buffer: [Float](repeating: 0, count: rmsPreFilterWindowSize), index: 0)
+  )
   private var interruptionObserver: NSObjectProtocol?
+
+  private func resetLevelState() {
+    self.previousLevel.withLock { $0 = 0 }
+    self.rmsRingBuffer.withLock { state in
+      state.buffer = [Float](repeating: 0, count: rmsPreFilterWindowSize)
+      state.index = 0
+    }
+    self.levelBridge.writeLevel(0)
+    self.levelBridge.flushToDefaults()
+  }
 
   private func cancelInactivityTimer() {
     self.inactivityTimer?.invalidate()
@@ -253,13 +282,15 @@ final class BackgroundAudioSession: ObservableObject {
     let bridge = self.levelBridge
     let lastFlush = self.lastFlushTime
     let prevLevel = self.previousLevel
+    let ringBuf = self.rmsRingBuffer
     try ObjCExceptionCatcher.catchException {
       inputNode.installTap(onBus: 0, bufferSize: 1024, format: nil) { @Sendable buffer, _ in
         let active = state.withLock { $0 }
         guard let active else { return }
 
         let rms = calculateRMS(from: buffer)
-        bridge.writeLevel(smoothLevel(min(rms * 14, 1.0), previous: prevLevel))
+        let filtered = preFilterRMS(min(rms * 14, 1.0), ringBuffer: ringBuf)
+        bridge.writeLevel(smoothLevel(filtered, previous: prevLevel))
 
         // Flush to UserDefaults directly from the audio thread (~30Hz throttle).
         // Timer.scheduledTimer does not fire when the app is backgrounded;

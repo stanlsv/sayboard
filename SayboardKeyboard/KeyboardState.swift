@@ -1,6 +1,7 @@
 import Foundation
 
 import QuartzCore
+import SwiftUI
 
 // MARK: - KeyboardState
 
@@ -35,6 +36,7 @@ final class KeyboardState: ObservableObject {
   @Published var showLLMActions = false
   @Published var llmError: LLMError?
   @Published var needsInputModeSwitchKey = false
+  @Published var showGlobeKey = true
 
   /// Called when audio level has been stale (unchanged) for too long during recording.
   /// Indicates the main app was likely killed.
@@ -97,6 +99,7 @@ final class KeyboardState: ObservableObject {
     self.defaultLLMActionSelection = self.settings.defaultLLMActionSelection
     self.longPressLLMAction = self.settings.longPressLLMAction
     self.disabledLLMActions = self.settings.disabledLLMActions
+    self.showGlobeKey = self.settings.showGlobeKey
     self.checkDiskSpace()
     let polling = self.displayLink != nil
   }
@@ -174,7 +177,9 @@ final class KeyboardState: ObservableObject {
     }
 
     if newLevel != self.audioLevel {
-      self.audioLevel = newLevel
+      withAnimation(.interpolatingSpring(duration: 0.08, bounce: 0.02)) {
+        self.audioLevel = newLevel
+      }
     }
 
     // Diagnostic: log level once per second (every 30 polls at 30Hz)

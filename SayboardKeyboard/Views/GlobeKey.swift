@@ -9,11 +9,11 @@ struct GlobeKey: View {
 
   var body: some View {
     Image(systemName: "globe")
-      .font(.system(size: 18))
+      .font(.system(size: 18.kbScaled))
       .foregroundStyle(.primary)
-      .frame(width: self.fixedWidth, height: 45)
+      .frame(width: self.fixedWidth, height: 45.kbScaled)
       .background {
-        RoundedRectangle(cornerRadius: 8.5, style: .continuous)
+        RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(Color(.keyBackground))
       }
       .overlay {

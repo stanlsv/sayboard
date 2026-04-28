@@ -9,9 +9,9 @@ private struct TranslateKeyStyle: ButtonStyle {
 
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
-      .frame(width: self.fixedWidth, height: 45)
+      .frame(width: self.fixedWidth, height: 45.kbScaled)
       .background {
-        RoundedRectangle(cornerRadius: 8.5, style: .continuous)
+        RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(self.backgroundColor(isPressed: configuration.isPressed))
       }
       .animation(.easeOut(duration: 0.12), value: self.isActive)
@@ -39,16 +39,16 @@ struct TranslateToggleButton: View {
     } label: {
       ZStack(alignment: .bottomTrailing) {
         Image(systemName: "translate")
-          .font(.system(size: 18))
+          .font(.system(size: 18.kbScaled))
           .foregroundStyle(self.keyboardState.isTranslationMode ? Color.accentColor : .primary)
         Text(verbatim: "EN")
-          .font(.system(size: 7, weight: .bold, design: .rounded))
+          .font(.system(size: 7.kbScaled, weight: .bold, design: .rounded))
           .foregroundStyle(
             self.keyboardState.isTranslationMode
               ? Color.accentColor.opacity(0.2)
               : Color.primary.opacity(0.2)
           )
-          .offset(x: 2, y: 8)
+          .offset(x: 2.kbScaled, y: 8.kbScaled)
       }
       .animation(.easeOut(duration: 0.12), value: self.keyboardState.isTranslationMode)
     }

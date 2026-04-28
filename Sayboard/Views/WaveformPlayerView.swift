@@ -15,15 +15,17 @@ struct WaveformPlayerView: View {
   @ObservedObject var playerService: AudioPlayerService
 
   var body: some View {
-    HStack(spacing: self.hStackSpacing) {
-      self.playButton
-      self.currentTimeLabel
-      self.waveformArea
-      self.durationLabel
+    TimelineView(.animation(minimumInterval: nil, paused: !self.isPlaying)) { _ in
+      HStack(spacing: self.hStackSpacing) {
+        self.playButton
+        self.currentTimeLabel
+        self.waveformArea
+        self.durationLabel
+      }
+      .padding(.horizontal, self.horizontalPadding)
+      .padding(.vertical, self.verticalPadding)
+      .background { self.bubbleBackground }
     }
-    .padding(.horizontal, self.horizontalPadding)
-    .padding(.vertical, self.verticalPadding)
-    .background { self.bubbleBackground }
   }
 
   // MARK: Private
@@ -49,7 +51,7 @@ struct WaveformPlayerView: View {
 
   private var progress: Double {
     guard self.isActive, self.playerService.duration > 0 else { return 0 }
-    return self.playerService.currentTime / self.playerService.duration
+    return self.playerService.playbackTime / self.playerService.duration
   }
 
   private var isPlaying: Bool {
@@ -75,7 +77,7 @@ struct WaveformPlayerView: View {
   }
 
   private var currentTimeLabel: some View {
-    let time = self.isActive ? self.playerService.currentTime : 0
+    let time = self.isActive ? self.playerService.playbackTime : 0
     return Text(self.formatTime(time))
       .font(.caption2)
       .monospacedDigit()

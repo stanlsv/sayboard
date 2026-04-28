@@ -12,13 +12,13 @@ struct KeyButton: View {
       Group {
         if let systemImage {
           Image(systemName: systemImage)
-            .font(.system(size: 18))
+            .font(.system(size: 18.kbScaled))
         } else if let symbol {
           Text(verbatim: symbol)
-            .font(.system(size: 22, weight: .light, design: .monospaced))
+            .font(.system(size: 22.kbScaled, weight: .light, design: .monospaced))
         } else if let label {
           Text(label)
-            .font(.system(size: 16))
+            .font(.system(size: 16.kbScaled))
         }
       }
     }

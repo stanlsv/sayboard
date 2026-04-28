@@ -10,7 +10,7 @@ struct BlockerPrompt: View {
   let blocker: SetupBlocker
 
   var body: some View {
-    VStack(spacing: 12) {
+    VStack(spacing: 12.kbScaled) {
       Image(systemName: self.blocker.icon)
         .font(.system(size: Self.promptIconSize))
         .foregroundStyle(.blue)
@@ -25,7 +25,7 @@ struct BlockerPrompt: View {
           Text(self.blocker.buttonTitle)
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(.white)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 20.kbScaled)
             .frame(minHeight: Self.capsuleHeight)
             .background(.blue, in: Capsule())
         }
@@ -37,7 +37,15 @@ struct BlockerPrompt: View {
 
   // MARK: Private
 
-  private static let promptIconSize: CGFloat = 40
-  private static let promptHorizontalPadding: CGFloat = 32
-  private static let capsuleHeight: CGFloat = 40
+  private static var promptIconSize: CGFloat {
+    40.kbScaled
+  }
+
+  private static var promptHorizontalPadding: CGFloat {
+    32.kbScaled
+  }
+
+  private static var capsuleHeight: CGFloat {
+    40.kbScaled
+  }
 }

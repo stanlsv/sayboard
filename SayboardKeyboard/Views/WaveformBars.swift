@@ -34,12 +34,7 @@ struct WaveformBars: View {
   // MARK: Private
 
   private let barCount = 5
-  private let barWidth: CGFloat = 4
-  private let barSpacing: CGFloat = 4
-  private let minBarHeight: CGFloat = 4
-  private let maxBarHeight: CGFloat = 46
   private let heightMultipliers: [CGFloat] = [0.6, 0.8, 1.0, 0.8, 0.6]
-
   /// Each bar gets its own unique frequency pair -- no visible traveling-wave pattern.
   private let barFrequencies: [(Double, Double)] = [
     (7.2, 4.9),
@@ -48,6 +43,22 @@ struct WaveformBars: View {
     (8.1, 5.8),
     (7.6, 4.6),
   ]
+
+  private var barWidth: CGFloat {
+    4.kbScaled
+  }
+
+  private var barSpacing: CGFloat {
+    4.kbScaled
+  }
+
+  private var minBarHeight: CGFloat {
+    4.kbScaled
+  }
+
+  private var maxBarHeight: CGFloat {
+    46.kbScaled
+  }
 
   private func barHeight(for index: Int, time: Double, boosted: CGFloat) -> CGFloat {
     guard boosted > 0.01 else { return self.minBarHeight }

@@ -145,144 +145,144 @@
         }
       }
     },
-    "— if you see this orange indicator in the corner of the screen, don’t worry. It means Sayboard is keeping the microphone session ready so the keyboard can start dictation instantly. No hidden recording is happening — the microphone only activates when you press the record button. As a reminder, your voice is processed locally on your iPhone and never leaves your device.\n\nSwitching to the app when you tap the record button is a necessary measure. iOS does not allow keyboard extensions to access the microphone directly, so Sayboard briefly opens to activate it and immediately returns you back. To see these transitions less often, increase the time in the “Auto-Stop” setting.\n\nBattery usage while the orange indicator is on is minimal over a full day of an active session. However, you can reduce the time in the “Auto-Stop” setting, but keep in mind: the lower the value, the more often the app will switch you back and forth to activate the microphone.": {
+    "— if you see this orange indicator in the corner of the screen, don’t worry. It means Sayboard is keeping the microphone session ready so the keyboard can start dictation instantly. No hidden recording is happening — the microphone only activates when you press the record button. As a reminder, your voice is processed locally on your device and never leaves it.\n\nSwitching to the app when you tap the record button is a necessary measure. The system does not allow keyboard extensions to access the microphone directly, so Sayboard briefly opens to activate it and immediately returns you back. To see these transitions less often, increase the time in the “Auto-Stop” setting.\n\nBattery usage while the orange indicator is on is minimal over a full day of an active session. However, you can reduce the time in the “Auto-Stop” setting, but keep in mind: the lower the value, the more often the app will switch you back and forth to activate the microphone.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "— если вы видите этот оранжевый индикатор в углу экрана, не волнуйтесь. Это значит, что Sayboard поддерживает сессию микрофона в готовности, чтобы клавиатура могла мгновенно начать диктовку. Никакой скрытой записи не происходит, микрофон включается, только когда вы нажимаете на кнопку записи. Напоминаю, что голос обрабатывается локально прямо на вашем iPhone и не покидает пределы вашего телефона.\n\nПереход в приложение при нажатии кнопки записи — вынужденная мера. iOS не позволяет расширениям клавиатуры напрямую использовать микрофон, поэтому Sayboard ненадолго открывается для его активации и сразу возвращает вас обратно. Чтобы видеть эти переходы реже, увеличьте время в настройке «Автоотключение».\n\nРасход батареи при активном оранжевом индикаторе минимален за целый день активной сессии. Впрочем, вы можете уменьшить время в настройке «Автоотключение», но учтите: чем меньше значение, тем чаще приложение будет перебрасывать вас туда-обратно для активации микрофона."
+            "value": "— если вы видите этот оранжевый индикатор в углу экрана, не волнуйтесь. Это значит, что Sayboard поддерживает сессию микрофона в готовности, чтобы клавиатура могла мгновенно начать диктовку. Никакой скрытой записи не происходит, микрофон включается, только когда вы нажимаете на кнопку записи. Напоминаю, что голос обрабатывается локально на вашем устройстве и никогда не покидает его.\n\nПереход в приложение при нажатии кнопки записи — вынужденная мера. Система не позволяет расширениям клавиатуры напрямую использовать микрофон, поэтому Sayboard ненадолго открывается для его активации и сразу возвращает вас обратно. Чтобы видеть эти переходы реже, увеличьте время в настройке «Автоотключение».\n\nРасход батареи при активном оранжевом индикаторе минимален за целый день активной сессии. Впрочем, вы можете уменьшить время в настройке «Автоотключение», но учтите: чем меньше значение, тем чаще приложение будет перебрасывать вас туда-обратно для активации микрофона."
           }
         },
         "cs": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— pokud vidíte tento oranžový indikátor v rohu obrazovky, nebojte se. Znamená to, že Sayboard udržuje relaci mikrofonu připravenou, aby klávesnice mohla okamžitě zahájit diktování. Nedochází k žádnému skrytému nahrávání — mikrofon se aktivuje pouze po stisknutí tlačítka nahrávání. Připomínáme, že váš hlas je zpracováván lokálně na vašem iPhonu a nikdy neopustí vaše zařízení.\n\nPřepnutí do aplikace po klepnutí na tlačítko nahrávání je nezbytné opatření. iOS neumožňuje rozšířením klávesnice přímý přístup k mikrofonu, proto Sayboard krátce otevře aplikaci pro jeho aktivaci a okamžitě vás vrátí zpět. Chcete-li tyto přechody vidět méně často, zvyšte čas v nastavení „Automatické zastavení\".\n\nSpotřeba baterie při zapnutém oranžovém indikátoru je za celý den aktivní relace minimální. Můžete však snížit čas v nastavení „Automatické zastavení\", ale mějte na paměti: čím nižší hodnota, tím častěji vás aplikace bude přepínat tam a zpět pro aktivaci mikrofonu."
+            "value": "— pokud vidíte tento oranžový indikátor v rohu obrazovky, nebojte se. Znamená to, že Sayboard udržuje relaci mikrofonu připravenou, aby klávesnice mohla okamžitě zahájit diktování. Nedochází k žádnému skrytému nahrávání — mikrofon se aktivuje pouze po stisknutí tlačítka nahrávání. Připomínáme, že váš hlas je zpracováván lokálně na vašem zařízení a nikdy ho neopustí.\n\nPřepnutí do aplikace po klepnutí na tlačítko nahrávání je nezbytné opatření. Systém neumožňuje rozšířením klávesnice přímý přístup k mikrofonu, proto Sayboard krátce otevře aplikaci pro jeho aktivaci a okamžitě vás vrátí zpět. Chcete-li tyto přechody vidět méně často, zvyšte čas v nastavení „Automatické zastavení\".\n\nSpotřeba baterie při zapnutém oranžovém indikátoru je za celý den aktivní relace minimální. Můžete však snížit čas v nastavení „Automatické zastavení\", ale mějte na paměti: čím nižší hodnota, tím častěji vás aplikace bude přepínat tam a zpět pro aktivaci mikrofonu."
           }
         },
         "da": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— hvis du ser denne orange indikator i hjørnet af skærmen, skal du ikke bekymre dig. Det betyder, at Sayboard holder mikrofonsessionen klar, så tastaturet kan starte diktering med det samme. Der foregår ingen skjult optagelse — mikrofonen aktiveres kun, når du trykker på optageknappen. Som en påmindelse behandles din stemme lokalt på din iPhone og forlader aldrig din enhed.\n\nSkift til appen, når du trykker på optageknappen, er en nødvendig foranstaltning. iOS tillader ikke tastaturudvidelser at få direkte adgang til mikrofonen, så Sayboard åbner kort for at aktivere den og sender dig straks tilbage. For at se disse overgange sjældnere kan du øge tiden i indstillingen \"Auto-stop\".\n\nBatteriforbrug mens den orange indikator er tændt er minimalt over en hel dag med en aktiv session. Du kan dog reducere tiden i indstillingen \"Auto-stop\", men husk: jo lavere værdien er, jo oftere vil appen skifte dig frem og tilbage for at aktivere mikrofonen."
+            "value": "— hvis du ser denne orange indikator i hjørnet af skærmen, skal du ikke bekymre dig. Det betyder, at Sayboard holder mikrofonsessionen klar, så tastaturet kan starte diktering med det samme. Der foregår ingen skjult optagelse — mikrofonen aktiveres kun, når du trykker på optageknappen. Som en påmindelse behandles din stemme lokalt på din enhed og forlader den aldrig.\n\nSkift til appen, når du trykker på optageknappen, er en nødvendig foranstaltning. Systemet tillader ikke tastaturudvidelser at få direkte adgang til mikrofonen, så Sayboard åbner kort for at aktivere den og sender dig straks tilbage. For at se disse overgange sjældnere kan du øge tiden i indstillingen \"Auto-stop\".\n\nBatteriforbrug mens den orange indikator er tændt er minimalt over en hel dag med en aktiv session. Du kan dog reducere tiden i indstillingen \"Auto-stop\", men husk: jo lavere værdien er, jo oftere vil appen skifte dig frem og tilbage for at aktivere mikrofonen."
           }
         },
         "de": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— wenn Sie diesen orangefarbenen Indikator in der Ecke des Bildschirms sehen, machen Sie sich keine Sorgen. Er bedeutet, dass Sayboard die Mikrofonsitzung bereit hält, damit die Tastatur sofort mit dem Diktieren beginnen kann. Es findet keine versteckte Aufnahme statt — das Mikrofon wird nur aktiviert, wenn Sie die Aufnahmetaste drücken. Zur Erinnerung: Ihre Stimme wird lokal auf Ihrem iPhone verarbeitet und verlässt niemals Ihr Gerät.\n\nDer Wechsel zur App beim Drücken der Aufnahmetaste ist eine notwendige Maßnahme. iOS erlaubt Tastaturerweiterungen keinen direkten Zugriff auf das Mikrofon, daher öffnet Sayboard kurz die App zur Aktivierung und kehrt sofort zu Ihnen zurück. Um diese Übergänge seltener zu sehen, erhöhen Sie die Zeit in der Einstellung „Automatischer Stopp\".\n\nDer Batterieverbrauch bei eingeschaltetem orangefarbenem Indikator ist über einen ganzen Tag einer aktiven Sitzung minimal. Sie können jedoch die Zeit in der Einstellung „Automatischer Stopp\" verringern, aber bedenken Sie: Je niedriger der Wert, desto häufiger wird die App Sie hin und her wechseln, um das Mikrofon zu aktivieren."
+            "value": "— wenn Sie diesen orangefarbenen Indikator in der Ecke des Bildschirms sehen, machen Sie sich keine Sorgen. Er bedeutet, dass Sayboard die Mikrofonsitzung bereit hält, damit die Tastatur sofort mit dem Diktieren beginnen kann. Es findet keine versteckte Aufnahme statt — das Mikrofon wird nur aktiviert, wenn Sie die Aufnahmetaste drücken. Zur Erinnerung: Ihre Stimme wird lokal auf Ihrem Gerät verarbeitet und verlässt es niemals.\n\nDer Wechsel zur App beim Drücken der Aufnahmetaste ist eine notwendige Maßnahme. Das System erlaubt Tastaturerweiterungen keinen direkten Zugriff auf das Mikrofon, daher öffnet Sayboard kurz die App zur Aktivierung und kehrt sofort zu Ihnen zurück. Um diese Übergänge seltener zu sehen, erhöhen Sie die Zeit in der Einstellung „Automatischer Stopp\".\n\nDer Batterieverbrauch bei eingeschaltetem orangefarbenem Indikator ist über einen ganzen Tag einer aktiven Sitzung minimal. Sie können jedoch die Zeit in der Einstellung „Automatischer Stopp\" verringern, aber bedenken Sie: Je niedriger der Wert, desto häufiger wird die App Sie hin und her wechseln, um das Mikrofon zu aktivieren."
           }
         },
         "el": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— αν βλέπετε αυτόν τον πορτοκαλί δείκτη στη γωνία της οθόνης, μην ανησυχείτε. Σημαίνει ότι το Sayboard κρατά τη συνεδρία μικροφώνου έτοιμη ώστε το πληκτρολόγιο να μπορεί να ξεκινήσει αμέσως την υπαγόρευση. Δεν γίνεται κρυφή εγγραφή — το μικρόφωνο ενεργοποιείται μόνο όταν πατάτε το κουμπί εγγραφής. Υπενθυμίζουμε ότι η φωνή σας επεξεργάζεται τοπικά στο iPhone σας και δεν φεύγει ποτέ από τη συσκευή σας.\n\nΗ εναλλαγή στην εφαρμογή όταν πατάτε το κουμπί εγγραφής είναι ένα απαραίτητο μέτρο. Το iOS δεν επιτρέπει στις επεκτάσεις πληκτρολογίου να έχουν απευθείας πρόσβαση στο μικρόφωνο, οπότε το Sayboard ανοίγει σύντομα για να το ενεργοποιήσει και σας επιστρέφει αμέσως. Για να βλέπετε αυτές τις μεταβάσεις λιγότερο συχνά, αυξήστε τον χρόνο στη ρύθμιση «Αυτόματη διακοπή».\n\nΗ κατανάλωση μπαταρίας ενώ ο πορτοκαλί δείκτης είναι ενεργός είναι ελάχιστη σε μια ολόκληρη μέρα ενεργής συνεδρίας. Ωστόσο, μπορείτε να μειώσετε τον χρόνο στη ρύθμιση «Αυτόματη διακοπή», αλλά να έχετε υπόψη: όσο χαμηλότερη η τιμή, τόσο πιο συχνά η εφαρμογή θα σας εναλλάσσει για να ενεργοποιήσει το μικρόφωνο."
+            "value": "— αν βλέπετε αυτόν τον πορτοκαλί δείκτη στη γωνία της οθόνης, μην ανησυχείτε. Σημαίνει ότι το Sayboard κρατά τη συνεδρία μικροφώνου έτοιμη ώστε το πληκτρολόγιο να μπορεί να ξεκινήσει αμέσως την υπαγόρευση. Δεν γίνεται κρυφή εγγραφή — το μικρόφωνο ενεργοποιείται μόνο όταν πατάτε το κουμπί εγγραφής. Υπενθυμίζουμε ότι η φωνή σας επεξεργάζεται τοπικά στη συσκευή σας και δεν τη φεύγει ποτέ.\n\nΗ εναλλαγή στην εφαρμογή όταν πατάτε το κουμπί εγγραφής είναι ένα απαραίτητο μέτρο. Το σύστημα δεν επιτρέπει στις επεκτάσεις πληκτρολογίου να έχουν απευθείας πρόσβαση στο μικρόφωνο, οπότε το Sayboard ανοίγει σύντομα για να το ενεργοποιήσει και σας επιστρέφει αμέσως. Για να βλέπετε αυτές τις μεταβάσεις λιγότερο συχνά, αυξήστε τον χρόνο στη ρύθμιση «Αυτόματη διακοπή».\n\nΗ κατανάλωση μπαταρίας ενώ ο πορτοκαλί δείκτης είναι ενεργός είναι ελάχιστη σε μια ολόκληρη μέρα ενεργής συνεδρίας. Ωστόσο, μπορείτε να μειώσετε τον χρόνο στη ρύθμιση «Αυτόματη διακοπή», αλλά να έχετε υπόψη: όσο χαμηλότερη η τιμή, τόσο πιο συχνά η εφαρμογή θα σας εναλλάσσει για να ενεργοποιήσει το μικρόφωνο."
           }
         },
         "es": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— si ves este indicador naranja en la esquina de la pantalla, no te preocupes. Significa que Sayboard mantiene la sesión de micrófono lista para que el teclado pueda iniciar el dictado al instante. No se realiza ninguna grabación oculta: el micrófono solo se activa cuando presionas el botón de grabación. Como recordatorio, tu voz se procesa localmente en tu iPhone y nunca sale de tu dispositivo.\n\nCambiar a la app cuando pulsas el botón de grabación es una medida necesaria. iOS no permite que las extensiones de teclado accedan directamente al micrófono, por lo que Sayboard se abre brevemente para activarlo y te devuelve inmediatamente. Para ver estas transiciones con menos frecuencia, aumenta el tiempo en el ajuste \"Parada automática\".\n\nEl consumo de batería mientras el indicador naranja está encendido es mínimo a lo largo de un día completo de sesión activa. Sin embargo, puedes reducir el tiempo en el ajuste \"Parada automática\", pero ten en cuenta: cuanto menor sea el valor, más frecuentemente la app te cambiará de ida y vuelta para activar el micrófono."
+            "value": "— si ves este indicador naranja en la esquina de la pantalla, no te preocupes. Significa que Sayboard mantiene la sesión de micrófono lista para que el teclado pueda iniciar el dictado al instante. No se realiza ninguna grabación oculta: el micrófono solo se activa cuando presionas el botón de grabación. Como recordatorio, tu voz se procesa localmente en tu dispositivo y nunca lo abandona.\n\nCambiar a la app cuando pulsas el botón de grabación es una medida necesaria. El sistema no permite que las extensiones de teclado accedan directamente al micrófono, por lo que Sayboard se abre brevemente para activarlo y te devuelve inmediatamente. Para ver estas transiciones con menos frecuencia, aumenta el tiempo en el ajuste \"Parada automática\".\n\nEl consumo de batería mientras el indicador naranja está encendido es mínimo a lo largo de un día completo de sesión activa. Sin embargo, puedes reducir el tiempo en el ajuste \"Parada automática\", pero ten en cuenta: cuanto menor sea el valor, más frecuentemente la app te cambiará de ida y vuelta para activar el micrófono."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— jos näet tämän oranssin ilmaisimen näytön kulmassa, älä huoli. Se tarkoittaa, että Sayboard pitää mikrofonisession valmiina, jotta näppäimistö voi aloittaa sanelun välittömästi. Piilotettua tallennusta ei tapahdu — mikrofoni aktivoituu vain, kun painat tallennuspainiketta. Muistutuksena: äänesi käsitellään paikallisesti iPhonessasi eikä se koskaan poistu laitteestasi.\n\nSovellukseen siirtyminen tallennuspainiketta painettaessa on välttämätön toimenpide. iOS ei salli näppäimistölaajennusten käyttää mikrofonia suoraan, joten Sayboard avautuu hetkeksi aktivoidakseen sen ja palauttaa sinut heti takaisin. Nähdäksesi nämä siirtymät harvemmin, lisää aikaa \"Automaattinen pysäytys\" -asetuksessa.\n\nAkun kulutus oranssin ilmaisimen ollessa päällä on vähäistä koko päivän aktiivisen session aikana. Voit kuitenkin vähentää aikaa \"Automaattinen pysäytys\" -asetuksessa, mutta muista: mitä pienempi arvo, sitä useammin sovellus vaihtaa sinua edestakaisin mikrofonin aktivoimiseksi."
+            "value": "— jos näet tämän oranssin ilmaisimen näytön kulmassa, älä huoli. Se tarkoittaa, että Sayboard pitää mikrofonisession valmiina, jotta näppäimistö voi aloittaa sanelun välittömästi. Piilotettua tallennusta ei tapahdu — mikrofoni aktivoituu vain, kun painat tallennuspainiketta. Muistutuksena: äänesi käsitellään paikallisesti laitteellasi eikä se koskaan poistu siitä.\n\nSovellukseen siirtyminen tallennuspainiketta painettaessa on välttämätön toimenpide. Järjestelmä ei salli näppäimistölaajennusten käyttää mikrofonia suoraan, joten Sayboard avautuu hetkeksi aktivoidakseen sen ja palauttaa sinut heti takaisin. Nähdäksesi nämä siirtymät harvemmin, lisää aikaa \"Automaattinen pysäytys\" -asetuksessa.\n\nAkun kulutus oranssin ilmaisimen ollessa päällä on vähäistä koko päivän aktiivisen session aikana. Voit kuitenkin vähentää aikaa \"Automaattinen pysäytys\" -asetuksessa, mutta muista: mitä pienempi arvo, sitä useammin sovellus vaihtaa sinua edestakaisin mikrofonin aktivoimiseksi."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— si vous voyez cet indicateur orange dans le coin de l'écran, ne vous inquiétez pas. Cela signifie que Sayboard maintient la session du microphone prête pour que le clavier puisse démarrer la dictée instantanément. Aucun enregistrement caché n'a lieu — le microphone ne s'active que lorsque vous appuyez sur le bouton d'enregistrement. Pour rappel, votre voix est traitée localement sur votre iPhone et ne quitte jamais votre appareil.\n\nLe passage à l'application lorsque vous appuyez sur le bouton d'enregistrement est une mesure nécessaire. iOS ne permet pas aux extensions de clavier d'accéder directement au microphone, donc Sayboard s'ouvre brièvement pour l'activer et vous ramène immédiatement. Pour voir ces transitions moins souvent, augmentez le temps dans le réglage « Arrêt automatique ».\n\nLa consommation de batterie lorsque l'indicateur orange est allumé est minimale sur une journée complète de session active. Cependant, vous pouvez réduire le temps dans le réglage « Arrêt automatique », mais gardez à l'esprit : plus la valeur est basse, plus souvent l'application vous fera basculer pour activer le microphone."
+            "value": "— si vous voyez cet indicateur orange dans le coin de l'écran, ne vous inquiétez pas. Cela signifie que Sayboard maintient la session du microphone prête pour que le clavier puisse démarrer la dictée instantanément. Aucun enregistrement caché n'a lieu — le microphone ne s'active que lorsque vous appuyez sur le bouton d'enregistrement. Pour rappel, votre voix est traitée localement sur votre appareil et ne le quitte jamais.\n\nLe passage à l'application lorsque vous appuyez sur le bouton d'enregistrement est une mesure nécessaire. Le système ne permet pas aux extensions de clavier d'accéder directement au microphone, donc Sayboard s'ouvre brièvement pour l'activer et vous ramène immédiatement. Pour voir ces transitions moins souvent, augmentez le temps dans le réglage « Arrêt automatique ».\n\nLa consommation de batterie lorsque l'indicateur orange est allumé est minimale sur une journée complète de session active. Cependant, vous pouvez réduire le temps dans le réglage « Arrêt automatique », mais gardez à l'esprit : plus la valeur est basse, plus souvent l'application vous fera basculer pour activer le microphone."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— अगर आप स्क्रीन के कोने में यह नारंगी संकेतक देखते हैं, तो चिंता न करें। इसका मतलब है कि Sayboard माइक्रोफ़ोन सत्र को तैयार रख रहा है ताकि कीबोर्ड तुरंत डिक्टेशन शुरू कर सके। कोई छिपी हुई रिकॉर्डिंग नहीं हो रही — माइक्रोफ़ोन केवल तभी सक्रिय होता है जब आप रिकॉर्ड बटन दबाते हैं। याद रखें, आपकी आवाज़ आपके iPhone पर स्थानीय रूप से प्रोसेस होती है और कभी भी आपके डिवाइस से बाहर नहीं जाती।\n\nरिकॉर्ड बटन दबाने पर ऐप पर स्विच होना एक आवश्यक उपाय है। iOS कीबोर्ड एक्सटेंशन को सीधे माइक्रोफ़ोन एक्सेस करने की अनुमति नहीं देता, इसलिए Sayboard इसे सक्रिय करने के लिए संक्षेप में खुलता है और तुरंत आपको वापस भेजता है। इन ट्रांज़िशन को कम बार देखने के लिए, \"ऑटो-स्टॉप\" सेटिंग में समय बढ़ाएँ।\n\nनारंगी संकेतक चालू रहने पर बैटरी की खपत एक सक्रिय सत्र के पूरे दिन में न्यूनतम होती है। हालाँकि, आप \"ऑटो-स्टॉप\" सेटिंग में समय कम कर सकते हैं, लेकिन ध्यान रखें: जितना कम मान होगा, उतनी बार ऐप माइक्रोफ़ोन सक्रिय करने के लिए आपको आगे-पीछे स्विच करेगा।"
+            "value": "— अगर आप स्क्रीन के कोने में यह नारंगी संकेतक देखते हैं, तो चिंता न करें। इसका मतलब है कि Sayboard माइक्रोफ़ोन सत्र को तैयार रख रहा है ताकि कीबोर्ड तुरंत डिक्टेशन शुरू कर सके। कोई छिपी हुई रिकॉर्डिंग नहीं हो रही — माइक्रोफ़ोन केवल तभी सक्रिय होता है जब आप रिकॉर्ड बटन दबाते हैं। याद रखें, आपकी आवाज़ आपके डिवाइस पर स्थानीय रूप से प्रोसेस होती है और कभी भी इससे बाहर नहीं जाती।\n\nरिकॉर्ड बटन दबाने पर ऐप पर स्विच होना एक आवश्यक उपाय है। सिस्टम कीबोर्ड एक्सटेंशन को सीधे माइक्रोफ़ोन एक्सेस करने की अनुमति नहीं देता, इसलिए Sayboard इसे सक्रिय करने के लिए संक्षेप में खुलता है और तुरंत आपको वापस भेजता है। इन ट्रांज़िशन को कम बार देखने के लिए, \"ऑटो-स्टॉप\" सेटिंग में समय बढ़ाएँ।\n\nनारंगी संकेतक चालू रहने पर बैटरी की खपत एक सक्रिय सत्र के पूरे दिन में न्यूनतम होती है। हालाँकि, आप \"ऑटो-स्टॉप\" सेटिंग में समय कम कर सकते हैं, लेकिन ध्यान रखें: जितना कम मान होगा, उतनी बार ऐप माइक्रोफ़ोन सक्रिय करने के लिए आपको आगे-पीछे स्विच करेगा।"
           }
         },
         "hu": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— ha ezt a narancssárga jelzőt látja a képernyő sarkában, ne aggódjon. Ez azt jelenti, hogy a Sayboard készen tartja a mikrofon munkamenetet, hogy a billentyűzet azonnal elindíthassa a diktálást. Nincs rejtett felvétel — a mikrofon csak akkor aktiválódik, amikor megnyomja a felvétel gombot. Emlékeztetőül: hangja helyben, az iPhone-ján kerül feldolgozásra, és soha nem hagyja el az eszközét.\n\nAz alkalmazásra váltás a felvétel gomb megnyomásakor szükséges intézkedés. Az iOS nem engedélyezi a billentyűzet-bővítményeknek a mikrofon közvetlen elérését, ezért a Sayboard röviden megnyílik az aktiváláshoz, majd azonnal visszatér. Ha ritkábban szeretné látni ezeket az átmeneteket, növelje az időt az „Automatikus leállítás\" beállításban.\n\nAz akkumulátor-fogyasztás a narancssárga jelző bekapcsolt állapotában egy aktív munkamenet teljes napja alatt minimális. Csökkentheti azonban az időt az „Automatikus leállítás\" beállításban, de ne feledje: minél alacsonyabb az érték, annál gyakrabban fogja az alkalmazás oda-vissza váltani a mikrofon aktiválásához."
+            "value": "— ha ezt a narancssárga jelzőt látja a képernyő sarkában, ne aggódjon. Ez azt jelenti, hogy a Sayboard készen tartja a mikrofon munkamenetet, hogy a billentyűzet azonnal elindíthassa a diktálást. Nincs rejtett felvétel — a mikrofon csak akkor aktiválódik, amikor megnyomja a felvétel gombot. Emlékeztetőül: hangja helyben, az eszközén kerül feldolgozásra, és soha nem hagyja el azt.\n\nAz alkalmazásra váltás a felvétel gomb megnyomásakor szükséges intézkedés. A rendszer nem engedélyezi a billentyűzet-bővítményeknek a mikrofon közvetlen elérését, ezért a Sayboard röviden megnyílik az aktiváláshoz, majd azonnal visszatér. Ha ritkábban szeretné látni ezeket az átmeneteket, növelje az időt az „Automatikus leállítás\" beállításban.\n\nAz akkumulátor-fogyasztás a narancssárga jelző bekapcsolt állapotában egy aktív munkamenet teljes napja alatt minimális. Csökkentheti azonban az időt az „Automatikus leállítás\" beállításban, de ne feledje: minél alacsonyabb az érték, annál gyakrabban fogja az alkalmazás oda-vissza váltani a mikrofon aktiválásához."
           }
         },
         "it": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— se vedi questo indicatore arancione nell'angolo dello schermo, non preoccuparti. Significa che Sayboard mantiene la sessione del microfono pronta in modo che la tastiera possa avviare la dettatura istantaneamente. Non è in corso alcuna registrazione nascosta — il microfono si attiva solo quando premi il pulsante di registrazione. Ti ricordiamo che la tua voce viene elaborata localmente sul tuo iPhone e non lascia mai il tuo dispositivo.\n\nIl passaggio all'app quando premi il pulsante di registrazione è una misura necessaria. iOS non consente alle estensioni della tastiera di accedere direttamente al microfono, quindi Sayboard si apre brevemente per attivarlo e ti riporta immediatamente indietro. Per vedere queste transizioni meno spesso, aumenta il tempo nell'impostazione \"Arresto automatico\".\n\nIl consumo della batteria con l'indicatore arancione acceso è minimo nell'arco di un'intera giornata di sessione attiva. Tuttavia, puoi ridurre il tempo nell'impostazione \"Arresto automatico\", ma tieni presente: più basso è il valore, più spesso l'app ti farà passare avanti e indietro per attivare il microfono."
+            "value": "— se vedi questo indicatore arancione nell'angolo dello schermo, non preoccuparti. Significa che Sayboard mantiene la sessione del microfono pronta in modo che la tastiera possa avviare la dettatura istantaneamente. Non è in corso alcuna registrazione nascosta — il microfono si attiva solo quando premi il pulsante di registrazione. Ti ricordiamo che la tua voce viene elaborata localmente sul tuo dispositivo e non lo lascia mai.\n\nIl passaggio all'app quando premi il pulsante di registrazione è una misura necessaria. Il sistema non consente alle estensioni della tastiera di accedere direttamente al microfono, quindi Sayboard si apre brevemente per attivarlo e ti riporta immediatamente indietro. Per vedere queste transizioni meno spesso, aumenta il tempo nell'impostazione \"Arresto automatico\".\n\nIl consumo della batteria con l'indicatore arancione acceso è minimo nell'arco di un'intera giornata di sessione attiva. Tuttavia, puoi ridurre il tempo nell'impostazione \"Arresto automatico\", ma tieni presente: più basso è il valore, più spesso l'app ti farà passare avanti e indietro per attivare il microfono."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— 画面の隅にこのオレンジ色のインジケーターが表示されていても心配しないでください。これはSayboardがマイクセッションを準備状態に保ち、キーボードがすぐにディクテーションを開始できるようにしていることを意味します。隠れた録音は行われていません — マイクは録音ボタンを押したときにのみ有効になります。念のため、あなたの音声はiPhone上でローカルに処理され、デバイスの外に出ることはありません。\n\n録音ボタンをタップしたときにアプリに切り替わるのは必要な措置です。iOSはキーボード拡張機能がマイクに直接アクセスすることを許可していないため、Sayboardは短時間開いてマイクを有効にし、すぐに戻ります。この切り替えの頻度を減らすには、「自動停止」設定の時間を長くしてください。\n\nオレンジ色のインジケーターがオンの間のバッテリー消費は、アクティブなセッションの1日を通して最小限です。ただし、「自動停止」設定の時間を短くすることもできますが、ご注意ください：値が低いほど、マイクを有効にするためにアプリがより頻繁に切り替わります。"
+            "value": "— 画面の隅にこのオレンジ色のインジケーターが表示されていても心配しないでください。これはSayboardがマイクセッションを準備状態に保ち、キーボードがすぐにディクテーションを開始できるようにしていることを意味します。隠れた録音は行われていません — マイクは録音ボタンを押したときにのみ有効になります。念のため、あなたの音声はデバイス上でローカルに処理され、外部に送信されることはありません。\n\n録音ボタンをタップしたときにアプリに切り替わるのは必要な措置です。システムはキーボード拡張機能がマイクに直接アクセスすることを許可していないため、Sayboardは短時間開いてマイクを有効にし、すぐに戻ります。この切り替えの頻度を減らすには、「自動停止」設定の時間を長くしてください。\n\nオレンジ色のインジケーターがオンの間のバッテリー消費は、アクティブなセッションの1日を通して最小限です。ただし、「自動停止」設定の時間を短くすることもできますが、ご注意ください：値が低いほど、マイクを有効にするためにアプリがより頻繁に切り替わります。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— 화면 모서리에 이 주황색 표시가 보여도 걱정하지 마세요. 이는 Sayboard가 키보드에서 즉시 받아쓰기를 시작할 수 있도록 마이크 세션을 준비 상태로 유지하고 있다는 뜻입니다. 숨겨진 녹음은 이루어지지 않습니다 — 마이크는 녹음 버튼을 누를 때만 활성화됩니다. 참고로, 음성은 iPhone에서 로컬로 처리되며 기기를 떠나지 않습니다.\n\n녹음 버튼을 탭할 때 앱으로 전환되는 것은 필수적인 조치입니다. iOS는 키보드 확장 프로그램이 마이크에 직접 접근하는 것을 허용하지 않으므로, Sayboard가 잠시 열려 마이크를 활성화한 후 즉시 돌아갑니다. 이러한 전환을 덜 자주 보려면 \"자동 중지\" 설정에서 시간을 늘리세요.\n\n주황색 표시가 켜져 있는 동안의 배터리 사용량은 하루 종일 활성 세션에서 최소한입니다. 그러나 \"자동 중지\" 설정에서 시간을 줄일 수 있지만 유의하세요: 값이 낮을수록 마이크를 활성화하기 위해 앱이 더 자주 전환됩니다."
+            "value": "— 화면 모서리에 이 주황색 표시가 보여도 걱정하지 마세요. 이는 Sayboard가 키보드에서 즉시 받아쓰기를 시작할 수 있도록 마이크 세션을 준비 상태로 유지하고 있다는 뜻입니다. 숨겨진 녹음은 이루어지지 않습니다 — 마이크는 녹음 버튼을 누를 때만 활성화됩니다. 참고로, 음성은 기기에서 로컬로 처리되며 외부로 전송되지 않습니다.\n\n녹음 버튼을 탭할 때 앱으로 전환되는 것은 필수적인 조치입니다. 시스템은 키보드 확장 프로그램이 마이크에 직접 접근하는 것을 허용하지 않으므로, Sayboard가 잠시 열려 마이크를 활성화한 후 즉시 돌아갑니다. 이러한 전환을 덜 자주 보려면 \"자동 중지\" 설정에서 시간을 늘리세요.\n\n주황색 표시가 켜져 있는 동안의 배터리 사용량은 하루 종일 활성 세션에서 최소한입니다. 그러나 \"자동 중지\" 설정에서 시간을 줄일 수 있지만 유의하세요: 값이 낮을수록 마이크를 활성화하기 위해 앱이 더 자주 전환됩니다."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— als je deze oranje indicator in de hoek van het scherm ziet, maak je geen zorgen. Het betekent dat Sayboard de microfoonsessie gereed houdt zodat het toetsenbord direct met dicteren kan beginnen. Er vindt geen verborgen opname plaats — de microfoon wordt alleen geactiveerd wanneer je op de opnameknop drukt. Ter herinnering: je stem wordt lokaal op je iPhone verwerkt en verlaat nooit je apparaat.\n\nHet schakelen naar de app wanneer je op de opnameknop tikt is een noodzakelijke maatregel. iOS staat toetsenbordextensies niet toe om rechtstreeks toegang te krijgen tot de microfoon, dus Sayboard opent kort om deze te activeren en brengt je onmiddellijk terug. Om deze overgangen minder vaak te zien, verhoog de tijd in de instelling \"Automatisch stoppen\".\n\nHet batterijverbruik terwijl de oranje indicator aan is, is minimaal gedurende een hele dag van een actieve sessie. Je kunt echter de tijd in de instelling \"Automatisch stoppen\" verlagen, maar houd er rekening mee: hoe lager de waarde, hoe vaker de app je heen en weer schakelt om de microfoon te activeren."
+            "value": "— als je deze oranje indicator in de hoek van het scherm ziet, maak je geen zorgen. Het betekent dat Sayboard de microfoonsessie gereed houdt zodat het toetsenbord direct met dicteren kan beginnen. Er vindt geen verborgen opname plaats — de microfoon wordt alleen geactiveerd wanneer je op de opnameknop drukt. Ter herinnering: je stem wordt lokaal op je apparaat verwerkt en verlaat het nooit.\n\nHet schakelen naar de app wanneer je op de opnameknop tikt is een noodzakelijke maatregel. Het systeem staat toetsenbordextensies niet toe om rechtstreeks toegang te krijgen tot de microfoon, dus Sayboard opent kort om deze te activeren en brengt je onmiddellijk terug. Om deze overgangen minder vaak te zien, verhoog de tijd in de instelling \"Automatisch stoppen\".\n\nHet batterijverbruik terwijl de oranje indicator aan is, is minimaal gedurende een hele dag van een actieve sessie. Je kunt echter de tijd in de instelling \"Automatisch stoppen\" verlagen, maar houd er rekening mee: hoe lager de waarde, hoe vaker de app je heen en weer schakelt om de microfoon te activeren."
           }
         },
         "no": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— hvis du ser denne oransje indikatoren i hjørnet av skjermen, ikke bekymre deg. Det betyr at Sayboard holder mikrofonssesjonen klar slik at tastaturet kan starte diktering umiddelbart. Ingen skjult opptak pågår — mikrofonen aktiveres kun når du trykker på opptaksknappen. Som en påminnelse behandles stemmen din lokalt på din iPhone og forlater aldri enheten din.\n\nBytte til appen når du trykker på opptaksknappen er et nødvendig tiltak. iOS tillater ikke tastaturutvidelser å få direkte tilgang til mikrofonen, så Sayboard åpner kort for å aktivere den og sender deg umiddelbart tilbake. For å se disse overgangene sjeldnere, øk tiden i innstillingen «Automatisk stopp».\n\nBatteriforbruket mens den oransje indikatoren er på er minimalt gjennom en hel dag med en aktiv sesjon. Du kan imidlertid redusere tiden i innstillingen «Automatisk stopp», men husk: jo lavere verdien er, desto oftere vil appen bytte deg frem og tilbake for å aktivere mikrofonen."
+            "value": "— hvis du ser denne oransje indikatoren i hjørnet av skjermen, ikke bekymre deg. Det betyr at Sayboard holder mikrofonssesjonen klar slik at tastaturet kan starte diktering umiddelbart. Ingen skjult opptak pågår — mikrofonen aktiveres kun når du trykker på opptaksknappen. Som en påminnelse behandles stemmen din lokalt på enheten din og forlater den aldri.\n\nBytte til appen når du trykker på opptaksknappen er et nødvendig tiltak. Systemet tillater ikke tastaturutvidelser å få direkte tilgang til mikrofonen, så Sayboard åpner kort for å aktivere den og sender deg umiddelbart tilbake. For å se disse overgangene sjeldnere, øk tiden i innstillingen «Automatisk stopp».\n\nBatteriforbruket mens den oransje indikatoren er på er minimalt gjennom en hel dag med en aktiv sesjon. Du kan imidlertid redusere tiden i innstillingen «Automatisk stopp», men husk: jo lavere verdien er, desto oftere vil appen bytte deg frem og tilbake for å aktivere mikrofonen."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— jeśli widzisz ten pomarańczowy wskaźnik w rogu ekranu, nie martw się. Oznacza to, że Sayboard utrzymuje sesję mikrofonu w gotowości, aby klawiatura mogła natychmiast rozpocząć dyktowanie. Nie odbywa się żadne ukryte nagrywanie — mikrofon aktywuje się tylko po naciśnięciu przycisku nagrywania. Przypominamy, że Twój głos jest przetwarzany lokalnie na Twoim iPhonie i nigdy nie opuszcza Twojego urządzenia.\n\nPrzełączanie do aplikacji po naciśnięciu przycisku nagrywania jest koniecznym środkiem. iOS nie pozwala rozszerzeniom klawiatury na bezpośredni dostęp do mikrofonu, dlatego Sayboard krótko się otwiera, aby go aktywować, i natychmiast Cię z powrotem przenosi. Aby widzieć te przejścia rzadziej, zwiększ czas w ustawieniu „Automatyczne zatrzymanie\".\n\nZużycie baterii przy włączonym pomarańczowym wskaźniku jest minimalne w ciągu całego dnia aktywnej sesji. Możesz jednak zmniejszyć czas w ustawieniu „Automatyczne zatrzymanie\", ale pamiętaj: im niższa wartość, tym częściej aplikacja będzie Cię przełączać w celu aktywacji mikrofonu."
+            "value": "— jeśli widzisz ten pomarańczowy wskaźnik w rogu ekranu, nie martw się. Oznacza to, że Sayboard utrzymuje sesję mikrofonu w gotowości, aby klawiatura mogła natychmiast rozpocząć dyktowanie. Nie odbywa się żadne ukryte nagrywanie — mikrofon aktywuje się tylko po naciśnięciu przycisku nagrywania. Przypominamy, że Twój głos jest przetwarzany lokalnie na Twoim urządzeniu i nigdy go nie opuszcza.\n\nPrzełączanie do aplikacji po naciśnięciu przycisku nagrywania jest koniecznym środkiem. System nie pozwala rozszerzeniom klawiatury na bezpośredni dostęp do mikrofonu, dlatego Sayboard krótko się otwiera, aby go aktywować, i natychmiast Cię z powrotem przenosi. Aby widzieć te przejścia rzadziej, zwiększ czas w ustawieniu „Automatyczne zatrzymanie\".\n\nZużycie baterii przy włączonym pomarańczowym wskaźniku jest minimalne w ciągu całego dnia aktywnej sesji. Możesz jednak zmniejszyć czas w ustawieniu „Automatyczne zatrzymanie\", ale pamiętaj: im niższa wartość, tym częściej aplikacja będzie Cię przełączać w celu aktywacji mikrofonu."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— se você vir este indicador laranja no canto da tela, não se preocupe. Significa que o Sayboard está mantendo a sessão do microfone pronta para que o teclado possa iniciar o ditado instantaneamente. Nenhuma gravação oculta está acontecendo — o microfone só é ativado quando você pressiona o botão de gravação. Lembrando que sua voz é processada localmente no seu iPhone e nunca sai do seu dispositivo.\n\nAlternar para o app quando você toca o botão de gravação é uma medida necessária. O iOS não permite que extensões de teclado acessem o microfone diretamente, então o Sayboard abre brevemente para ativá-lo e retorna imediatamente. Para ver essas transições com menos frequência, aumente o tempo na configuração \"Parada automática\".\n\nO consumo de bateria enquanto o indicador laranja está ligado é mínimo ao longo de um dia inteiro de sessão ativa. No entanto, você pode reduzir o tempo na configuração \"Parada automática\", mas tenha em mente: quanto menor o valor, mais frequentemente o app alternará para ativar o microfone."
+            "value": "— se você vir este indicador laranja no canto da tela, não se preocupe. Significa que o Sayboard está mantendo a sessão do microfone pronta para que o teclado possa iniciar o ditado instantaneamente. Nenhuma gravação oculta está acontecendo — o microfone só é ativado quando você pressiona o botão de gravação. Lembrando que sua voz é processada localmente no seu dispositivo e nunca o abandona.\n\nAlternar para o app quando você toca o botão de gravação é uma medida necessária. O sistema não permite que extensões de teclado acessem o microfone diretamente, então o Sayboard abre brevemente para ativá-lo e retorna imediatamente. Para ver essas transições com menos frequência, aumente o tempo na configuração \"Parada automática\".\n\nO consumo de bateria enquanto o indicador laranja está ligado é mínimo ao longo de um dia inteiro de sessão ativa. No entanto, você pode reduzir o tempo na configuração \"Parada automática\", mas tenha em mente: quanto menor o valor, mais frequentemente o app alternará para ativar o microfone."
           }
         },
         "ro": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— dacă vedeți acest indicator portocaliu în colțul ecranului, nu vă faceți griji. Înseamnă că Sayboard menține sesiunea microfonului pregătită pentru ca tastatura să poată începe dictarea instantaneu. Nu are loc nicio înregistrare ascunsă — microfonul se activează doar când apăsați butonul de înregistrare. Ca un memento, vocea dvs. este procesată local pe iPhone-ul dvs. și nu părăsește niciodată dispozitivul.\n\nComutarea la aplicație când apăsați butonul de înregistrare este o măsură necesară. iOS nu permite extensiilor de tastatură să acceseze direct microfonul, așa că Sayboard se deschide scurt pentru a-l activa și vă readuce imediat. Pentru a vedea aceste tranziții mai rar, măriți timpul din setarea „Oprire automată\".\n\nConsumul bateriei în timp ce indicatorul portocaliu este aprins este minim pe parcursul unei zile întregi de sesiune activă. Cu toate acestea, puteți reduce timpul din setarea „Oprire automată\", dar rețineți: cu cât valoarea este mai mică, cu atât mai des aplicația vă va comuta pentru a activa microfonul."
+            "value": "— dacă vedeți acest indicator portocaliu în colțul ecranului, nu vă faceți griji. Înseamnă că Sayboard menține sesiunea microfonului pregătită pentru ca tastatura să poată începe dictarea instantaneu. Nu are loc nicio înregistrare ascunsă — microfonul se activează doar când apăsați butonul de înregistrare. Ca un memento, vocea dvs. este procesată local pe dispozitivul dvs. și nu îl părăsește niciodată.\n\nComutarea la aplicație când apăsați butonul de înregistrare este o măsură necesară. Sistemul nu permite extensiilor de tastatură să acceseze direct microfonul, așa că Sayboard se deschide scurt pentru a-l activa și vă readuce imediat. Pentru a vedea aceste tranziții mai rar, măriți timpul din setarea „Oprire automată\".\n\nConsumul bateriei în timp ce indicatorul portocaliu este aprins este minim pe parcursul unei zile întregi de sesiune activă. Cu toate acestea, puteți reduce timpul din setarea „Oprire automată\", dar rețineți: cu cât valoarea este mai mică, cu atât mai des aplicația vă va comuta pentru a activa microfonul."
           }
         },
         "sk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— ak vidíte tento oranžový indikátor v rohu obrazovky, neznepokojujte sa. Znamená to, že Sayboard udržiava reláciu mikrofónu v pohotovosti, aby klávesnica mohla okamžite začať diktovanie. Neprebieha žiadne skryté nahrávanie — mikrofón sa aktivuje len po stlačení tlačidla nahrávania. Pripomíname, že váš hlas sa spracováva lokálne na vašom iPhone a nikdy neopustí vaše zariadenie.\n\nPrepnutie do aplikácie po klepnutí na tlačidlo nahrávania je nevyhnutné opatrenie. iOS neumožňuje rozšíreniam klávesnice priamy prístup k mikrofónu, preto Sayboard krátko otvorí aplikáciu na jeho aktiváciu a okamžite vás vráti späť. Ak chcete tieto prechody vidieť menej často, zvýšte čas v nastavení „Automatické zastavenie\".\n\nSpotreba batérie pri zapnutom oranžovom indikátore je počas celého dňa aktívnej relácie minimálna. Môžete však znížiť čas v nastavení „Automatické zastavenie\", ale majte na pamäti: čím nižšia hodnota, tým častejšie vás aplikácia bude prepínať na aktiváciu mikrofónu."
+            "value": "— ak vidíte tento oranžový indikátor v rohu obrazovky, neznepokojujte sa. Znamená to, že Sayboard udržiava reláciu mikrofónu v pohotovosti, aby klávesnica mohla okamžite začať diktovanie. Neprebieha žiadne skryté nahrávanie — mikrofón sa aktivuje len po stlačení tlačidla nahrávania. Pripomíname, že váš hlas sa spracováva lokálne na vašom zariadení a nikdy ho neopustí.\n\nPrepnutie do aplikácie po klepnutí na tlačidlo nahrávania je nevyhnutné opatrenie. Systém neumožňuje rozšíreniam klávesnice priamy prístup k mikrofónu, preto Sayboard krátko otvorí aplikáciu na jeho aktiváciu a okamžite vás vráti späť. Ak chcete tieto prechody vidieť menej často, zvýšte čas v nastavení „Automatické zastavenie\".\n\nSpotreba batérie pri zapnutom oranžovom indikátore je počas celého dňa aktívnej relácie minimálna. Môžete však znížiť čas v nastavení „Automatické zastavenie\", ale majte na pamäti: čím nižšia hodnota, tým častejšie vás aplikácia bude prepínať na aktiváciu mikrofónu."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— om du ser denna orange indikator i hörnet av skärmen, oroa dig inte. Det betyder att Sayboard håller mikrofonsessionen redo så att tangentbordet kan starta diktering omedelbart. Ingen dold inspelning pågår — mikrofonen aktiveras bara när du trycker på inspelningsknappen. Som en påminnelse bearbetas din röst lokalt på din iPhone och lämnar aldrig din enhet.\n\nAtt växla till appen när du trycker på inspelningsknappen är en nödvändig åtgärd. iOS tillåter inte tangentbordstillägg att komma åt mikrofonen direkt, så Sayboard öppnas kort för att aktivera den och tar dig omedelbart tillbaka. För att se dessa övergångar mer sällan, öka tiden i inställningen \"Autostopp\".\n\nBatterianvändningen medan den orange indikatorn är på är minimal under en hel dag av en aktiv session. Du kan dock minska tiden i inställningen \"Autostopp\", men tänk på att: ju lägre värdet är, desto oftare kommer appen att växla dig fram och tillbaka för att aktivera mikrofonen."
+            "value": "— om du ser denna orange indikator i hörnet av skärmen, oroa dig inte. Det betyder att Sayboard håller mikrofonsessionen redo så att tangentbordet kan starta diktering omedelbart. Ingen dold inspelning pågår — mikrofonen aktiveras bara när du trycker på inspelningsknappen. Som en påminnelse bearbetas din röst lokalt på din enhet och lämnar den aldrig.\n\nAtt växla till appen när du trycker på inspelningsknappen är en nödvändig åtgärd. Systemet tillåter inte tangentbordstillägg att komma åt mikrofonen direkt, så Sayboard öppnas kort för att aktivera den och tar dig omedelbart tillbaka. För att se dessa övergångar mer sällan, öka tiden i inställningen \"Autostopp\".\n\nBatterianvändningen medan den orange indikatorn är på är minimal under en hel dag av en aktiv session. Du kan dock minska tiden i inställningen \"Autostopp\", men tänk på att: ju lägre värdet är, desto oftare kommer appen att växla dig fram och tillbaka för att aktivera mikrofonen."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— ekranın köşesinde bu turuncu göstergeyi görüyorsanız endişelenmeyin. Bu, Sayboard'un mikrofon oturumunu hazır tuttuğu anlamına gelir, böylece klavye anında dikte işlemini başlatabilir. Gizli bir kayıt yapılmıyor — mikrofon yalnızca kayıt düğmesine bastığınızda etkinleşir. Hatırlatma olarak, sesiniz iPhone'unuzda yerel olarak işlenir ve cihazınızdan asla ayrılmaz.\n\nKayıt düğmesine dokunduğunuzda uygulamaya geçmek zorunlu bir önlemdir. iOS, klavye uzantılarının mikrofona doğrudan erişmesine izin vermez, bu nedenle Sayboard etkinleştirmek için kısaca açılır ve sizi hemen geri götürür. Bu geçişleri daha az görmek için \"Otomatik Durdurma\" ayarındaki süreyi artırın.\n\nTuruncu gösterge açıkken pil tüketimi, aktif bir oturumun tüm günü boyunca minimaldir. Ancak \"Otomatik Durdurma\" ayarındaki süreyi azaltabilirsiniz, fakat unutmayın: değer ne kadar düşükse, uygulama mikrofonu etkinleştirmek için sizi o kadar sık ileri geri değiştirecektir."
+            "value": "— ekranın köşesinde bu turuncu göstergeyi görüyorsanız endişelenmeyin. Bu, Sayboard'un mikrofon oturumunu hazır tuttuğu anlamına gelir, böylece klavye anında dikte işlemini başlatabilir. Gizli bir kayıt yapılmıyor — mikrofon yalnızca kayıt düğmesine bastığınızda etkinleşir. Hatırlatma olarak, sesiniz cihazınızda yerel olarak işlenir ve cihazınızdan asla ayrılmaz.\n\nKayıt düğmesine dokunduğunuzda uygulamaya geçmek zorunlu bir önlemdir. Sistem, klavye uzantılarının mikrofona doğrudan erişmesine izin vermez, bu nedenle Sayboard etkinleştirmek için kısaca açılır ve sizi hemen geri götürür. Bu geçişleri daha az görmek için \"Otomatik Durdurma\" ayarındaki süreyi artırın.\n\nTuruncu gösterge açıkken pil tüketimi, aktif bir oturumun tüm günü boyunca minimaldir. Ancak \"Otomatik Durdurma\" ayarındaki süreyi azaltabilirsiniz, fakat unutmayın: değer ne kadar düşükse, uygulama mikrofonu etkinleştirmek için sizi o kadar sık ileri geri değiştirecektir."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— якщо ви бачите цей помаранчевий індикатор у кутку екрана, не хвилюйтеся. Це означає, що Sayboard підтримує сесію мікрофона в готовності, щоб клавіатура могла миттєво розпочати диктування. Прихованого запису не відбувається — мікрофон активується лише тоді, коли ви натискаєте кнопку запису. Нагадуємо, що ваш голос обробляється локально на вашому iPhone і ніколи не залишає ваш пристрій.\n\nПеремикання до застосунку при натисканні кнопки запису — це необхідний захід. iOS не дозволяє розширенням клавіатури безпосередньо використовувати мікрофон, тому Sayboard ненадовго відкривається для його активації та одразу повертає вас назад. Щоб бачити ці переходи рідше, збільшіть час у налаштуванні «Автоматична зупинка».\n\nСпоживання батареї при увімкненому помаранчевому індикаторі є мінімальним протягом цілого дня активної сесії. Однак ви можете зменшити час у налаштуванні «Автоматична зупинка», але майте на увазі: чим менше значення, тим частіше застосунок перемикатиме вас для активації мікрофона."
+            "value": "— якщо ви бачите цей помаранчевий індикатор у кутку екрана, не хвилюйтеся. Це означає, що Sayboard підтримує сесію мікрофона в готовності, щоб клавіатура могла миттєво розпочати диктування. Прихованого запису не відбувається — мікрофон активується лише тоді, коли ви натискаєте кнопку запису. Нагадуємо, що ваш голос обробляється локально на вашому пристрої і ніколи не залишає його.\n\nПеремикання до застосунку при натисканні кнопки запису — це необхідний захід. Система не дозволяє розширенням клавіатури безпосередньо використовувати мікрофон, тому Sayboard ненадовго відкривається для його активації та одразу повертає вас назад. Щоб бачити ці переходи рідше, збільшіть час у налаштуванні «Автоматична зупинка».\n\nСпоживання батареї при увімкненому помаранчевому індикаторі є мінімальним протягом цілого дня активної сесії. Однак ви можете зменшити час у налаштуванні «Автоматична зупинка», але майте на увазі: чим менше значення, тим частіше застосунок перемикатиме вас для активації мікрофона."
           }
         },
         "zh": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "— 如果您在屏幕角落看到这个橙色指示器，请不要担心。这表示 Sayboard 正在保持麦克风会话就绪状态，以便键盘可以即时开始听写。没有进行隐藏录音——麦克风仅在您按下录音按钮时才会激活。提醒您，您的语音在 iPhone 上本地处理，绝不会离开您的设备。\n\n点击录音按钮时切换到应用程序是一项必要措施。iOS 不允许键盘扩展直接访问麦克风，因此 Sayboard 会短暂打开以激活麦克风，然后立即返回。要减少这些切换的频率，请增加\"自动停止\"设置中的时间。\n\n橙色指示器开启时的电池消耗在活跃会话的一整天中是最小的。但是，您可以减少\"自动停止\"设置中的时间，但请注意：值越低，应用程序切换激活麦克风的频率就越高。"
+            "value": "— 如果您在屏幕角落看到这个橙色指示器，请不要担心。这表示 Sayboard 正在保持麦克风会话就绪状态，以便键盘可以即时开始听写。没有进行隐藏录音——麦克风仅在您按下录音按钮时才会激活。提醒您，您的语音在您的设备上本地处理，绝不会离开设备。\n\n点击录音按钮时切换到应用程序是一项必要措施。系统不允许键盘扩展直接访问麦克风，因此 Sayboard 会短暂打开以激活麦克风，然后立即返回。要减少这些切换的频率，请增加\"自动停止\"设置中的时间。\n\n橙色指示器开启时的电池消耗在活跃会话的一整天中是最小的。但是，您可以减少\"自动停止\"设置中的时间，但请注意：值越低，应用程序切换激活麦克风的频率就越高。"
           }
         }
       }
@@ -4153,13 +4153,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The orange indicator means the mic session is ready for instant dictation. No hidden recording — the mic only activates when you press record. App switching is required because iOS blocks mic access in keyboard extensions. Adjust “Auto-Stop” to control how often this happens. Battery impact is minimal."
+            "value": "The orange indicator means the mic session is ready for instant dictation. No hidden recording — the mic only activates when you press record. App switching is required because the system blocks mic access in keyboard extensions. Adjust “Auto-Stop” to control how often this happens. Battery impact is minimal."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Оранжевый индикатор означает, что сессия микрофона готова для мгновенной диктовки. Скрытой записи нет — микрофон включается только при нажатии кнопки записи. Переключение в приложение необходимо, так как iOS блокирует доступ к микрофону в расширениях клавиатуры. Настройте «Автоотключение», чтобы контролировать частоту переключений. Расход батареи минимален."
+            "value": "Оранжевый индикатор означает, что сессия микрофона готова для мгновенной диктовки. Скрытой записи нет — микрофон включается только при нажатии кнопки записи. Переключение в приложение необходимо, так как система блокирует доступ к микрофону в расширениях клавиатуры. Настройте «Автоотключение», чтобы контролировать частоту переключений. Расход батареи минимален."
           }
         },
         "cs": {
@@ -16289,6 +16289,148 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "保留历史"
+          }
+        }
+      }
+    },
+    "Keyboard": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Клавиатура"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Klávesnice"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Tastatur"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Tastatur"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Πληκτρολόγιο"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Teclado"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Näppäimistö"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Clavier"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "कीबोर्ड"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Billentyűzet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Tastiera"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "キーボード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "키보드"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Toetsenbord"
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Tastatur"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Klawiatura"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Teclado"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Tastatură"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Klávesnica"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Tangentbord"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Klavye"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Клавіатура"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "键盘"
           }
         }
       }
@@ -29600,6 +29742,290 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "智能重写"
+          }
+        }
+      }
+    },
+    "Show Keyboard Switch Key": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывать кнопку переключения"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Zobrazit klávesu přepínání"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Vis tastaturskiftetast"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Tastaturwechsel-Taste anzeigen"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Εμφάνιση πλήκτρου εναλλαγής"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mostrar tecla de cambio"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Näytä vaihtopainike"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Afficher la touche de changement"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "स्विच कुंजी दिखाएँ"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Váltógomb megjelenítése"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mostra tasto di cambio"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "切り替えキーを表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "전환 키 표시"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Wisseltoets tonen"
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Vis byttetast"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Pokaż klawisz przełączania"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mostrar tecla de alternância"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Afișează tasta de comutare"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Zobraziť kláves prepínania"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Visa växlingsknapp"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Geçiş tuşunu göster"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Показувати кнопку перемикання"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "显示切换按键"
+          }
+        }
+      }
+    },
+    "Display an extra globe key on the keyboard. Your device already provides one, so this is optional.": {
+      "localizations": {
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Добавляет дополнительную кнопку глобуса на клавиатуру. Ваше устройство уже предоставляет такую, поэтому это необязательно."
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Zobrazí na klávesnici další klávesu glóbusu. Vaše zařízení ji již poskytuje, takže je to volitelné."
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Viser en ekstra globustast på tastaturet. Din enhed har allerede en, så dette er valgfrit."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Zeigt eine zusätzliche Globustaste auf der Tastatur an. Dein Gerät stellt bereits eine bereit, daher ist dies optional."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Εμφανίζει ένα επιπλέον πλήκτρο υδρογείου στο πληκτρολόγιο. Η συσκευή σας παρέχει ήδη ένα, οπότε αυτό είναι προαιρετικό."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Muestra una tecla de globo adicional en el teclado. Tu dispositivo ya proporciona una, por lo que es opcional."
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Näyttää ylimääräisen maapallopainikkeen näppäimistöllä. Laitteesi tarjoaa jo yhden, joten tämä on valinnainen."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Affiche une touche globe supplémentaire sur le clavier. Votre appareil en fournit déjà une, c\u2019est donc facultatif."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "कीबोर्ड पर एक अतिरिक्त ग्लोब कुंजी दिखाता है। आपका उपकरण पहले से एक प्रदान करता है, इसलिए यह वैकल्पिक है।"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Egy extra földgömb gombot jelenít meg a billentyűzeten. Az eszközöd már biztosít egyet, így ez opcionális."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mostra un tasto globo aggiuntivo sulla tastiera. Il tuo dispositivo ne fornisce già uno, quindi è facoltativo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "キーボードに追加の地球儀キーを表示します。お使いのデバイスには既に搭載されているため、これはオプションです。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "키보드에 추가 지구본 키를 표시합니다. 기기에서 이미 제공하므로 선택 사항입니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Toont een extra globetoets op het toetsenbord. Je apparaat biedt er al een, dus dit is optioneel."
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Viser en ekstra globustast på tastaturet. Enheten din har allerede en, så dette er valgfritt."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Wyświetla dodatkowy klawisz globusa na klawiaturze. Twoje urządzenie już go zapewnia, więc jest to opcjonalne."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Exibe uma tecla de globo extra no teclado. O seu dispositivo já fornece uma, por isso é opcional."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Afișează o tastă glob suplimentară pe tastatură. Dispozitivul tău oferă deja una, așa că este opțional."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Zobrazí na klávesnici ďalší kláves glóbusu. Vaše zariadenie ho už poskytuje, takže je to voliteľné."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Visar en extra globknapp på tangentbordet. Din enhet tillhandahåller redan en, så detta är valfritt."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Klavyede ekstra bir küre tuşu gösterir. Cihazınız zaten bir tane sağlıyor, bu yüzden isteğe bağlıdır."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Показує додаткову кнопку глобуса на клавіатурі. Ваш пристрій вже надає таку, тому це необов\u2019язково."
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "在键盘上显示一个额外的地球仪按键。您的设备已经提供了一个，因此这是可选的。"
           }
         }
       }

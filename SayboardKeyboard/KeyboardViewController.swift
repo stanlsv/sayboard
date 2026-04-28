@@ -42,7 +42,7 @@ final class KeyboardViewController: UIInputViewController {
       for constraint in view.constraintsAffectingLayout(for: .vertical) {
         constraint.priority = .defaultHigh
       }
-      let hc = view.heightAnchor.constraint(equalToConstant: Self.keyboardHeight)
+      let hc = view.heightAnchor.constraint(equalToConstant: KeyboardMetrics.height)
       hc.priority = UILayoutPriority(rawValue: 999)
       hc.isActive = true
       self.heightConstraint = hc
@@ -70,6 +70,7 @@ final class KeyboardViewController: UIInputViewController {
     }
     self.keyboardState.refresh()
     self.keyboardState.needsInputModeSwitchKey = self.needsInputModeSwitchKey
+    SharedSettings().needsInputModeSwitchKey = self.needsInputModeSwitchKey
     self.keyboardState.isTranslationMode = SharedSettings().isTranslationMode
     self.syncFullAccessIfChanged()
     self.pingMainAppForSessionStatus()
@@ -112,10 +113,6 @@ final class KeyboardViewController: UIInputViewController {
 
   // MARK: Private
 
-  /// Base keyboard height: 14.5 (top) + 168 (micRow) + 8.5 (spacing) + 49 (bottom) = 240
-  private static let keyboardHeight: CGFloat = 240
-  /// Extra height added when the LLM action bar is visible (top 8 + chip 34)
-  private static let actionBarExtraHeight: CGFloat = 42
   private static let staleFallbackTimeout: TimeInterval = 5
 
   private static var transcriptionObserver: DarwinNotificationObserver?
@@ -366,9 +363,7 @@ extension KeyboardViewController {
 
   func updateKeyboardHeight(actionBarVisible: Bool) {
     guard let hc = self.heightConstraint else { return }
-    let target = actionBarVisible
-      ? Self.keyboardHeight + Self.actionBarExtraHeight
-      : Self.keyboardHeight
+    let target = KeyboardMetrics.totalHeight(actionBarVisible: actionBarVisible)
     guard hc.constant != target else { return }
     hc.constant = target
     self.hostingHeightConstraint?.constant = target
@@ -390,7 +385,7 @@ extension KeyboardViewController {
     self.view.addSubview(hosting.view)
     hosting.didMove(toParent: self)
 
-    let hostingHeight = hosting.view.heightAnchor.constraint(equalToConstant: Self.keyboardHeight)
+    let hostingHeight = hosting.view.heightAnchor.constraint(equalToConstant: KeyboardMetrics.height)
     NSLayoutConstraint.activate([
       hosting.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
       hosting.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),

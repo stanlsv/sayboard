@@ -88,9 +88,9 @@ struct RectKeyStyle: ButtonStyle {
     configuration.label
       .foregroundStyle(.primary)
       .frame(maxWidth: self.fixedWidth ?? .infinity)
-      .frame(width: self.fixedWidth, height: 45)
+      .frame(width: self.fixedWidth, height: 45.kbScaled)
       .background {
-        RoundedRectangle(cornerRadius: 8.5, style: .continuous)
+        RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(Color(configuration.isPressed ? .keyPressedBackground : .keyBackground))
       }
   }
@@ -102,7 +102,7 @@ struct CircleKeyStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .foregroundStyle(.primary)
-      .frame(width: 106, height: 106)
+      .frame(width: 106.kbScaled, height: 106.kbScaled)
       .background {
         Circle()
           .fill(Color(configuration.isPressed ? .keyPressedBackground : .keyBackground))
@@ -142,12 +142,12 @@ struct KeyboardView: View {
             .animation(.easeOut(duration: 0.3), value: self.keyboardState.isModelLoading)
             .animation(.easeOut(duration: 0.3), value: self.keyboardState.isLowDiskSpace)
           }
-        VStack(spacing: 8.5) {
+        VStack(spacing: 8.5.kbScaled) {
           self.micRow
           self.bottomRow
         }
       }
-      .padding(.top, 14.5)
+      .padding(.top, 14.5.kbScaled)
       .overlay(alignment: .top) {
         if self.keyboardState.showLLMActions {
           LLMActionBar(
@@ -157,7 +157,7 @@ struct KeyboardView: View {
             },
             keyboardState: self.keyboardState,
           )
-          .padding(.top, 8)
+          .padding(.top, 8.kbScaled)
           .transition(.identity)
         }
       }
@@ -206,10 +206,15 @@ struct KeyboardView: View {
 
   // MARK: Private
 
-  private static let wideButtonWidth: CGFloat = 92
-  private static let buttonSpacing: CGFloat = 6
-
   private static let spinnerDelay = Duration.milliseconds(600)
+
+  private static var wideButtonWidth: CGFloat {
+    92.kbScaled
+  }
+
+  private static var buttonSpacing: CGFloat {
+    6.kbScaled
+  }
 
   @State private var showSpinner = false
   @State private var isMorphing = false
@@ -250,13 +255,13 @@ struct KeyboardView: View {
     ZStack {
       MicMorphShape(frameIndex: 0)
         .fill(.primary)
-        .frame(width: 56, height: 42)
+        .frame(width: 56.kbScaled, height: 42.kbScaled)
         .opacity(isIdle ? 1 : 0)
         .transaction { $0.animation = nil }
 
       if self.isMorphing {
         MicMorphAnimation(direction: self.morphDirection, onComplete: self.handleMicMorphComplete)
-          .frame(width: 56, height: 42)
+          .frame(width: 56.kbScaled, height: 42.kbScaled)
           .transition(.identity)
       }
 
@@ -265,7 +270,7 @@ struct KeyboardView: View {
           self.isSpinnerMorphing = false
           self.spinnerMorphCanStep = false
         }
-        .frame(width: 56, height: 42)
+        .frame(width: 56.kbScaled, height: 42.kbScaled)
         .transition(.identity)
       }
 
@@ -304,12 +309,20 @@ struct KeyboardView: View {
   }
 
   private var sideButtonWidth: CGFloat {
-    (self.keyboardState.selectedVariantSupportsTranslation || self.showAIButton) ? 43 : 45
+    (self.keyboardState.selectedVariantSupportsTranslation || self.showAIButton) ? 43.kbScaled : 45.kbScaled
+  }
+
+  private var showGlobe: Bool {
+    self.keyboardState.needsInputModeSwitchKey || self.keyboardState.showGlobeKey
+  }
+
+  private var trashButtonWidth: CGFloat {
+    self.showGlobe ? self.sideButtonWidth : Self.wideButtonWidth
   }
 
   private var returnButtonWidth: CGFloat {
-    self.keyboardState.needsInputModeSwitchKey
-      ? self.sideButtonWidth + Self.buttonSpacing + Self.wideButtonWidth
+    self.showGlobe
+      ? self.sideButtonWidth + Self.buttonSpacing + self.sideButtonWidth
       : Self.wideButtonWidth
   }
 
@@ -318,7 +331,7 @@ struct KeyboardView: View {
       self.sideButtons
       self.micButtonWithPulse
     }
-    .padding(.horizontal, 4)
+    .padding(.horizontal, 4.kbScaled)
   }
 
   private var showPulseRings: Bool {
@@ -335,7 +348,7 @@ struct KeyboardView: View {
       self.micButton
     }
     .frame(minHeight: PulseRings.maxDiameter)
-    .padding(.bottom, 6)
+    .padding(.bottom, 6.kbScaled)
   }
 
 }
@@ -353,7 +366,7 @@ extension KeyboardView {
           .transition(.opacity.combined(with: .scale))
       }
       Spacer()
-      VStack(alignment: .trailing, spacing: 8.5) {
+      VStack(alignment: .trailing, spacing: 8.5.kbScaled) {
         if self.keyboardState.hasLLMHistory {
           self.undoRedoRow
             .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -392,10 +405,10 @@ extension KeyboardView {
   @ViewBuilder
   private var aiButton: some View {
     if self.keyboardState.isLLMProcessing {
-      MetaballSpinner(color: .primary, size: 18)
-        .frame(width: self.sideButtonWidth, height: 45)
+      MetaballSpinner(color: .primary, size: 18.kbScaled)
+        .frame(width: self.sideButtonWidth, height: 45.kbScaled)
         .background {
-          RoundedRectangle(cornerRadius: 8.5, style: .continuous)
+          RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
             .fill(Color(.keyBackground))
         }
     } else {
@@ -415,11 +428,11 @@ extension KeyboardView {
 
   private var bottomRow: some View {
     HStack(spacing: Self.buttonSpacing) {
-      if self.keyboardState.needsInputModeSwitchKey {
+      if self.showGlobe {
         GlobeKey(fixedWidth: self.sideButtonWidth)
       }
 
-      KeyButton(systemImage: "trash", fixedWidth: Self.wideButtonWidth) {
+      KeyButton(systemImage: "trash", fixedWidth: self.trashButtonWidth) {
         self.proxy.deleteAll()
       }
 
@@ -433,12 +446,12 @@ extension KeyboardView {
         self.proxy.insertText("\n")
       }
     }
-    .padding(.horizontal, 4)
-    .padding(.bottom, 4)
+    .padding(.horizontal, 4.kbScaled)
+    .padding(.bottom, 4.kbScaled)
   }
 
   private func spinnerView(isSpin: Bool) -> some View {
-    MetaballSpinner(color: .primary, size: 42)
+    MetaballSpinner(color: .primary, size: 42.kbScaled)
       .scaleEffect(isSpin ? 1 : 0.01)
       .transaction(value: isSpin) { transaction in
         transaction.animation = .easeOut(duration: 0.2)

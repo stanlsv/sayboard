@@ -14,9 +14,9 @@ struct SpaceBarKey: View {
     self.label
       .foregroundStyle(.primary)
       .frame(maxWidth: .infinity)
-      .frame(height: 45)
+      .frame(height: 45.kbScaled)
       .background {
-        RoundedRectangle(cornerRadius: 8.5, style: .continuous)
+        RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(Color(self.isPressed ? .keyPressedBackground : .keyBackground))
       }
       .gesture(
@@ -51,12 +51,12 @@ struct SpaceBarKey: View {
       SayboardWordmark()
         .fill(.primary)
         .opacity(self.isTrackpadActive ? 0.05 : 0.2)
-        .frame(height: 21.36)
+        .frame(height: 21.36.kbScaled)
     } else {
       Image(systemName: "space")
-        .font(.system(size: 22))
+        .font(.system(size: 22.kbScaled))
         .frame(maxHeight: .infinity, alignment: .bottom)
-        .padding(.bottom, 10)
+        .padding(.bottom, 10.kbScaled)
     }
   }
 

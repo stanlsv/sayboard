@@ -49,9 +49,11 @@ struct PulseRings: View {
   // MARK: Internal
 
   /// Maximum visual diameter including WavyCircle distortion.
-  /// Outer ring frame: buttonDiameter + ringCount * ringSpacing = 154
+  /// Outer ring frame (iPhone baseline): buttonDiameter + ringCount * ringSpacing = 154
   /// Wave overflow: ±(waveAmplitude 2.5 + secondaryAmplitude 1.5) = ±4pt → +8
-  static let maxDiameter: CGFloat = buttonDiameter + CGFloat(ringCount) * ringSpacing + 8
+  static var maxDiameter: CGFloat {
+    buttonDiameter + CGFloat(ringCount) * ringSpacing + 8.kbScaled
+  }
 
   var body: some View {
     ZStack {
@@ -79,15 +81,20 @@ struct PulseRings: View {
 
   // MARK: Private
 
-  private static let buttonDiameter: CGFloat = 106
-  private static let ringSpacing: CGFloat = 24
   private static let ringCount = 2
-
   private static let minOpacity = 0.15
   private static let maxOpacity = 0.35
   private static let minScale = 0.9
   private static let pulseDuration = 1.0
   private static let waveDuration = 6.0
+
+  private static var buttonDiameter: CGFloat {
+    106.kbScaled
+  }
+
+  private static var ringSpacing: CGFloat {
+    24.kbScaled
+  }
 
   @State private var isAnimating = false
   @State private var wavePhase = 0.0

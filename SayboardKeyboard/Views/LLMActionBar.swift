@@ -14,7 +14,7 @@ struct LLMActionBar: View {
 
   var body: some View {
     ScrollView(.horizontal, showsIndicators: false) {
-      HStack(spacing: 6) {
+      HStack(spacing: 6.kbScaled) {
         ForEach(
           LLMAction.enabledActions(excluding: self.keyboardState.disabledLLMActions),
           id: \.rawValue,
@@ -25,7 +25,16 @@ struct LLMActionBar: View {
         }
         self.customPromptChips
       }
-      .padding(.horizontal, 4)
+      .padding(.horizontal, 4.kbScaled)
+    }
+    .mask {
+      HStack(spacing: 0) {
+        LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing)
+          .frame(width: 24.kbScaled)
+        Color.black
+        LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing)
+          .frame(width: 24.kbScaled)
+      }
     }
     .onAppear { UIScrollView.appearance().delaysContentTouches = false }
   }
@@ -37,8 +46,8 @@ struct LLMActionBar: View {
     let prompts = self.keyboardState.llmCustomPrompts
     if !prompts.isEmpty {
       Divider()
-        .frame(height: 20)
-        .padding(.horizontal, 2)
+        .frame(height: 20.kbScaled)
+        .padding(.horizontal, 2.kbScaled)
       ForEach(prompts) { prompt in
         LLMActionChip(label: prompt.name, isLocalized: false) {
           self.onSelectAction(.rewrite, prompt.id)
@@ -67,8 +76,8 @@ private struct LLMActionChip: View {
         }
       }
       .lineLimit(1)
-      .font(.system(size: 14, weight: .medium))
-      .padding(.horizontal, 12)
+      .font(.system(size: 14.kbScaled, weight: .medium))
+      .padding(.horizontal, 12.kbScaled)
     }
     .buttonStyle(ActionChipStyle())
   }
@@ -82,9 +91,9 @@ private struct ActionChipStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .foregroundStyle(.primary)
-      .frame(height: 34)
+      .frame(height: 34.kbScaled)
       .background {
-        RoundedRectangle(cornerRadius: 8.5, style: .continuous)
+        RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(Color(configuration.isPressed ? .keyPressedBackground : .keyBackground))
       }
   }

@@ -98,6 +98,9 @@ struct SettingsView: View {
       self.sessionSection
       self.historySection
       self.textOutputSection
+      if !self.needsInputModeSwitchKey {
+        self.keyboardSection
+      }
       self.aboutSection
     }
     .sensoryFeedback(.success, trigger: self.historyClearedTrigger)
@@ -127,6 +130,10 @@ struct SettingsView: View {
   @AppStorage(SharedKey.appLanguage) private var selectedAppLanguage = defaultLanguage
   @AppStorage(SharedKey.llmEnabled, store: UserDefaults(suiteName: AppGroup.identifier))
   private var llmEnabled = false
+  @AppStorage(SharedKey.showGlobeKey, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var showGlobeKey = true
+  @AppStorage(SharedKey.needsInputModeSwitchKey, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var needsInputModeSwitchKey = false
   @Environment(\.locale) private var locale
   @EnvironmentObject private var speechService: SpeechRecognitionService
   @EnvironmentObject private var permissionService: PermissionService
@@ -321,6 +328,16 @@ struct SettingsView: View {
       }
     } message: {
       Text(self.clearHistoryMessage)
+    }
+  }
+
+  private var keyboardSection: some View {
+    Section {
+      Toggle("Show Keyboard Switch Key", isOn: self.$showGlobeKey)
+    } header: {
+      Text("Keyboard")
+    } footer: {
+      Text("Display an extra globe key on the keyboard. Your device already provides one, so this is optional.")
     }
   }
 

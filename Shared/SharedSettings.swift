@@ -10,6 +10,7 @@ struct SharedSettings {
 
   init() {
     self.defaults = AppGroup.sharedDefaults ?? .standard
+    self.defaults.register(defaults: [SharedKey.showGlobeKey: true])
   }
 
   // MARK: Internal
@@ -117,6 +118,16 @@ struct SharedSettings {
   var useCustomSpaceBar: Bool {
     get { self.defaults.bool(forKey: SharedKey.useCustomSpaceBar) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.useCustomSpaceBar) }
+  }
+
+  var showGlobeKey: Bool {
+    get { self.defaults.bool(forKey: SharedKey.showGlobeKey) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.showGlobeKey) }
+  }
+
+  var needsInputModeSwitchKey: Bool {
+    get { self.defaults.bool(forKey: SharedKey.needsInputModeSwitchKey) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.needsInputModeSwitchKey) }
   }
 
   var isTranslationMode: Bool {

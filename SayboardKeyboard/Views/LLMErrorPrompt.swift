@@ -38,15 +38,15 @@ struct LLMErrorPrompt: View {
   @ObservedObject var keyboardState: KeyboardState
 
   var body: some View {
-    VStack(spacing: 12) {
+    VStack(spacing: 12.kbScaled) {
       Image(systemName: self.error.icon)
-        .font(.system(size: 40))
+        .font(.system(size: 40.kbScaled))
         .foregroundStyle(.blue)
 
       Text(self.error.message)
         .font(.subheadline.weight(.semibold))
         .multilineTextAlignment(.center)
-        .padding(.horizontal, 32)
+        .padding(.horizontal, 32.kbScaled)
 
       Button {
         withAnimation(.easeOut(duration: 0.12)) { self.keyboardState.llmError = nil }
@@ -54,11 +54,11 @@ struct LLMErrorPrompt: View {
         Text(self.error.buttonTitle)
           .font(.subheadline.weight(.semibold))
           .foregroundStyle(.white)
-          .padding(.horizontal, 20)
-          .frame(minHeight: 40)
+          .padding(.horizontal, 20.kbScaled)
+          .frame(minHeight: 40.kbScaled)
           .background(.blue, in: Capsule())
       }
-      .padding(.horizontal, 32)
+      .padding(.horizontal, 32.kbScaled)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
   }

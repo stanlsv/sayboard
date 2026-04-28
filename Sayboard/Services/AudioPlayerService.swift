@@ -11,15 +11,19 @@ final class AudioPlayerService: ObservableObject {
   // MARK: Internal
 
   @Published var isPlaying = false
-  @Published var currentTime: TimeInterval = 0
   @Published var duration: TimeInterval = 0
   @Published var currentFileURL: URL?
+
+  /// Live playback position read directly from AVAudioPlayer each frame.
+  /// Avoids @Published churn that causes SwiftUI to batch/skip redraws.
+  var playbackTime: TimeInterval {
+    self.player?.currentTime ?? 0
+  }
 
   func play(url: URL) {
     if self.currentFileURL == url, let player {
       player.play()
       self.isPlaying = true
-      self.startProgressTimer()
       return
     }
 
@@ -34,9 +38,7 @@ final class AudioPlayerService: ObservableObject {
       player = newPlayer
       self.currentFileURL = url
       self.duration = newPlayer.duration
-      self.currentTime = 0
       self.isPlaying = true
-      self.startProgressTimer()
     } catch {
       self.isPlaying = false
     }
@@ -45,22 +47,19 @@ final class AudioPlayerService: ObservableObject {
   func pause() {
     self.player?.pause()
     self.isPlaying = false
-    self.stopProgressTimer()
   }
 
   func stop() {
     self.player?.stop()
     self.player = nil
     self.isPlaying = false
-    self.currentTime = 0
     self.duration = 0
     self.currentFileURL = nil
-    self.stopProgressTimer()
   }
 
   func seek(to time: TimeInterval) {
     self.player?.currentTime = time
-    self.currentTime = time
+    self.objectWillChange.send()
   }
 
   func togglePlayback(url: URL) {
@@ -74,28 +73,8 @@ final class AudioPlayerService: ObservableObject {
   // MARK: Private
 
   private var player: AVAudioPlayer?
-  private var displayLink: CADisplayLink?
-  private var displayLinkProxy: DisplayLinkProxy?
   private lazy var delegateAdapter = PlayerDelegateAdapter { [weak self] in
     self?.handlePlaybackFinished()
-  }
-
-  private func startProgressTimer() {
-    self.stopProgressTimer()
-    let proxy = DisplayLinkProxy { [weak self] in
-      guard let self, let player else { return }
-      self.currentTime = player.currentTime
-    }
-    let link = CADisplayLink(target: proxy, selector: #selector(DisplayLinkProxy.tick))
-    link.add(to: .main, forMode: .common)
-    self.displayLink = link
-    self.displayLinkProxy = proxy
-  }
-
-  private func stopProgressTimer() {
-    self.displayLink?.invalidate()
-    self.displayLink = nil
-    self.displayLinkProxy = nil
   }
 
   private func configureAudioSessionForPlayback() {
@@ -106,36 +85,9 @@ final class AudioPlayerService: ObservableObject {
 
   private func handlePlaybackFinished() {
     self.isPlaying = false
-    self.currentTime = 0
     self.duration = 0
     self.currentFileURL = nil
-    self.stopProgressTimer()
   }
-}
-
-// MARK: - DisplayLinkProxy
-
-private final class DisplayLinkProxy: NSObject {
-
-  // MARK: Lifecycle
-
-  init(onTick: @escaping @Sendable @MainActor () -> Void) {
-    self.onTick = onTick
-  }
-
-  // MARK: Internal
-
-  @objc
-  func tick(_: CADisplayLink) {
-    let callback = self.onTick
-    MainActor.assumeIsolated {
-      callback()
-    }
-  }
-
-  // MARK: Private
-
-  private let onTick: @Sendable @MainActor () -> Void
 }
 
 // MARK: - PlayerDelegateAdapter
