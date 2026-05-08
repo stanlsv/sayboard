@@ -48,23 +48,47 @@ struct PulseRings: View {
 
   // MARK: Internal
 
+  let buttonDiameter: CGFloat
+  let ringSpacing: CGFloat
+
   /// Maximum visual diameter including WavyCircle distortion.
-  /// Outer ring frame (iPhone baseline): buttonDiameter + ringCount * ringSpacing = 154
+  /// Outer ring frame: buttonDiameter + ringCount * ringSpacing
   /// Wave overflow: ±(waveAmplitude 2.5 + secondaryAmplitude 1.5) = ±4pt → +8
-  static var maxDiameter: CGFloat {
-    buttonDiameter + CGFloat(ringCount) * ringSpacing + 8.kbScaled
+  var maxDiameter: CGFloat {
+    let ringExtent = CGFloat(Self.ringCount) * self.ringSpacing
+    let waveOverflow: CGFloat = 8.kbScaled
+    return self.buttonDiameter + ringExtent + waveOverflow
   }
 
   var body: some View {
-    ZStack {
+    let sizeRatio = self.buttonDiameter / Self.referenceDiameter
+    let waveAmplitude = Self.referenceWaveAmplitude * sizeRatio
+    let secondaryAmplitude = Self.referenceSecondaryAmplitude * sizeRatio
+    let outerFrame = self.maxDiameter
+    return ZStack {
       ForEach(0..<Self.ringCount, id: \.self) { index in
-        let diameter = Self.buttonDiameter + CGFloat(index + 1) * Self.ringSpacing
-        WavyCircle(phase: self.wavePhase + Double(index) * .pi)
-          .fill(Color(.keyBackground))
-          .opacity(self.isAnimating ? Self.maxOpacity : Self.minOpacity)
-          .frame(width: diameter, height: diameter)
-          .scaleEffect(self.isAnimating ? 1 : Self.minScale)
+        let diameter = self.buttonDiameter + CGFloat(index + 1) * self.ringSpacing
+        WavyCircle(
+          phase: self.wavePhase + Double(index) * .pi,
+          waveAmplitude: waveAmplitude,
+          secondaryAmplitude: secondaryAmplitude,
+        )
+        .fill(Color(.keyBackground))
+        .opacity(self.isAnimating ? Self.maxOpacity : Self.minOpacity)
+        .frame(width: diameter, height: diameter)
+        .scaleEffect(self.isAnimating ? 1 : Self.minScale)
       }
+    }
+    .frame(width: outerFrame, height: outerFrame)
+    .compositingGroup()
+    .mask {
+      ZStack {
+        Rectangle().fill(.black)
+        Circle()
+          .frame(width: self.buttonDiameter, height: self.buttonDiameter)
+          .blendMode(.destinationOut)
+      }
+      .compositingGroup()
     }
     .allowsHitTesting(false)
     .animation(
@@ -87,14 +111,10 @@ struct PulseRings: View {
   private static let minScale = 0.9
   private static let pulseDuration = 1.0
   private static let waveDuration = 6.0
-
-  private static var buttonDiameter: CGFloat {
-    106.kbScaled
-  }
-
-  private static var ringSpacing: CGFloat {
-    24.kbScaled
-  }
+  /// Reference button diameter (Standard layout) used as baseline for amplitude scaling.
+  private static let referenceDiameter: CGFloat = 106
+  private static let referenceWaveAmplitude: CGFloat = 2.5
+  private static let referenceSecondaryAmplitude: CGFloat = 1.5
 
   @State private var isAnimating = false
   @State private var wavePhase = 0.0

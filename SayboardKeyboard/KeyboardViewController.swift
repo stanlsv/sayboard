@@ -42,7 +42,9 @@ final class KeyboardViewController: UIInputViewController {
       for constraint in view.constraintsAffectingLayout(for: .vertical) {
         constraint.priority = .defaultHigh
       }
-      let hc = view.heightAnchor.constraint(equalToConstant: KeyboardMetrics.height)
+      let kind = self.keyboardState.keyboardKind
+      let initialHeight = KeyboardMetrics.totalHeight(actionBarVisible: false, kind: kind)
+      let hc = view.heightAnchor.constraint(equalToConstant: initialHeight)
       hc.priority = UILayoutPriority(rawValue: 999)
       hc.isActive = true
       self.heightConstraint = hc
@@ -51,6 +53,7 @@ final class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    self.keyboardState.bootstrapLayoutSettings()
     Self.activeInstance = self
     self.setupTranscriptionObserver()
     self.setupSessionObservers()
@@ -72,6 +75,7 @@ final class KeyboardViewController: UIInputViewController {
     self.keyboardState.needsInputModeSwitchKey = self.needsInputModeSwitchKey
     SharedSettings().needsInputModeSwitchKey = self.needsInputModeSwitchKey
     self.keyboardState.isTranslationMode = SharedSettings().isTranslationMode
+    self.updateKeyboardHeight(actionBarVisible: false)
     self.syncFullAccessIfChanged()
     self.pingMainAppForSessionStatus()
     self.pingValidator.startIfNeeded(for: self.keyboardState)
@@ -104,6 +108,13 @@ final class KeyboardViewController: UIInputViewController {
     }
 
     textDocumentProxy.insertText(text)
+    self.copyFinalTextToClipboardIfEnabled(text)
+  }
+
+  /// Copies the final inserted text to UIPasteboard when the user has opted in.
+  func copyFinalTextToClipboardIfEnabled(_ text: String) {
+    guard SharedSettings().alsoCopyToClipboard else { return }
+    UIPasteboard.general.string = text
   }
 
   /// Pings the main app; it responds with `sessionStarted`/`dictationStarted` if alive.
@@ -363,7 +374,10 @@ extension KeyboardViewController {
 
   func updateKeyboardHeight(actionBarVisible: Bool) {
     guard let hc = self.heightConstraint else { return }
-    let target = KeyboardMetrics.totalHeight(actionBarVisible: actionBarVisible)
+    let target = KeyboardMetrics.totalHeight(
+      actionBarVisible: actionBarVisible,
+      kind: self.keyboardState.keyboardKind,
+    )
     guard hc.constant != target else { return }
     hc.constant = target
     self.hostingHeightConstraint?.constant = target
@@ -385,7 +399,9 @@ extension KeyboardViewController {
     self.view.addSubview(hosting.view)
     hosting.didMove(toParent: self)
 
-    let hostingHeight = hosting.view.heightAnchor.constraint(equalToConstant: KeyboardMetrics.height)
+    let kind = self.keyboardState.keyboardKind
+    let initialHeight = KeyboardMetrics.totalHeight(actionBarVisible: false, kind: kind)
+    let hostingHeight = hosting.view.heightAnchor.constraint(equalToConstant: initialHeight)
     NSLayoutConstraint.activate([
       hosting.view.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
       hosting.view.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),

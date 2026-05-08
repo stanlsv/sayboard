@@ -95,6 +95,7 @@ private struct ActionChipStyle: ButtonStyle {
       .background {
         RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(Color(configuration.isPressed ? .keyPressedBackground : .keyBackground))
+          .keyPressTransition(isPressed: configuration.isPressed)
       }
   }
 

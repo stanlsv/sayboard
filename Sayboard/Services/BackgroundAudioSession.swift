@@ -97,7 +97,7 @@ private func smoothLevel(
   previous: OSAllocatedUnfairLock<Float>,
 ) -> Float {
   previous.withLock { prev -> Float in
-    let alpha: Float = scaled > prev ? 0.7 : 0.3
+    let alpha: Float = scaled > prev ? 0.7 : 0.5
     let result = alpha * scaled + (1 - alpha) * prev
     prev = result
     return result

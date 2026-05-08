@@ -37,6 +37,7 @@ final class KeyboardState: ObservableObject {
   @Published var llmError: LLMError?
   @Published var needsInputModeSwitchKey = false
   @Published var showGlobeKey = true
+  @Published var keyboardKind = KeyboardKind.standard
 
   /// Called when audio level has been stale (unchanged) for too long during recording.
   /// Indicates the main app was likely killed.
@@ -63,6 +64,14 @@ final class KeyboardState: ObservableObject {
     self.llmHistoryIndex = -1
   }
 
+  /// Minimal read of layout-affecting settings, called BEFORE `updateViewConstraints`
+  /// so the initial keyboard height is correct from the very first measurement.
+  /// iOS fixes keyboard height at first layout pass; later grow attempts are ignored.
+  func bootstrapLayoutSettings() {
+    self.settings.synchronize()
+    self.keyboardKind = self.settings.keyboardKind
+  }
+
   /// Reloads state from shared UserDefaults.
   /// Session/recording state is read from SharedSettings (last known value
   /// written by the main app) and then validated via a Darwin ping
@@ -85,6 +94,7 @@ final class KeyboardState: ObservableObject {
     self.hasUsableModel = self.settings.hasUsableModel
     self.isMicrophoneAuthorized = self.settings.isMicrophoneAuthorized
     self.useCustomSpaceBar = self.settings.useCustomSpaceBar
+    self.keyboardKind = self.settings.keyboardKind
     let selectedVariant = self.settings.selectedVariant
     self.selectedVariantSupportsTranslation = selectedVariant.supportsTranslation
     if !selectedVariant.supportsTranslation {
@@ -177,7 +187,7 @@ final class KeyboardState: ObservableObject {
     }
 
     if newLevel != self.audioLevel {
-      withAnimation(.interpolatingSpring(duration: 0.08, bounce: 0.02)) {
+      withAnimation(.interpolatingSpring(duration: 0.08, bounce: 0)) {
         self.audioLevel = newLevel
       }
     }

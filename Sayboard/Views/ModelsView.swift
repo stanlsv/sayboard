@@ -10,11 +10,13 @@ private struct ModelCardView: View {
   let variant: ModelVariant
   let isActive: Bool
   let downloadState: ModelDownloadState
+  let preferredLanguages: Set<String>
   let onSelect: () -> Void
   let onDownload: () -> Void
   let onCancel: () -> Void
   let onRetry: () -> Void
   let onRemove: () -> Void
+  let onEditLanguages: () -> Void
 
   var body: some View {
     ZStack {
@@ -26,6 +28,10 @@ private struct ModelCardView: View {
           .lineLimit(2)
           .padding(.bottom, 4)
         self.bottomRow
+        if self.showsLanguageSelectionRow {
+          self.languageSelectionRow
+            .transition(.opacity.combined(with: .move(edge: .top)))
+        }
       }
       .padding(12)
       .frame(maxWidth: .infinity, alignment: .leading)
@@ -42,6 +48,7 @@ private struct ModelCardView: View {
     )
     .contentShape(RoundedRectangle(cornerRadius: self.cardCornerRadius))
     .onTapGesture(perform: self.handleTap)
+    .animation(.easeInOut(duration: 0.35), value: self.showsLanguageSelectionRow)
   }
 
   // MARK: Private
@@ -49,6 +56,10 @@ private struct ModelCardView: View {
   @Environment(\.locale) private var locale
 
   private let cardCornerRadius: CGFloat = 12
+
+  private var showsLanguageSelectionRow: Bool {
+    self.isActive && self.variant.supportsLanguageSelection
+  }
 
   private var headerRow: some View {
     HStack(alignment: .top) {
@@ -135,6 +146,46 @@ private struct ModelCardView: View {
     }
   }
 
+  private var languageSelectionRow: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      Rectangle()
+        .fill(Color(.separator))
+        .frame(height: 1)
+      Button(action: self.onEditLanguages) {
+        HStack(spacing: 6) {
+          Image(systemName: "textformat")
+            .font(.caption2)
+          Text("Recognize")
+            .font(.caption.weight(.medium))
+          Spacer(minLength: 8)
+          self.preferredLanguagesSummary
+            .font(.caption)
+            .lineLimit(1)
+            .truncationMode(.tail)
+          Image(systemName: "chevron.right")
+            .font(.caption2.weight(.semibold))
+            .foregroundStyle(.tertiary)
+        }
+        .foregroundStyle(.secondary)
+        .padding(.vertical, 2)
+        .contentShape(Rectangle())
+      }
+      .buttonStyle(.plain)
+    }
+    .padding(.top, 2)
+  }
+
+  @ViewBuilder
+  private var preferredLanguagesSummary: some View {
+    let codes = self.preferredLanguages
+    if codes.isEmpty {
+      Text("Auto-detect")
+    } else {
+      let names = codes.sorted().map { self.locale.capitalizedLanguageName(forLanguageCode: $0) }
+      Text(verbatim: ListFormatter.localizedString(byJoining: names))
+    }
+  }
+
   private var isDownloading: Bool {
     if case .downloading = self.downloadState { return true }
     return false
@@ -211,7 +262,19 @@ struct ModelsView: View {
     .background(Color(.systemGroupedBackground))
     .navigationTitle("Models")
     .sheet(isPresented: self.$showLanguagePicker) {
-      LanguagePickerView(selectedLanguage: self.$selectedLanguageFilter, availableLanguages: SpeechLanguages.all)
+      LanguagePickerView(
+        mode: .single(self.$selectedLanguageFilter),
+        availableLanguages: SpeechLanguages.all,
+      )
+    }
+    .sheet(item: self.$languagePrefVariant) { variant in
+      LanguagePickerView(
+        mode: .multi(self.preferenceBinding(for: variant)),
+        availableLanguages: variant.supportedLanguages,
+        titleKey: "Recognize",
+        autoDetectKey: "Auto-detect (any language)",
+        footnoteKey: "Sayboard will prioritize these languages. Pick a single language for the most accurate recognition.",
+      )
     }
     .sensoryFeedback(.selection, trigger: self.selectionHapticTrigger)
     .onChange(of: self.downloadService.selectedVariant) {
@@ -223,11 +286,19 @@ struct ModelsView: View {
 
   @EnvironmentObject private var downloadService: ModelDownloadService
   @State private var selectedTab = ModelTab.speechRecognition
-  @State private var selectedVariant: ModelVariant = SharedSettings().selectedVariant
+  @State private var selectedVariant: ModelVariant?
   @State private var selectedLanguageFilter: String?
   @State private var showLanguagePicker = false
   @State private var selectionHapticTrigger = false
+  @State private var languagePrefVariant: ModelVariant?
+  // In-process cache mirrored to SharedSettings via `preferenceBinding`.
+  // Assumes this view is the only writer.
+  @State private var preferences: [String: Set<String>] = Self.loadPreferences()
   @Environment(\.locale) private var locale
+
+  private var effectiveSelectedVariant: ModelVariant {
+    self.selectedVariant ?? self.downloadService.selectedVariant
+  }
 
   private var hasAnyDownloadedModel: Bool {
     ModelVariant.allCases.contains { self.downloadService.isDownloaded($0) }
@@ -240,9 +311,10 @@ struct ModelsView: View {
       } else {
         Array(ModelVariant.allCases)
       }
+    let selected = self.effectiveSelectedVariant
     return variants.sorted { lhs, rhs in
-      let lhsActive = self.selectedVariant == lhs && self.downloadService.isDownloaded(lhs)
-      let rhsActive = self.selectedVariant == rhs && self.downloadService.isDownloaded(rhs)
+      let lhsActive = selected == lhs && self.downloadService.isDownloaded(lhs)
+      let rhsActive = selected == rhs && self.downloadService.isDownloaded(rhs)
       if lhsActive != rhsActive { return lhsActive }
 
       let lhsDownloaded = self.downloadService.isDownloaded(lhs)
@@ -335,7 +407,7 @@ struct ModelsView: View {
   @ViewBuilder
   private var filterLabel: some View {
     if let code = self.selectedLanguageFilter {
-      Text(self.languageName(for: code))
+      Text(self.locale.capitalizedLanguageName(forLanguageCode: code))
         .font(.subheadline)
     } else {
       Text("All languages")
@@ -343,11 +415,22 @@ struct ModelsView: View {
     }
   }
 
-  private func languageName(for code: String) -> String {
-    guard let name = self.locale.localizedString(forLanguageCode: code) else {
-      return code
-    }
-    return name.prefix(1).uppercased() + name.dropFirst()
+  private static func loadPreferences() -> [String: Set<String>] {
+    SharedSettings().preferredLanguagesPerVariant.mapValues(Set.init)
+  }
+
+  private func preferenceBinding(for variant: ModelVariant) -> Binding<Set<String>> {
+    Binding(
+      get: { self.preferences[variant.rawValue] ?? [] },
+      set: { newValue in
+        if newValue.isEmpty {
+          self.preferences.removeValue(forKey: variant.rawValue)
+        } else {
+          self.preferences[variant.rawValue] = newValue
+        }
+        SharedSettings().setPreferredLanguages(newValue, for: variant)
+      },
+    )
   }
 
   private func syncSelectedVariant() {
@@ -361,12 +444,13 @@ struct ModelsView: View {
 
   private func modelCard(for variant: ModelVariant) -> some View {
     let downloadState = self.downloadService.state(for: variant)
-    let isActive = self.selectedVariant == variant && self.downloadService.isDownloaded(variant)
+    let isActive = self.effectiveSelectedVariant == variant && self.downloadService.isDownloaded(variant)
 
     return ModelCardView(
       variant: variant,
       isActive: isActive,
       downloadState: downloadState,
+      preferredLanguages: self.preferences[variant.rawValue] ?? [],
       onSelect: {
         self.selectionHapticTrigger.toggle()
         withAnimation(.easeInOut(duration: 0.35)) {
@@ -389,6 +473,9 @@ struct ModelsView: View {
           self.downloadService.deleteModel(variant: variant)
           self.syncSelectedVariant()
         }
+      },
+      onEditLanguages: {
+        self.languagePrefVariant = variant
       },
     )
   }

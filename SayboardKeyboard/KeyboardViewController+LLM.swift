@@ -153,6 +153,7 @@ extension KeyboardViewController {
   private func insertPendingAutoActionFallback() {
     guard let fallbackText = self.pendingAutoActionText else { return }
     textDocumentProxy.insertText(fallbackText)
+    self.copyFinalTextToClipboardIfEnabled(fallbackText)
     self.pendingAutoActionText = nil
   }
 
@@ -175,6 +176,7 @@ extension KeyboardViewController {
 
     // Insert processed text
     textDocumentProxy.insertText(result)
+    self.copyFinalTextToClipboardIfEnabled(result)
 
     // Append result to LLM text history
     self.keyboardState.llmTextHistory.append(result)
@@ -211,6 +213,7 @@ extension KeyboardViewController {
 
     // Insert target text
     textDocumentProxy.insertText(targetText)
+    self.copyFinalTextToClipboardIfEnabled(targetText)
     self.keyboardState.llmHistoryIndex = targetIndex
 
     self.isPerformingHistoryNavigation = false

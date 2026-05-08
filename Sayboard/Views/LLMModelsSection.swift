@@ -24,7 +24,7 @@ struct LLMModelsSection: View {
     }
     .sheet(isPresented: self.$showLanguagePicker) {
       LanguagePickerView(
-        selectedLanguage: self.$selectedLanguageFilter,
+        mode: .single(self.$selectedLanguageFilter),
         availableLanguages: LLMModelVariant.allSupportedLanguages,
       )
     }
@@ -120,19 +120,12 @@ struct LLMModelsSection: View {
   @ViewBuilder
   private var filterLabel: some View {
     if let code = self.selectedLanguageFilter {
-      Text(self.languageName(for: code))
+      Text(self.locale.capitalizedLanguageName(forLanguageCode: code))
         .font(.subheadline)
     } else {
       Text("All languages")
         .font(.subheadline)
     }
-  }
-
-  private func languageName(for code: String) -> String {
-    guard let name = self.locale.localizedString(forLanguageCode: code) else {
-      return code
-    }
-    return name.prefix(1).uppercased() + name.dropFirst()
   }
 
   private func syncSelectedVariant() {

@@ -83,6 +83,7 @@ struct SettingsView: View {
     let shared = SharedSettings()
     _selectedRetentionPolicy = State(initialValue: shared.retentionPolicy)
     _selectedAutoStopPolicy = State(initialValue: shared.sessionAutoStopPolicy)
+    _selectedKeyboardKind = State(initialValue: shared.keyboardKind)
   }
 
   // MARK: Internal
@@ -97,10 +98,8 @@ struct SettingsView: View {
       }
       self.sessionSection
       self.historySection
-      self.textOutputSection
-      if !self.needsInputModeSwitchKey {
-        self.keyboardSection
-      }
+      TextOutputSection()
+      self.keyboardSection
       self.aboutSection
     }
     .sensoryFeedback(.success, trigger: self.historyClearedTrigger)
@@ -108,7 +107,6 @@ struct SettingsView: View {
     .navigationTitle("Settings")
     .onAppear {
       self.refreshHistoryInfo()
-      self.snippetCount = self.settings.snippets.count
     }
     .onChange(of: self.selectedRetentionPolicy) { _, newValue in
       self.settings.retentionPolicy = newValue
@@ -121,6 +119,9 @@ struct SettingsView: View {
         self.speechService.session.updateTimeout()
       }
     }
+    .onChange(of: self.selectedKeyboardKind) { _, newValue in
+      self.settings.keyboardKind = newValue
+    }
   }
 
   // MARK: Private
@@ -128,8 +129,6 @@ struct SettingsView: View {
   private static let defaultLanguage = AppLanguageConfig.fallback
 
   @AppStorage(SharedKey.appLanguage) private var selectedAppLanguage = defaultLanguage
-  @AppStorage(SharedKey.llmEnabled, store: UserDefaults(suiteName: AppGroup.identifier))
-  private var llmEnabled = false
   @AppStorage(SharedKey.showGlobeKey, store: UserDefaults(suiteName: AppGroup.identifier))
   private var showGlobeKey = true
   @AppStorage(SharedKey.needsInputModeSwitchKey, store: UserDefaults(suiteName: AppGroup.identifier))
@@ -138,17 +137,16 @@ struct SettingsView: View {
   @EnvironmentObject private var speechService: SpeechRecognitionService
   @EnvironmentObject private var permissionService: PermissionService
   @EnvironmentObject private var downloadService: ModelDownloadService
-  @EnvironmentObject private var llmDownloadService: LLMDownloadService
   @EnvironmentObject private var pipTutorialService: PiPTutorialService
   @State private var settings = SharedSettings()
   @State private var selectedRetentionPolicy: HistoryRetentionPolicy
   @State private var selectedAutoStopPolicy: SessionAutoStopPolicy
+  @State private var selectedKeyboardKind: KeyboardKind
   @State private var showClearHistoryConfirmation = false
   @State private var showClearCacheConfirmation = false
   @State private var historyInfoText = ""
   @State private var historyClearedTrigger = false
   @State private var cacheClearedTrigger = false
-  @State private var snippetCount = 0
   @SceneStorage("selectedTab") private var selectedTab = "history"
 
   // swiftlint:disable:next line_length
@@ -268,43 +266,6 @@ struct SettingsView: View {
     }
   }
 
-  private var textOutputSection: some View {
-    Section("Text") {
-      NavigationLink {
-        WritingStyleListView()
-      } label: {
-        Text("Writing Style")
-      }
-
-      NavigationLink {
-        LLMSettingsView()
-      } label: {
-        HStack {
-          Text("AI Text Processing")
-          Spacer()
-          if self.llmEnabled, self.llmDownloadService.hasUsableModel {
-            Text(verbatim: self.llmDownloadService.selectedVariant.displayName)
-              .foregroundStyle(.secondary)
-          } else {
-            Text("Off")
-              .foregroundStyle(.secondary)
-          }
-        }
-      }
-
-      NavigationLink {
-        SnippetsView()
-      } label: {
-        HStack {
-          Text("Snippets")
-          Spacer()
-          Text(verbatim: "\(self.snippetCount)")
-            .foregroundStyle(.secondary)
-        }
-      }
-    }
-  }
-
   private var clearHistoryButton: some View {
     Button(role: .destructive) {
       self.showClearHistoryConfirmation = true
@@ -333,11 +294,20 @@ struct SettingsView: View {
 
   private var keyboardSection: some View {
     Section {
-      Toggle("Show Keyboard Switch Key", isOn: self.$showGlobeKey)
+      Picker("Keyboard Type", selection: self.$selectedKeyboardKind) {
+        ForEach(KeyboardKind.allCases, id: \.self) { kind in
+          Text(LocalizedStringKey(kind.displayNameKey)).tag(kind)
+        }
+      }
+      if !self.needsInputModeSwitchKey {
+        Toggle("Show Keyboard Switch Key", isOn: self.$showGlobeKey)
+      }
     } header: {
       Text("Keyboard")
     } footer: {
-      Text("Display an extra globe key on the keyboard. Your device already provides one, so this is optional.")
+      if !self.needsInputModeSwitchKey {
+        Text("Display an extra globe key on the keyboard. Your device already provides one, so this is optional.")
+      }
     }
   }
 
@@ -408,4 +378,87 @@ struct SettingsView: View {
     self.historyInfoText = "\(count) \u{00B7} \(bytes.formatted(.byteCount(style: .file).locale(self.locale)))"
   }
 
+}
+
+// MARK: - TextOutputSection
+
+private struct TextOutputSection: View {
+
+  // MARK: Internal
+
+  var body: some View {
+    Section {
+      NavigationLink {
+        WritingStyleListView()
+      } label: {
+        Text("Writing Style")
+      }
+
+      AITextProcessingRow(
+        llmEnabled: self.llmEnabled,
+        hasUsableModel: self.llmDownloadService.hasUsableModel,
+        selectedVariantName: self.llmDownloadService.selectedVariant.displayName,
+      )
+
+      NavigationLink {
+        SnippetsView()
+      } label: {
+        HStack {
+          Text("Snippets")
+          Spacer()
+          Text(verbatim: "\(self.snippetCount)")
+            .foregroundStyle(.secondary)
+        }
+      }
+
+      Toggle("Auto-Copy to Clipboard", isOn: self.$alsoCopyToClipboard)
+    } header: {
+      Text("Text")
+    } footer: {
+      Text(Self.clipboardFooterMessage)
+    }
+    .onAppear {
+      self.snippetCount = self.settings.snippets.count
+    }
+  }
+
+  // MARK: Private
+
+  // swiftlint:disable:next line_length
+  private static let clipboardFooterMessage: LocalizedStringKey = "After each dictation, the inserted text is also copied to the system clipboard. Replaces the previous clipboard contents."
+
+  @AppStorage(SharedKey.llmEnabled, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var llmEnabled = false
+  @AppStorage(SharedKey.alsoCopyToClipboard, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var alsoCopyToClipboard = false
+  @EnvironmentObject private var llmDownloadService: LLMDownloadService
+  @State private var settings = SharedSettings()
+  @State private var snippetCount = 0
+}
+
+// MARK: - AITextProcessingRow
+
+private struct AITextProcessingRow: View {
+
+  let llmEnabled: Bool
+  let hasUsableModel: Bool
+  let selectedVariantName: String
+
+  var body: some View {
+    NavigationLink {
+      LLMSettingsView()
+    } label: {
+      HStack {
+        Text("AI Text Processing")
+        Spacer()
+        if self.llmEnabled, self.hasUsableModel {
+          Text(verbatim: self.selectedVariantName)
+            .foregroundStyle(.secondary)
+        } else {
+          Text("Off")
+            .foregroundStyle(.secondary)
+        }
+      }
+    }
+  }
 }

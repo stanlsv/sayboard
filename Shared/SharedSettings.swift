@@ -9,7 +9,11 @@ struct SharedSettings {
   // MARK: Lifecycle
 
   init() {
-    self.defaults = AppGroup.sharedDefaults ?? .standard
+    self.init(defaults: AppGroup.sharedDefaults ?? .standard)
+  }
+
+  init(defaults: UserDefaults) {
+    self.defaults = defaults
     self.defaults.register(defaults: [SharedKey.showGlobeKey: true])
   }
 
@@ -56,6 +60,19 @@ struct SharedSettings {
     nonmutating set { defaults.set(newValue.rawValue, forKey: SharedKey.sessionAutoStopPolicy) }
   }
 
+  var keyboardKind: KeyboardKind {
+    get {
+      guard
+        let raw = defaults.string(forKey: SharedKey.keyboardKind),
+        let kind = KeyboardKind(rawValue: raw)
+      else {
+        return .standard
+      }
+      return kind
+    }
+    nonmutating set { defaults.set(newValue.rawValue, forKey: SharedKey.keyboardKind) }
+  }
+
   var hostBundleId: String? {
     get { self.defaults.string(forKey: SharedKey.hostBundleId) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.hostBundleId) }
@@ -86,6 +103,25 @@ struct SharedSettings {
         defaults.removeObject(forKey: SharedKey.downloadInProgressVariants)
       } else {
         defaults.set(newValue.map(\.rawValue), forKey: SharedKey.downloadInProgressVariants)
+      }
+    }
+  }
+
+  /// Per-variant preferred recognition languages, keyed by `ModelVariant.rawValue`.
+  /// Empty/missing entry means auto-detect for that variant.
+  var preferredLanguagesPerVariant: [String: [String]] {
+    get {
+      guard let data = defaults.data(forKey: SharedKey.preferredLanguagesPerVariant) else {
+        return [:]
+      }
+      return (try? JSONDecoder().decode([String: [String]].self, from: data)) ?? [:]
+    }
+    nonmutating set {
+      if newValue.isEmpty {
+        defaults.removeObject(forKey: SharedKey.preferredLanguagesPerVariant)
+      } else {
+        let data = try? JSONEncoder().encode(newValue)
+        defaults.set(data, forKey: SharedKey.preferredLanguagesPerVariant)
       }
     }
   }
@@ -123,6 +159,11 @@ struct SharedSettings {
   var showGlobeKey: Bool {
     get { self.defaults.bool(forKey: SharedKey.showGlobeKey) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.showGlobeKey) }
+  }
+
+  var alsoCopyToClipboard: Bool {
+    get { self.defaults.bool(forKey: SharedKey.alsoCopyToClipboard) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.alsoCopyToClipboard) }
   }
 
   var needsInputModeSwitchKey: Bool {
@@ -287,6 +328,20 @@ struct SharedSettings {
       let data = try? JSONEncoder().encode(newValue)
       defaults.set(data, forKey: SharedKey.snippets)
     }
+  }
+
+  func preferredLanguages(for variant: ModelVariant) -> Set<String> {
+    Set(self.preferredLanguagesPerVariant[variant.rawValue] ?? [])
+  }
+
+  func setPreferredLanguages(_ languages: Set<String>, for variant: ModelVariant) {
+    var dict = self.preferredLanguagesPerVariant
+    if languages.isEmpty {
+      dict.removeValue(forKey: variant.rawValue)
+    } else {
+      dict[variant.rawValue] = languages.sorted()
+    }
+    self.preferredLanguagesPerVariant = dict
   }
 
   /// Flush the in-memory UserDefaults cache so the next read comes from disk.

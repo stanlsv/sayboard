@@ -85,8 +85,13 @@ struct WritingStyleListView: View {
           Text("All Apps")
             .lineLimit(1)
           Spacer()
-          Text(LocalizedStringKey(self.defaultStyle.displayNameKey))
-            .foregroundStyle(.secondary)
+          HStack(spacing: 4) {
+            Text(LocalizedStringKey(self.defaultStyle.displayNameKey))
+              .foregroundStyle(.secondary)
+            Image(systemName: "chevron.up.chevron.down")
+              .imageScale(.small)
+              .foregroundStyle(.secondary)
+          }
         }
       }
       .foregroundStyle(.primary)
@@ -229,8 +234,13 @@ struct WritingStyleListView: View {
       Text(verbatim: entry.name)
         .lineLimit(1)
       Spacer()
-      Text(LocalizedStringKey(entry.style.displayNameKey))
-        .foregroundStyle(.secondary)
+      HStack(spacing: 4) {
+        Text(LocalizedStringKey(entry.style.displayNameKey))
+          .foregroundStyle(.secondary)
+        Image(systemName: "chevron.up.chevron.down")
+          .imageScale(.small)
+          .foregroundStyle(.secondary)
+      }
     }
   }
 

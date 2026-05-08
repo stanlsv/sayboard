@@ -85,16 +85,7 @@ final class WhisperKitTranscriptionService: ObservableObject {
     guard !audioSamples.isEmpty else { return nil }
 
     do {
-      let translationSettings = SharedSettings()
-      translationSettings.synchronize()
-      let task: DecodingTask = translationSettings.isTranslationMode ? .translate : .transcribe
-
-      let options = DecodingOptions(
-        task: task,
-        detectLanguage: true,
-        skipSpecialTokens: true,
-        wordTimestamps: true,
-      )
+      let options = self.makeDecodingOptions()
       let results = try await whisperKit.transcribe(
         audioArray: audioSamples,
         decodeOptions: options,
@@ -149,5 +140,27 @@ final class WhisperKitTranscriptionService: ObservableObject {
   private var whisperKit: WhisperKit?
   private var loadTask: Task<Void, Never>?
   private var loadGeneration = 0
+
+  /// Builds `DecodingOptions` for the current variant, applying the user's
+  /// preferred-languages setting. With one preferred language we lock the
+  /// decoder via prefill prompt; with zero or multiple we fall back to
+  /// auto-detect (no logit-mask API in WhisperKit).
+  private func makeDecodingOptions() -> DecodingOptions {
+    let settings = SharedSettings()
+    settings.synchronize()
+    let task: DecodingTask = settings.isTranslationMode ? .translate : .transcribe
+
+    let preferred = settings.preferredLanguages(for: settings.selectedVariant)
+    let lockedLanguage: String? = preferred.count == 1 ? preferred.first : nil
+    if !preferred.isEmpty { }
+
+    return DecodingOptions(
+      task: task,
+      language: lockedLanguage,
+      detectLanguage: lockedLanguage == nil,
+      skipSpecialTokens: true,
+      wordTimestamps: true,
+    )
+  }
 
 }

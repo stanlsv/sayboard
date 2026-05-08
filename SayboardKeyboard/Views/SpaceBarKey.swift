@@ -18,6 +18,7 @@ struct SpaceBarKey: View {
       .background {
         RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous)
           .fill(Color(self.isPressed ? .keyPressedBackground : .keyBackground))
+          .keyPressTransition(isPressed: self.isPressed)
       }
       .gesture(
         DragGesture(minimumDistance: 0)
