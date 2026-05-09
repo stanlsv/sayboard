@@ -30,6 +30,10 @@ final class SpeechRecognitionService: ObservableObject {
 
   // MARK: Internal
 
+  /// Safety net for the "tapped record and walked away" case — the
+  /// session inactivity timer is suspended while a tap is active.
+  static let maxRecordingDuration: TimeInterval = 30 * 60
+
   @Published var isRecording = false
   @Published var isSessionActive = false
   @Published var historySaveGeneration = 0
@@ -88,6 +92,7 @@ final class SpeechRecognitionService: ObservableObject {
     self.startAudioCapture()
     self.isRecording = true
     self.settings.isRecording = true
+    self.armMaxDurationTimer()
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.dictationStarted)
   }
 
@@ -119,6 +124,7 @@ final class SpeechRecognitionService: ObservableObject {
 
     self.isRecording = true
     self.settings.isRecording = true
+    self.armMaxDurationTimer()
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.dictationStarted)
   }
 
@@ -136,6 +142,7 @@ final class SpeechRecognitionService: ObservableObject {
     self.isRecording = false
     self.isStopping = true
 
+    self.cancelMaxDurationTimer()
     self.session.deactivateTap()
     // Snapshot samples before any await -- a concurrent startCapture() could
     // reset the accumulator while we wait for the model to load.
@@ -228,6 +235,24 @@ final class SpeechRecognitionService: ObservableObject {
   private var requestStartObserver: DarwinNotificationObserver?
   private var requestStopObserver: DarwinNotificationObserver?
   private var sessionStatusObserver: DarwinNotificationObserver?
+
+  private var maxDurationTimer: Timer?
+
+  private func armMaxDurationTimer() {
+    self.maxDurationTimer?.invalidate()
+    let cap = Self.maxRecordingDuration
+    self.maxDurationTimer = Timer.scheduledTimer(
+      withTimeInterval: cap,
+      repeats: false,
+    ) { [weak self] _ in
+      Task { @MainActor [weak self] in await self?.stopRecording() }
+    }
+  }
+
+  private func cancelMaxDurationTimer() {
+    self.maxDurationTimer?.invalidate()
+    self.maxDurationTimer = nil
+  }
 
   /// Awaits a pending model load on the active engine.
   private func awaitModelLoad() async {

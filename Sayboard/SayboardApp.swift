@@ -98,6 +98,9 @@ private enum DeepLinkValidator {
 
 // MARK: - SayboardApp
 
+// Splitting would require exposing private @State across files. Disabled
+// deliberately; honoured everywhere else.
+// swiftlint:disable type_body_length file_length
 @main
 struct SayboardApp: App {
 
@@ -106,6 +109,7 @@ struct SayboardApp: App {
   init() {
     Self.configureDefaultLanguageIfNeeded()
     let settings = SharedSettings()
+    settings.synchronize()
     settings.isSessionActive = false
     settings.isRecording = false
     settings.isModelLoading = false
@@ -114,6 +118,14 @@ struct SayboardApp: App {
     ModelStorageManager.ensurePersistentCoreMLCache()
     try? Tips.resetDatastore()
     try? Tips.configure()
+
+    // Pre-show the swipe-back hint on cold launches triggered by the
+    // keyboard (iOS 26.4+ only) so the user doesn't see the main UI flash
+    // before the overlay arrives. The flag is set by the keyboard right
+    // before issuing the dictate deep link and consumed by DeepLinkValidator
+    // shortly after, so subsequent manual launches don't false-trigger.
+    let preShowHint = OperatingSystem.isHostBundleIdBroken && settings.keyboardRequestedDictation
+    self._showsHostReturnHint = State(initialValue: preShowHint)
   }
 
   // MARK: Internal
@@ -148,34 +160,50 @@ struct SayboardApp: App {
   @Environment(\.scenePhase) private var scenePhase
   @State private var isChangingLanguage = false
   @State private var pendingPiPTutorial: TutorialVideo?
+  @State private var showsHostReturnHint = false
 
   private var rootView: some View {
     ZStack {
-      MainTabView()
-        .id(self.appLanguage)
-        .environmentObject(self.speechService)
-        .environmentObject(self.playerService)
-        .environmentObject(self.downloadService)
-        .environmentObject(self.permissionService)
-        .environmentObject(self.llmDownloadService)
-        .environmentObject(self.llmCoordinator)
-        .environmentObject(self.pipTutorialService)
-        .environment(\.locale, Locale(identifier: self.appLanguage))
-        .onReceive(NotificationCenter.default.publisher(for: AppDelegate.deepLinkNotification)) { notification in
-          if let url = notification.object as? URL { self.handleDeepLink(url) }
-        }
-        .onOpenURL { self.handleDeepLink($0) }
-        .onAppear { self.handleAppear() }
-        .onChange(of: self.scenePhase) { _, newPhase in self.handleScenePhaseChange(newPhase) }
-        .onChange(of: self.downloadService.selectedVariant) { oldVariant, newVariant in
-          guard oldVariant != newVariant else { return }
-          Task { await self.handleSelectedVariantChange(oldVariant: oldVariant, newVariant: newVariant) }
-        }
-        .onChange(of: self.downloadService.downloadedVariants) {
-          self.handleVariantStatesChange()
-        }
-
+      self.mainTabContent
+      self.hostReturnHintOverlay
       self.languageChangeOverlay
+    }
+  }
+
+  private var mainTabContent: some View {
+    MainTabView()
+      .id(self.appLanguage)
+      .environmentObject(self.speechService)
+      .environmentObject(self.playerService)
+      .environmentObject(self.downloadService)
+      .environmentObject(self.permissionService)
+      .environmentObject(self.llmDownloadService)
+      .environmentObject(self.llmCoordinator)
+      .environmentObject(self.pipTutorialService)
+      .environment(\.locale, Locale(identifier: self.appLanguage))
+      .onReceive(NotificationCenter.default.publisher(for: AppDelegate.deepLinkNotification)) { notification in
+        if let url = notification.object as? URL { self.handleDeepLink(url) }
+      }
+      .onOpenURL { self.handleDeepLink($0) }
+      .onAppear { self.handleAppear() }
+      .onChange(of: self.scenePhase) { _, newPhase in self.handleScenePhaseChange(newPhase) }
+      .onChange(of: self.downloadService.selectedVariant) { oldVariant, newVariant in
+        guard oldVariant != newVariant else { return }
+        Task { await self.handleSelectedVariantChange(oldVariant: oldVariant, newVariant: newVariant) }
+      }
+      .onChange(of: self.downloadService.downloadedVariants) {
+        self.handleVariantStatesChange()
+      }
+      .onChange(of: self.speechService.isRecording) { _, isRecording in
+        if !isRecording { self.showsHostReturnHint = false }
+      }
+  }
+
+  @ViewBuilder
+  private var hostReturnHintOverlay: some View {
+    if self.showsHostReturnHint {
+      HostReturnHintOverlay { self.showsHostReturnHint = false }
+        .environment(\.locale, Locale(identifier: self.appLanguage))
     }
   }
 
@@ -221,6 +249,10 @@ struct SayboardApp: App {
   }
 
   private func handleScenePhaseChange(_ phase: ScenePhase) {
+    if phase != .active {
+      // Drop on backgrounding so a later manual launch doesn't show it.
+      self.showsHostReturnHint = false
+    }
     if phase == .active {
       if let tutorial = self.pendingPiPTutorial {
         // Deep link requested a PiP tutorial before the app became active.
@@ -347,34 +379,48 @@ struct SayboardApp: App {
   private func handleDictateDeepLink() {
     // Set a session token so subsequent Darwin notifications (requestStop) are accepted
     SharedSettings().dictationSessionToken = UUID().uuidString
+
+    // Show the swipe-back hint as early as possible on iOS 26.4+ so the user
+    // doesn't see a flash of the main UI before the overlay appears.
+    if OperatingSystem.isHostBundleIdBroken {
+      self.showsHostReturnHint = true
+    }
+
+    guard self.tryStartDictation() else {
+      self.showsHostReturnHint = false
+      return
+    }
+
+    if !OperatingSystem.isHostBundleIdBroken {
+      DispatchQueue.main.asyncAfter(deadline: .now() + Self.dismissToBackgroundDelay) {
+        self.returnToHostApp()
+      }
+    }
+
+    Task { await self.loadModelInBackgroundIfNeeded() }
+  }
+
+  private func tryStartDictation() -> Bool {
     let isRec = self.speechService.isRecording
 
-    guard !isRec else { return }
+    guard !isRec else { return false }
 
     self.permissionService.refreshMicrophoneState()
     guard self.permissionService.microphoneState == .granted else {
       NotificationCenter.default.post(name: .dictationFailedNoMic, object: nil)
-      return
+      return false
     }
-
     guard self.downloadService.hasUsableModel else {
       NotificationCenter.default.post(name: .dictationFailedNoModel, object: nil)
-      return
+      return false
     }
-
-    guard self.startSessionIfNeeded() else { return }
+    guard self.startSessionIfNeeded() else { return false }
 
     self.speechService.startCapture()
     guard self.speechService.isRecording else {
-      return
+      return false
     }
-
-    // Switch back to host app after capture is confirmed active.
-    DispatchQueue.main.asyncAfter(deadline: .now() + Self.dismissToBackgroundDelay) {
-      self.returnToHostApp()
-    }
-
-    Task { await self.loadModelInBackgroundIfNeeded() }
+    return true
   }
 
   /// Loads the model at low priority if not already loaded. Posts Darwin notifications
@@ -424,3 +470,5 @@ struct SayboardApp: App {
   }
 
 }
+
+// swiftlint:enable type_body_length file_length

@@ -8,19 +8,20 @@ extension KeyboardViewController {
 
   // MARK: Internal
 
+  /// Detect and persist the host app's bundle ID for the main app to use
+  /// after dictation. Detection relies on private APIs that iOS 26.4 broke
+  /// (see `OperatingSystem.isHostBundleIdBroken`); on failure we clear the
+  /// cache rather than keep a stale value and risk opening the wrong app.
   func saveHostBundleId() {
     let settings = SharedSettings()
-    let hostId = self.detectHostBundleId()
-    guard let hostId else {
-      if let old = settings.hostBundleId, old == "<null>" || old == "nil" || old.isEmpty {
-        settings.hostBundleId = nil
-      } else if let old = settings.hostBundleId {
-      } else { }
-      settings.synchronize()
-      return
-    }
-    settings.hostBundleId = hostId
+    let detected = self.detectHostBundleId()
+    let previous = settings.hostBundleId
+    settings.hostBundleId = detected
     settings.synchronize()
+
+    if let detected {
+    } else if let previous {
+    } else { }
   }
 
   func openURL(_ url: URL) {

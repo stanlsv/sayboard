@@ -53,7 +53,9 @@ struct SharedSettings {
         let raw = defaults.string(forKey: SharedKey.sessionAutoStopPolicy),
         let policy = SessionAutoStopPolicy(rawValue: raw)
       else {
-        return .fiveMinutes
+        // Longer default on iOS 26.4+ since each dictation needs a manual
+        // swipe back; existing user choices are honoured.
+        return OperatingSystem.isHostBundleIdBroken ? .thirtyMinutes : .fiveMinutes
       }
       return policy
     }
