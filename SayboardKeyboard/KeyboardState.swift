@@ -37,6 +37,7 @@ final class KeyboardState: ObservableObject {
   @Published var llmError: LLMError?
   @Published var needsInputModeSwitchKey = false
   @Published var showGlobeKey = true
+  @Published var keyboardHapticsEnabled = true
   @Published var keyboardKind = KeyboardKind.standard
 
   /// Called when audio level has been stale (unchanged) for too long during recording.
@@ -70,6 +71,7 @@ final class KeyboardState: ObservableObject {
   func bootstrapLayoutSettings() {
     self.settings.synchronize()
     self.keyboardKind = self.settings.keyboardKind
+    self.keyboardHapticsEnabled = self.settings.keyboardHapticsEnabled
   }
 
   /// Reloads state from shared UserDefaults.
@@ -110,6 +112,7 @@ final class KeyboardState: ObservableObject {
     self.longPressLLMAction = self.settings.longPressLLMAction
     self.disabledLLMActions = self.settings.disabledLLMActions
     self.showGlobeKey = self.settings.showGlobeKey
+    self.keyboardHapticsEnabled = self.settings.keyboardHapticsEnabled
     self.checkDiskSpace()
     let polling = self.displayLink != nil
   }
@@ -137,7 +140,7 @@ final class KeyboardState: ObservableObject {
       return true
     }
     let link = CADisplayLink(target: target, selector: #selector(DisplayLinkTarget.tick))
-    link.preferredFrameRateRange = CAFrameRateRange(minimum: 15, maximum: 30, preferred: 30)
+    link.preferredFrameRateRange = CAFrameRateRange(minimum: 15, maximum: 20, preferred: 20)
     link.add(to: .main, forMode: .common)
     target.link = link
     self.displayLinkTarget = target
@@ -192,9 +195,9 @@ final class KeyboardState: ObservableObject {
       }
     }
 
-    // Diagnostic: log level once per second (every 30 polls at 30Hz)
+    // Diagnostic: log level once per second (every 20 polls at 20Hz)
     self.pollCount += 1
-    if self.pollCount % 30 == 0 { }
+    if self.pollCount % 20 == 0 { }
 
     // If level hasn't changed during recording, app may be dead.
     // staleLevelDetected ensures this fires at most once per polling session.

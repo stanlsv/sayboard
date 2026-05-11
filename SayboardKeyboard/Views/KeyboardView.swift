@@ -207,6 +207,7 @@ struct KeyboardView: View {
           openURL(url)
         }
       }
+      .environment(\.keyboardHapticsEnabled, self.keyboardState.keyboardHapticsEnabled)
     }
   }
 

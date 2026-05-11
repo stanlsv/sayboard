@@ -4,6 +4,7 @@ import Foundation
 
 // SharedSettings -- Read/write settings via App Group UserDefaults
 
+// swiftlint:disable:next type_body_length
 struct SharedSettings {
 
   // MARK: Lifecycle
@@ -14,10 +15,19 @@ struct SharedSettings {
 
   init(defaults: UserDefaults) {
     self.defaults = defaults
-    self.defaults.register(defaults: [SharedKey.showGlobeKey: true])
+    self.defaults.register(defaults: [
+      SharedKey.showGlobeKey: true,
+      SharedKey.keyboardHapticsEnabled: true,
+    ])
   }
 
   // MARK: Internal
+
+  /// Maximum age (CFAbsoluteTime delta) for `keyboardRequestedDictation` to be
+  /// considered fresh. Defends against orphan flags surviving across sessions
+  /// if a crash interleaved between the keyboard's set and the main app's
+  /// consume.
+  static let keyboardRequestTTL: TimeInterval = 3.0
 
   var selectedVariant: ModelVariant {
     get {
@@ -42,9 +52,26 @@ struct SharedSettings {
     nonmutating set { defaults.set(newValue, forKey: SharedKey.keyboardRequestedDictation) }
   }
 
+  /// CFAbsoluteTime stamped by the keyboard right before it sets the
+  /// dictation flag. Paired with the bool to defend against partial-write
+  /// crashes: a reader observing flag=true with timestamp=0 treats the
+  /// request as stale, not recent.
+  var keyboardRequestedDictationAt: TimeInterval {
+    get { self.defaults.double(forKey: SharedKey.keyboardRequestedDictationAt) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.keyboardRequestedDictationAt) }
+  }
+
   var isSessionActive: Bool {
     get { self.defaults.bool(forKey: SharedKey.isSessionActive) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.isSessionActive) }
+  }
+
+  /// Wall-clock timestamp written by the main app while its audio session is
+  /// alive. Read by the keyboard before posting `requestStartDictation` to
+  /// detect a jetsammed main app and skip the 5s Darwin fallback.
+  var mainAppHeartbeat: TimeInterval {
+    get { self.defaults.double(forKey: SharedKey.mainAppHeartbeat) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.mainAppHeartbeat) }
   }
 
   var sessionAutoStopPolicy: SessionAutoStopPolicy {
@@ -161,6 +188,11 @@ struct SharedSettings {
   var showGlobeKey: Bool {
     get { self.defaults.bool(forKey: SharedKey.showGlobeKey) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.showGlobeKey) }
+  }
+
+  var keyboardHapticsEnabled: Bool {
+    get { self.defaults.bool(forKey: SharedKey.keyboardHapticsEnabled) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.keyboardHapticsEnabled) }
   }
 
   var alsoCopyToClipboard: Bool {
@@ -330,6 +362,26 @@ struct SharedSettings {
       let data = try? JSONEncoder().encode(newValue)
       defaults.set(data, forKey: SharedKey.snippets)
     }
+  }
+
+  /// True iff the keyboard set the dictation flag within the TTL window.
+  /// Non-consuming. Synchronizes before reading.
+  func isKeyboardRequestRecent(now: TimeInterval = CFAbsoluteTimeGetCurrent()) -> Bool {
+    self.defaults.synchronize()
+    let timestamp = self.keyboardRequestedDictationAt
+    guard self.keyboardRequestedDictation, timestamp > 0 else { return false }
+    return (now - timestamp) <= Self.keyboardRequestTTL
+  }
+
+  /// Returns true and atomically clears the flag + timestamp iff a recent
+  /// keyboard request is pending; otherwise leaves state untouched.
+  @discardableResult
+  func consumeKeyboardRequestIfRecent(now: TimeInterval = CFAbsoluteTimeGetCurrent()) -> Bool {
+    guard self.isKeyboardRequestRecent(now: now) else { return false }
+    self.keyboardRequestedDictation = false
+    self.keyboardRequestedDictationAt = 0
+    self.defaults.synchronize()
+    return true
   }
 
   func preferredLanguages(for variant: ModelVariant) -> Set<String> {

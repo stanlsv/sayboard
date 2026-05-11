@@ -53,9 +53,11 @@ enum SharedKey {
   static let isRecording = "isRecording"
   static let selectedVariant = "selectedVariant"
   static let keyboardRequestedDictation = "keyboardRequestedDictation"
+  static let keyboardRequestedDictationAt = "keyboardRequestedDictationAt"
   static let appLanguage = "appLanguage"
   static let retentionPolicy = "retentionPolicy"
   static let isSessionActive = "isSessionActive"
+  static let mainAppHeartbeat = "mainAppHeartbeat"
   static let sessionAutoStopPolicy = "sessionAutoStopPolicy"
   static let whisperKitModelPath = "whisperKitModelPath"
   static let hostBundleId = "hostBundleId"
@@ -88,6 +90,7 @@ enum SharedKey {
   static let needsInputModeSwitchKey = "needsInputModeSwitchKey"
   static let alsoCopyToClipboard = "alsoCopyToClipboard"
   static let keyboardKind = "keyboardKind"
+  static let keyboardHapticsEnabled = "keyboardHapticsEnabled"
 }
 
 // MARK: - HistoryRetentionPolicy

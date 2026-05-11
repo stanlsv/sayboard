@@ -14,8 +14,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
   /// Bundle ID of the app that opened us via URL scheme.
   @MainActor static var lastSourceApplication: String?
 
+  /// Set by `SceneDelegate.sceneWillEnterForeground` when a recent keyboard
+  /// dictate request is pending. Read by SwiftUI's `.onReceive` handler so
+  /// the host-return overlay is visible in the very first painted frame
+  /// after warm activation, before iOS swaps in the live UI.
+  @MainActor static var pendingPreShowHint = false
+
   /// URL received in scene delegate, forwarded via notification.
   static let deepLinkNotification = Notification.Name("app.sayboard.sceneDeepLink")
+
+  /// Posted from `sceneWillEnterForeground` when conditions for pre-showing
+  /// the host-return overlay are met during a warm scene activation.
+  static let preShowHintNotification = Notification.Name("app.sayboard.preShowHostReturnHint")
 
   func application(
     _: UIApplication,
@@ -50,6 +60,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
 // SceneDelegate -- Intercepts URL opens to capture sourceApplication,
 // then forwards the URL to the SwiftUI app via notification.
 
+@MainActor
 final class SceneDelegate: NSObject, UIWindowSceneDelegate {
 
   func scene(_: UIScene, willConnectTo _: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -76,6 +87,19 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
       NotificationCenter.default.post(name: AppDelegate.deepLinkNotification, object: url)
     }
   }
+
+  /// Fires on warm activation BEFORE iOS swaps the snapshot for the live UI.
+  /// Pre-arms the host-return overlay so it lands in the first painted frame.
+  /// Does NOT consume the keyboard request — `DeepLinkValidator.isFromKeyboard()`
+  /// consumes when the deep link arrives shortly after.
+  func sceneWillEnterForeground(_: UIScene) {
+    guard
+      OperatingSystem.isHostBundleIdBroken,
+      SharedSettings().isKeyboardRequestRecent()
+    else { return }
+    AppDelegate.pendingPreShowHint = true
+    NotificationCenter.default.post(name: AppDelegate.preShowHintNotification, object: nil)
+  }
 }
 
 // MARK: - DeepLinkValidator
@@ -83,16 +107,14 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
 private enum DeepLinkValidator {
   @MainActor
   static func isFromKeyboard() -> Bool {
-    if let source = AppDelegate.lastSourceApplication, source == "app.sayboard.keyboard" {
-      return true
-    }
     let settings = SharedSettings()
-    settings.synchronize()
-    if settings.keyboardRequestedDictation {
-      settings.keyboardRequestedDictation = false
+    if let source = AppDelegate.lastSourceApplication, source == "app.sayboard.keyboard" {
+      // Clear residual flag/timestamp so a stale orphan can't false-trigger
+      // the next launch.
+      _ = settings.consumeKeyboardRequestIfRecent()
       return true
     }
-    return false
+    return settings.consumeKeyboardRequestIfRecent()
   }
 }
 
@@ -114,6 +136,10 @@ struct SayboardApp: App {
     settings.isRecording = false
     settings.isModelLoading = false
     settings.dictationSessionToken = nil
+    // Stamp heartbeat immediately so any keyboard-side staleness check during
+    // a cold-launch deep-link sees a fresh process before the audio session
+    // (and its periodic heartbeat write) has had a chance to come up.
+    settings.mainAppHeartbeat = CFAbsoluteTimeGetCurrent()
     HistoryStore.shared.applyRetentionPolicy()
     ModelStorageManager.ensurePersistentCoreMLCache()
     try? Tips.resetDatastore()
@@ -121,10 +147,9 @@ struct SayboardApp: App {
 
     // Pre-show the swipe-back hint on cold launches triggered by the
     // keyboard (iOS 26.4+ only) so the user doesn't see the main UI flash
-    // before the overlay arrives. The flag is set by the keyboard right
-    // before issuing the dictate deep link and consumed by DeepLinkValidator
-    // shortly after, so subsequent manual launches don't false-trigger.
-    let preShowHint = OperatingSystem.isHostBundleIdBroken && settings.keyboardRequestedDictation
+    // before the overlay arrives. The TTL-gated check rejects orphan flags
+    // from prior partial-write crashes so manual launches don't false-trigger.
+    let preShowHint = OperatingSystem.isHostBundleIdBroken && settings.isKeyboardRequestRecent()
     self._showsHostReturnHint = State(initialValue: preShowHint)
   }
 
@@ -197,6 +222,17 @@ struct SayboardApp: App {
       .onChange(of: self.speechService.isRecording) { _, isRecording in
         if !isRecording { self.showsHostReturnHint = false }
       }
+      .onReceive(NotificationCenter.default.publisher(for: AppDelegate.preShowHintNotification)) { _ in
+        // Synchronously sets state from the SceneDelegate hook, before iOS
+        // replaces the snapshot with the live UI on warm activation.
+        MainActor.assumeIsolated {
+          let pending = AppDelegate.pendingPreShowHint
+          AppDelegate.pendingPreShowHint = false
+          if pending || SharedSettings().isKeyboardRequestRecent() {
+            self.showsHostReturnHint = true
+          }
+        }
+      }
   }
 
   @ViewBuilder
@@ -204,6 +240,10 @@ struct SayboardApp: App {
     if self.showsHostReturnHint {
       HostReturnHintOverlay { self.showsHostReturnHint = false }
         .environment(\.locale, Locale(identifier: self.appLanguage))
+        // Insertion is `.identity` so the overlay lands instantly on first
+        // paint after warm activation. Removal keeps the default fade so
+        // user-driven dismissals still read smoothly.
+        .transition(.asymmetric(insertion: .identity, removal: .opacity))
     }
   }
 
@@ -249,8 +289,10 @@ struct SayboardApp: App {
   }
 
   private func handleScenePhaseChange(_ phase: ScenePhase) {
-    if phase != .active {
-      // Drop on backgrounding so a later manual launch doesn't show it.
+    if phase == .background {
+      // Drop only on real backgrounding so a later manual launch doesn't show
+      // it. Transient `.inactive` (cold-launch transitions, control center,
+      // app switcher peek) must NOT clear the pre-shown overlay.
       self.showsHostReturnHint = false
     }
     if phase == .active {

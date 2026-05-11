@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 import ObjectiveC
 
 import SwiftUI
@@ -125,6 +127,7 @@ final class KeyboardViewController: UIInputViewController {
   // MARK: Private
 
   private static let staleFallbackTimeout: TimeInterval = 5
+  private static let heartbeatStaleThreshold: TimeInterval = 1.5
 
   private static var transcriptionObserver: DarwinNotificationObserver?
   private static var dictationStartedObserver: DarwinNotificationObserver?
@@ -265,7 +268,20 @@ final class KeyboardViewController: UIInputViewController {
     // The ivar may not be populated during viewWillAppear but is available by user interaction.
     saveHostBundleId()
     let settings = SharedSettings()
-    settings.keyboardRequestedDictation = true
+    settings.synchronize()
+
+    // If the main app's audio-thread heartbeat is stale, the process was
+    // jetsammed since the last keyboard ping — Darwin would time out for 5s
+    // before falling back. Skip straight to the deep link.
+    let heartbeatAge = CFAbsoluteTimeGetCurrent() - settings.mainAppHeartbeat
+    if heartbeatAge > Self.heartbeatStaleThreshold {
+      self.openDictateDeepLinkFallback(reason: "heartbeat stale (\(heartbeatAge)s)")
+      return
+    }
+
+    // No `keyboardRequestedDictation = true` here: Darwin path fires no deep link,
+    // so the flag would never be consumed and cause spurious host-return overlays
+    // on later manual launches.
     settings.dictationSessionToken = UUID().uuidString
     settings.synchronize()
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.requestStartDictation)
@@ -278,22 +294,35 @@ final class KeyboardViewController: UIInputViewController {
       repeats: false,
     ) { [weak self] _ in
       DispatchQueue.main.async {
-        let sessionActive = self?.keyboardState.isSessionActive ?? false
-        let isRec = self?.keyboardState.isRecording ?? false
-        self?.keyboardState.isSessionActive = false
-        self?.keyboardState.isProcessing = false
-        if let url = DeepLink.dictateURL {
-          let fallbackSettings = SharedSettings()
-          fallbackSettings.keyboardRequestedDictation = true
-          fallbackSettings.dictationSessionToken = UUID().uuidString
-          fallbackSettings.synchronize()
-          if let openAction = self?.keyboardState.openURLAction {
-            openAction(url)
-          } else {
-            self?.openURL(url)
-          }
-        }
+        guard let self else { return }
+        let sessionActive = self.keyboardState.isSessionActive
+        let isRec = self.keyboardState.isRecording
+        self.openDictateDeepLinkFallback(
+          reason: "stale fallback fired (no response in \(Self.staleFallbackTimeout)s, session=\(sessionActive) rec=\(isRec))"
+        )
       }
+    }
+  }
+
+  /// Reset session/processing flags, mark the next deep link as keyboard-originated,
+  /// and open `sayboard://dictate` so the main app handles dictation start. Used both
+  /// for the heartbeat-stale fast path and the 5-second Darwin fallback timer.
+  private func openDictateDeepLinkFallback(reason _: String) {
+    let settings = SharedSettings()
+    settings.isSessionActive = false
+    // Stamp timestamp BEFORE the bool: a reader observing flag=true with
+    // timestamp=0 (mid-write crash) treats the request as stale, not recent.
+    settings.keyboardRequestedDictationAt = CFAbsoluteTimeGetCurrent()
+    settings.keyboardRequestedDictation = true
+    settings.dictationSessionToken = UUID().uuidString
+    settings.synchronize()
+    self.keyboardState.isSessionActive = false
+    self.keyboardState.isProcessing = false
+    guard let url = DeepLink.dictateURL else { return }
+    if let openAction = self.keyboardState.openURLAction {
+      openAction(url)
+    } else {
+      self.openURL(url)
     }
   }
 

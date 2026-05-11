@@ -25,10 +25,17 @@ struct KeyButton: View {
   var calloutRowSpacing: CGFloat = 0
   /// Callout alignment — `.left`/`.right` for edge keys to keep the balloon inside the keyboard.
   var calloutAlignment = KeyCalloutAlignment.center
+  /// `true` for input keys (letters, digits, symbols, punct, return, delete, page-swap).
+  /// `false` for chrome action buttons (settings, undo/redo, delete-all) — those don't
+  /// participate in the global keyboard-haptics toggle, mirroring stock-keyboard behavior.
+  var firesHaptic = true
   let action: () -> Void
 
   var body: some View {
-    Button(action: self.action) {
+    Button {
+      if self.firesHaptic { self.tapCount &+= 1 }
+      self.action()
+    } label: {
       self.contentView
     }
     .buttonStyle(RectKeyStyle(
@@ -44,11 +51,13 @@ struct KeyButton: View {
       }
     }
     .zIndex(self.showsCallout && self.isPressed ? 100 : 0)
+    .gatedSensoryFeedback(.selection, trigger: self.tapCount)
   }
 
   // MARK: Private
 
   @State private var isPressed = false
+  @State private var tapCount = 0
 
   @ViewBuilder
   private var contentView: some View {

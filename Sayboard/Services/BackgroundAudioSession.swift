@@ -157,6 +157,7 @@ final class BackgroundAudioSession: ObservableObject {
 
     self.isSessionActive = true
     self.settings.isSessionActive = true
+    self.settings.mainAppHeartbeat = CFAbsoluteTimeGetCurrent()
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.sessionStarted)
 
     self.setupInterruptionObserver()
@@ -244,6 +245,7 @@ final class BackgroundAudioSession: ObservableObject {
   private nonisolated let tapState = OSAllocatedUnfairLock<TapState?>(initialState: nil)
   private var inactivityTimer: Timer?
   private nonisolated let lastFlushTime = OSAllocatedUnfairLock<CFAbsoluteTime>(initialState: 0)
+  private nonisolated let lastHeartbeatTime = OSAllocatedUnfairLock<CFAbsoluteTime>(initialState: 0)
   private nonisolated let previousLevel = OSAllocatedUnfairLock<Float>(initialState: 0)
   private nonisolated let rmsRingBuffer = OSAllocatedUnfairLock<(buffer: [Float], index: Int)>(
     initialState: (buffer: [Float](repeating: 0, count: rmsPreFilterWindowSize), index: 0)
@@ -265,6 +267,7 @@ final class BackgroundAudioSession: ObservableObject {
     self.inactivityTimer = nil
   }
 
+  // swiftlint:disable:next function_body_length
   private func installPersistentTap() throws {
     let inputNode = self.audioEngine.inputNode
     let hwFormat = inputNode.outputFormat(forBus: 0)
@@ -281,10 +284,29 @@ final class BackgroundAudioSession: ObservableObject {
     let state = self.tapState
     let bridge = self.levelBridge
     let lastFlush = self.lastFlushTime
+    let lastHeartbeat = self.lastHeartbeatTime
     let prevLevel = self.previousLevel
     let ringBuf = self.rmsRingBuffer
+    // swiftlint:disable:next closure_body_length
     try ObjCExceptionCatcher.catchException {
-      inputNode.installTap(onBus: 0, bufferSize: 1024, format: nil) { @Sendable buffer, _ in
+      // swiftlint:disable:next closure_body_length
+      inputNode.installTap(onBus: 0, bufferSize: 4096, format: nil) { @Sendable buffer, _ in
+        // Heartbeat (~2Hz) so the keyboard can detect a jetsammed main app
+        // before posting requestStartDictation. Written before the tap-state
+        // guard because the audio thread keeps firing even when no recording
+        // is active; main-thread Timers don't fire in audio-mode background.
+        let now = CFAbsoluteTimeGetCurrent()
+        let shouldHeartbeat = lastHeartbeat.withLock { last -> Bool in
+          if now - last >= 0.5 {
+            last = now
+            return true
+          }
+          return false
+        }
+        if shouldHeartbeat {
+          AppGroup.sharedDefaults?.set(now, forKey: SharedKey.mainAppHeartbeat)
+        }
+
         let active = state.withLock { $0 }
         guard let active else { return }
 
@@ -292,10 +314,8 @@ final class BackgroundAudioSession: ObservableObject {
         let filtered = preFilterRMS(min(rms * 14, 1.0), ringBuffer: ringBuf)
         bridge.writeLevel(smoothLevel(filtered, previous: prevLevel))
 
-        // Flush to UserDefaults directly from the audio thread (~30Hz throttle).
-        // Timer.scheduledTimer does not fire when the app is backgrounded;
-        // the audio thread always runs while the session is active.
-        let now = CFAbsoluteTimeGetCurrent()
+        // Flush audio level to UserDefaults (~30Hz throttle). `now` is reused
+        // from the heartbeat block above.
         let shouldFlush = lastFlush.withLock { last -> Bool in
           if now - last >= 1.0 / 30.0 {
             last = now

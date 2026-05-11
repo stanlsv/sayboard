@@ -30,6 +30,7 @@ struct SpaceBarKey: View {
           }
       )
       .sensoryFeedback(.impact(weight: .light), trigger: self.trackpadActivationCount)
+      .gatedSensoryFeedback(.selection, trigger: self.spaceTapCount)
   }
 
   // MARK: Private
@@ -45,6 +46,7 @@ struct SpaceBarKey: View {
   @State private var accumulatedOffset: CGFloat = 0
   @State private var lastReportedCharOffset = 0
   @State private var trackpadActivationCount = 0
+  @State private var spaceTapCount = 0
 
   @ViewBuilder
   private var label: some View {
@@ -95,6 +97,7 @@ struct SpaceBarKey: View {
   private func handleDragEnded() {
     if !self.isTrackpadActive {
       self.onSpace()
+      self.spaceTapCount &+= 1
     }
 
     self.isPressed = false

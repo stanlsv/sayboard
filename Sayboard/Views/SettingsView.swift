@@ -131,6 +131,8 @@ struct SettingsView: View {
   @AppStorage(SharedKey.appLanguage) private var selectedAppLanguage = defaultLanguage
   @AppStorage(SharedKey.showGlobeKey, store: UserDefaults(suiteName: AppGroup.identifier))
   private var showGlobeKey = true
+  @AppStorage(SharedKey.keyboardHapticsEnabled, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var keyboardHapticsEnabled = true
   @AppStorage(SharedKey.needsInputModeSwitchKey, store: UserDefaults(suiteName: AppGroup.identifier))
   private var needsInputModeSwitchKey = false
   @Environment(\.locale) private var locale
@@ -299,6 +301,7 @@ struct SettingsView: View {
           Text(LocalizedStringKey(kind.displayNameKey)).tag(kind)
         }
       }
+      Toggle("Haptic Feedback", isOn: self.$keyboardHapticsEnabled)
       if !self.needsInputModeSwitchKey {
         Toggle("Show Keyboard Switch Key", isOn: self.$showGlobeKey)
       }

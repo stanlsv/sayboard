@@ -93,6 +93,7 @@ extension ExtendedKeyboardLayout {
         fixedWidth: self.chrome.sideButtonWidth,
         shape: .pill,
         fillOnPress: true,
+        firesHaptic: false,
       ) {
         if let url = DeepLink.settingsURL { self.proxy.openURL(url) }
       }
@@ -127,13 +128,23 @@ extension ExtendedKeyboardLayout {
 
   private var undoRedoRow: some View {
     HStack(spacing: KeyboardChromeMetrics.buttonSpacing) {
-      KeyButton(content: .systemImage("arrow.uturn.backward"), fixedWidth: self.chrome.sideButtonWidth, shape: .pill) {
+      KeyButton(
+        content: .systemImage("arrow.uturn.backward"),
+        fixedWidth: self.chrome.sideButtonWidth,
+        shape: .pill,
+        firesHaptic: false,
+      ) {
         self.proxy.undoLLM()
       }
       .disabled(!self.keyboardState.canUndoLLM)
       .opacity(self.keyboardState.canUndoLLM ? 1 : 0.35)
 
-      KeyButton(content: .systemImage("arrow.uturn.forward"), fixedWidth: self.chrome.sideButtonWidth, shape: .pill) {
+      KeyButton(
+        content: .systemImage("arrow.uturn.forward"),
+        fixedWidth: self.chrome.sideButtonWidth,
+        shape: .pill,
+        firesHaptic: false,
+      ) {
         self.proxy.redoLLM()
       }
       .disabled(!self.keyboardState.canRedoLLM)

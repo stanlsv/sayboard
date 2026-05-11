@@ -66,6 +66,6 @@ struct TranslateToggleButton: View {
       isActive: self.keyboardState.isTranslationMode,
       shape: self.shape,
     ))
-    .sensoryFeedback(.selection, trigger: self.keyboardState.isTranslationMode)
+    .gatedSensoryFeedback(.selection, trigger: self.keyboardState.isTranslationMode)
   }
 }

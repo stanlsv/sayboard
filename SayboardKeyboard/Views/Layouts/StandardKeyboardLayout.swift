@@ -55,11 +55,13 @@ struct StandardKeyboardLayout: View {
 
 extension StandardKeyboardLayout {
   private var sideButtons: some View {
+    // swiftlint:disable:next closure_body_length
     HStack(alignment: .bottom, spacing: KeyboardChromeMetrics.buttonSpacing) {
       KeyButton(
         content: .systemImage("gearshape"),
         fixedWidth: self.chrome.sideButtonWidth,
         fillOnPress: true,
+        firesHaptic: false,
       ) {
         if let url = DeepLink.settingsURL { self.proxy.openURL(url) }
       }
@@ -94,13 +96,21 @@ extension StandardKeyboardLayout {
 
   private var undoRedoRow: some View {
     HStack(spacing: KeyboardChromeMetrics.buttonSpacing) {
-      KeyButton(content: .systemImage("arrow.uturn.backward"), fixedWidth: self.chrome.sideButtonWidth) {
+      KeyButton(
+        content: .systemImage("arrow.uturn.backward"),
+        fixedWidth: self.chrome.sideButtonWidth,
+        firesHaptic: false,
+      ) {
         self.proxy.undoLLM()
       }
       .disabled(!self.keyboardState.canUndoLLM)
       .opacity(self.keyboardState.canUndoLLM ? 1 : 0.35)
 
-      KeyButton(content: .systemImage("arrow.uturn.forward"), fixedWidth: self.chrome.sideButtonWidth) {
+      KeyButton(
+        content: .systemImage("arrow.uturn.forward"),
+        fixedWidth: self.chrome.sideButtonWidth,
+        firesHaptic: false,
+      ) {
         self.proxy.redoLLM()
       }
       .disabled(!self.keyboardState.canRedoLLM)

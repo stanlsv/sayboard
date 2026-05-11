@@ -58,6 +58,8 @@ struct MicAnimatedButton: View {
     .allowsHitTesting(!self.keyboardState.isProcessing)
     .onChange(of: self.keyboardState.isRecording, self.handleRecordingChanged)
     .task(id: self.keyboardState.isProcessing, self.observeProcessing)
+    .gatedSensoryFeedback(.impact(weight: .medium), trigger: self.recordingStartCount)
+    .gatedSensoryFeedback(.impact(weight: .light), trigger: self.recordingStopCount)
   }
 
   // MARK: Private
@@ -70,6 +72,8 @@ struct MicAnimatedButton: View {
   @State private var spinnerMorphCanStep = false
   @State private var pendingSpinnerMorph = false
   @State private var morphDirection = MicMorphAnimation.Direction.toWave
+  @State private var recordingStartCount = 0
+  @State private var recordingStopCount = 0
 
   @ViewBuilder
   private var micButtonLabel: some View {
@@ -117,6 +121,9 @@ struct MicAnimatedButton: View {
       self.proxy.startDictation()
     } else if let url = DeepLink.dictateURL {
       let settings = SharedSettings()
+      // Stamp timestamp BEFORE the bool: a reader observing flag=true with
+      // timestamp=0 (mid-write crash) treats the request as stale, not recent.
+      settings.keyboardRequestedDictationAt = CFAbsoluteTimeGetCurrent()
       settings.keyboardRequestedDictation = true
       settings.dictationSessionToken = UUID().uuidString
       settings.synchronize()
@@ -125,6 +132,11 @@ struct MicAnimatedButton: View {
   }
 
   private func handleRecordingChanged(oldValue: Bool, isRecording: Bool) {
+    if isRecording, !oldValue {
+      self.recordingStartCount &+= 1
+    } else if !isRecording, oldValue {
+      self.recordingStopCount &+= 1
+    }
     if isRecording, !oldValue, !self.isMorphing {
       self.morphDirection = .toWave
       self.isMorphing = true
