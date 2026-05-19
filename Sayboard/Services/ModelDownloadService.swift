@@ -151,7 +151,7 @@ final class ModelDownloadService: ObservableObject {
 
     guard hasEnoughDiskSpace(for: variant) else {
       self.variantStates[variant] = .error(
-        message: String(localized: "Not enough storage space. Free up space and try again.")
+        message: "Not enough storage space. Free up space and try again."
       )
       return
     }
@@ -241,7 +241,7 @@ final class ModelDownloadService: ObservableObject {
     let interrupted = settings.downloadInProgressVariants
     guard !interrupted.isEmpty else { return }
 
-    let message = String(localized: "Download was interrupted. Tap Retry to continue.")
+    let message: LocalizedStringResource = "Download was interrupted. Tap Retry to continue."
     for variant in interrupted {
       // Skip variants already verified as downloaded on disk.
       guard self.state(for: variant) != .downloaded else {

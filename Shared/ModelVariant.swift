@@ -243,5 +243,5 @@ enum ModelDownloadState: Equatable, Sendable {
   case notDownloaded
   case downloading(progress: Double)
   case downloaded
-  case error(message: String)
+  case error(message: LocalizedStringResource)
 }

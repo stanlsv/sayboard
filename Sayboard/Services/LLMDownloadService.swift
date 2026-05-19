@@ -72,7 +72,7 @@ final class LLMDownloadService: ObservableObject {
 
     guard self.hasEnoughDiskSpace(for: variant) else {
       self.variantStates[variant] = .error(
-        message: String(localized: "Not enough storage space. Free up space and try again.")
+        message: "Not enough storage space. Free up space and try again."
       )
       return
     }
@@ -137,7 +137,7 @@ final class LLMDownloadService: ObservableObject {
     let interrupted = settings.llmDownloadInProgressVariants
     guard !interrupted.isEmpty else { return }
 
-    let message = String(localized: "Download was interrupted. Tap Retry to continue.")
+    let message: LocalizedStringResource = "Download was interrupted. Tap Retry to continue."
     for variant in interrupted {
       guard self.state(for: variant) != .downloaded else {
         self.removeVariantFromPersistence(variant)

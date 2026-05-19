@@ -62,7 +62,7 @@ extension ModelDownloadService {
     guard let modelFolder = self.modelFolderURL(for: variant) else {
       try? ModelStorageManager.delete(variant)
       self.variantStates[variant] = .error(
-        message: String(localized: "Model failed to load. Tap Retry to try again.")
+        message: "Model failed to load. Tap Retry to try again."
       )
       self.removeVariantFromPersistence(variant)
       return false
@@ -87,7 +87,7 @@ extension ModelDownloadService {
     if !loaded {
       try? ModelStorageManager.delete(variant)
       self.variantStates[variant] = .error(
-        message: String(localized: "Model failed to load. Tap Retry to try again.")
+        message: "Model failed to load. Tap Retry to try again."
       )
       self.removeVariantFromPersistence(variant)
       return false
@@ -136,30 +136,30 @@ extension ModelDownloadService {
 
 // MARK: - Helpers
 
-func localizedDownloadError(_ error: Error) -> String {
+func localizedDownloadError(_ error: Error) -> LocalizedStringResource {
   if error is R2DownloadError {
-    return String(localized: "Download failed. Tap Retry to try again.")
+    return "Download failed. Tap Retry to try again."
   }
   if error is ManifestError {
-    return String(localized: "Could not reach model server. Check your connection and try again.")
+    return "Could not reach model server. Check your connection and try again."
   }
   let nsError = error as NSError
   if nsError.domain == NSURLErrorDomain {
     switch nsError.code {
     case NSURLErrorNotConnectedToInternet, NSURLErrorNetworkConnectionLost:
-      return String(localized: "No internet connection. Check your network and try again.")
+      return "No internet connection. Check your network and try again."
     case NSURLErrorTimedOut:
-      return String(localized: "Download timed out. Try again later.")
+      return "Download timed out. Try again later."
     default:
-      return String(localized: "Network error. Check your connection and try again.")
+      return "Network error. Check your connection and try again."
     }
   }
   let posixStorageFull: Int32 = 28 // ENOSPC
   if nsError.domain == NSPOSIXErrorDomain, nsError.code == Int(posixStorageFull) {
-    return String(localized: "Not enough storage space. Free up space and try again.")
+    return "Not enough storage space. Free up space and try again."
   }
   if nsError.domain == NSCocoaErrorDomain, nsError.code == NSFileWriteOutOfSpaceError {
-    return String(localized: "Not enough storage space. Free up space and try again.")
+    return "Not enough storage space. Free up space and try again."
   }
-  return String(localized: "Download failed. Tap Retry to try again.")
+  return "Download failed. Tap Retry to try again."
 }

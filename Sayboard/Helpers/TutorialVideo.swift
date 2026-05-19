@@ -10,6 +10,11 @@ enum TutorialVideo: String {
 
   func url(for language: String) -> URL? {
     let lang = AppLanguageConfig.supported.contains(language) ? language : AppLanguageConfig.fallback
-    return Bundle.main.url(forResource: "\(self.rawValue)-\(lang)", withExtension: "mp4")
+    if let url = Bundle.main.url(forResource: "\(self.rawValue)-\(lang)", withExtension: "mp4") {
+      return url
+    }
+    // Locale-specific video missing (e.g., newly-added languages without recorded tutorials).
+    // Fall back to English so users still see the iOS-Settings walkthrough.
+    return Bundle.main.url(forResource: "\(self.rawValue)-\(AppLanguageConfig.fallback)", withExtension: "mp4")
   }
 }

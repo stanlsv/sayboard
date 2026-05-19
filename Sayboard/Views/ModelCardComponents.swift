@@ -178,12 +178,12 @@ struct DownloadStatusView: View {
     .animation(.easeInOut(duration: 0.25), value: isLoadingPhase)
   }
 
-  private func errorView(message: String) -> some View {
+  private func errorView(message: LocalizedStringResource) -> some View {
     HStack(spacing: 8) {
       Image(systemName: "exclamationmark.triangle.fill")
         .font(.caption)
         .foregroundStyle(.orange)
-      Text(verbatim: message)
+      Text(message)
         .font(.caption)
         .foregroundStyle(.secondary)
         .lineLimit(1)
