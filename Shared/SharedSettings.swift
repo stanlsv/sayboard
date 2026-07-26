@@ -180,6 +180,13 @@ struct SharedSettings {
     nonmutating set { defaults.set(newValue, forKey: SharedKey.isModelLoading) }
   }
 
+  /// Set once the first model build succeeds. Gates the keyboard's "for first use"
+  /// loading copy so it never claims a one-time setup on later (re)builds.
+  var hasPreparedModelOnce: Bool {
+    get { self.defaults.bool(forKey: SharedKey.hasPreparedModelOnce) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.hasPreparedModelOnce) }
+  }
+
   var useCustomSpaceBar: Bool {
     get { self.defaults.bool(forKey: SharedKey.useCustomSpaceBar) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.useCustomSpaceBar) }

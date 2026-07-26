@@ -90,7 +90,7 @@ struct SettingsView: View {
 
   var body: some View {
     Form {
-      if self.needsSetup {
+      if self.needsSetup || self.isLowDiskSpace {
         self.setupSection
       }
       if self.speechService.isSessionActive {
@@ -107,6 +107,7 @@ struct SettingsView: View {
     .navigationTitle("Settings")
     .onAppear {
       self.refreshHistoryInfo()
+      self.isLowDiskSpace = DiskSpace.isLow()
     }
     .onChange(of: self.selectedRetentionPolicy) { _, newValue in
       self.settings.retentionPolicy = newValue
@@ -149,6 +150,7 @@ struct SettingsView: View {
   @State private var historyInfoText = ""
   @State private var historyClearedTrigger = false
   @State private var cacheClearedTrigger = false
+  @State private var isLowDiskSpace = false
   @SceneStorage("selectedTab") private var selectedTab = "history"
 
   // swiftlint:disable:next line_length
@@ -159,6 +161,9 @@ struct SettingsView: View {
 
   // swiftlint:disable:next line_length
   private let sessionFooterMessage: LocalizedStringKey = "Allows the keyboard to start dictation instantly, without switching to the app. The orange dot in the status bar is normal \u{2014} it means the mic session is active."
+
+  // swiftlint:disable:next line_length
+  private let lowStorageMessage: LocalizedStringKey = "When storage runs low, your device may clear the prepared speech model, forcing a slow rebuild before dictation. Free up space in Settings \u{203A} General \u{203A} Storage."
 
   private var sessionBinding: Binding<Bool> {
     Binding(
@@ -194,10 +199,15 @@ struct SettingsView: View {
       if !self.downloadService.hasUsableModel {
         self.modelSetupRow
       }
+      if self.isLowDiskSpace {
+        self.lowStorageRow
+      }
     } header: {
       Text("\u{26A0}\u{FE0F} Action Required")
     } footer: {
-      Text("Sayboard won't work until these settings are configured")
+      if self.needsSetup {
+        Text("Sayboard won't work until these settings are configured")
+      }
     }
   }
 
@@ -214,6 +224,20 @@ struct SettingsView: View {
       self.pipTutorialService.playTutorial(.addKeyboard, language: self.selectedAppLanguage, thenOpenSettings: true)
     } label: {
       Label("Add Sayboard Keyboard", systemImage: "keyboard")
+    }
+  }
+
+  private var lowStorageRow: some View {
+    Label {
+      VStack(alignment: .leading, spacing: 2) {
+        Text("Storage Is Getting Low")
+        Text(self.lowStorageMessage)
+          .font(.caption)
+          .foregroundStyle(.secondary)
+      }
+    } icon: {
+      Image(systemName: "exclamationmark.triangle.fill")
+        .foregroundStyle(.orange)
     }
   }
 

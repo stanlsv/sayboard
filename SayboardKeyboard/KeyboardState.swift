@@ -16,6 +16,7 @@ final class KeyboardState: ObservableObject {
   @Published var isProcessing = false
   @Published var isSessionActive = false
   @Published var isModelLoading = false
+  @Published var hasPreparedModelOnce = false
   @Published var hasUsableModel = false
   @Published var isMicrophoneAuthorized = false
   @Published var hasFullAccess = false
@@ -93,6 +94,7 @@ final class KeyboardState: ObservableObject {
     }
     self.isProcessing = false
     self.isModelLoading = self.settings.isModelLoading
+    self.hasPreparedModelOnce = self.settings.hasPreparedModelOnce
     self.hasUsableModel = self.settings.hasUsableModel
     self.isMicrophoneAuthorized = self.settings.isMicrophoneAuthorized
     self.useCustomSpaceBar = self.settings.useCustomSpaceBar
@@ -122,6 +124,7 @@ final class KeyboardState: ObservableObject {
   func syncModelLoading() {
     self.settings.synchronize()
     self.isModelLoading = self.settings.isModelLoading
+    self.hasPreparedModelOnce = self.settings.hasPreparedModelOnce
   }
 
   func toggleTranslationMode() {
@@ -157,7 +160,6 @@ final class KeyboardState: ObservableObject {
   // MARK: Private
 
   private static let staleLevelThreshold: TimeInterval = 2
-  private static let lowDiskSpaceThreshold: Int64 = 1_000_000_000
 
   private let settings = SharedSettings()
   private let levelBridge = AudioLevelBridge(mode: .reader)
@@ -169,15 +171,7 @@ final class KeyboardState: ObservableObject {
   private var staleLevelDetected = false
 
   private func checkDiskSpace() {
-    do {
-      let homeURL = URL(fileURLWithPath: NSHomeDirectory())
-      let values = try homeURL.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
-      if let available = values.volumeAvailableCapacityForImportantUsage {
-        self.isLowDiskSpace = available < Self.lowDiskSpaceThreshold
-      }
-    } catch {
-      // no-op
-    }
+    self.isLowDiskSpace = DiskSpace.isLow()
   }
 
   private func pollAudioLevel() {

@@ -1793,184 +1793,6 @@
         }
       }
     },
-    "Initial setup": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Počáteční nastavení"
-          }
-        },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Første opsætning"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ersteinrichtung"
-          }
-        },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Αρχική ρύθμιση"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configuración inicial"
-          }
-        },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alkukäyttöönotto"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configuration initiale"
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "प्रारंभिक सेटअप"
-          }
-        },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kezdeti beállítás"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configurazione iniziale"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "初期設定"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "초기 설정"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eerste installatie"
-          }
-        },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Første oppsett"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Konfiguracja początkowa"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configuração inicial"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configurare inițială"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Первичная настройка"
-          }
-        },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Počiatočné nastavenie"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Första konfigurationen"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "İlk kurulum"
-          }
-        },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Початкове налаштування"
-          }
-        },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "初始设置"
-          }
-        },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Първоначална настройка"
-          }
-        },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Početno postavljanje"
-          }
-        },
-        "et": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Algseadistus"
-          }
-        },
-        "lv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sākotnējā iestatīšana"
-          }
-        },
-        "lt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pradinė sąranka"
-          }
-        },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Začetna nastavitev"
-          }
-        }
-      }
-    },
     "Listening...": {
       "extractionState": "stale",
       "localizations": {
@@ -2146,184 +1968,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Poslušam…"
-          }
-        }
-      }
-    },
-    "Low storage causes constant model rebuilds": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Málo úložiště způsobuje neustálé přestavby modelu"
-          }
-        },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lav lagerplads får modellen til at blive bygget om hele tiden"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bei wenig Speicher wird das Modell ständig neu kompiliert"
-          }
-        },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ο χαμηλός αποθηκευτικός χώρος προκαλεί συνεχείς αναδημιουργίες μοντέλου"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El poco almacenamiento causa reconstrucciones constantes del modelo"
-          }
-        },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vähäinen tallennustila aiheuttaa mallin jatkuvaa uudelleenrakentamista"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un stockage faible entraîne des reconstructions constantes du modèle"
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "कम स्टोरेज के कारण मॉडल बार-बार रीबिल्ड होता है"
-          }
-        },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A kevés tárhely folyamatos modell-újraépítést okoz"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lo spazio insufficiente causa continue ricostruzioni del modello"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ストレージ不足によりモデルの再構築が繰り返されます"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장 공간 부족으로 모델이 계속 재구축됩니다"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Weinig opslagruimte veroorzaakt voortdurend opnieuw opbouwen van het model"
-          }
-        },
-        "no": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lite lagringsplass fører til stadig gjenoppbygging av modellen"
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mało miejsca powoduje ciągłą odbudowę modelu"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pouco armazenamento causa reconstruções constantes do modelo"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spațiul de stocare redus cauzează reconstruirea constantă a modelului"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мало места. Модель пересобирается каждый раз"
-          }
-        },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Málo úložiska spôsobuje neustále prestavby modelu"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Litet lagringsutrymme orsakar ständiga ombyggnader av modellen"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Düşük depolama alanı sürekli model yeniden derlemesine neden olur"
-          }
-        },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мало місця. Модель перезбирається щоразу"
-          }
-        },
-        "zh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "存储空间不足导致模型不断重建"
-          }
-        },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Малко място. Моделът се преизгражда всеки път"
-          }
-        },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nedostatak prostora uzrokuje stalnu ponovnu izgradnju modela"
-          }
-        },
-        "et": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vähene mäluruum põhjustab pidevat mudeli uuesti ehitamist"
-          }
-        },
-        "lv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Maz krātuves izraisa pastāvīgu modeļa atjaunošanu"
-          }
-        },
-        "lt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mažai vietos atmintyje — modelis nuolat perkuriamas"
-          }
-        },
-        "sl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premalo prostora povzroča nenehno ponovno gradnjo modela"
           }
         }
       }
@@ -5548,6 +5192,542 @@
           "stringUnit": {
             "state": "translated",
             "value": "WhisperKit"
+          }
+        }
+      }
+    },
+    "Preparing speech model": {
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подготовка на речевия модел"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Příprava řečového modelu"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forbereder talemodel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprachmodell wird vorbereitet"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προετοιμασία μοντέλου ομιλίας"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando modelo de voz"
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kõnemudeli ettevalmistus"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valmistellaan puhemallia"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Préparation du modèle vocal"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्पीच मॉडल तैयार हो रहा है"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priprema govornog modela"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beszédmodell előkészítése"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparazione modello vocale"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "音声モデルを準備中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "음성 모델 준비 중"
+          }
+        },
+        "lt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruošiamas kalbos modelis"
+          }
+        },
+        "lv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sagatavo runas modeli"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spraakmodel voorbereiden"
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forbereder talemodell"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przygotowywanie modelu mowy"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando modelo de voz"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se pregătește modelul vocal"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подготовка речевой модели"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Príprava rečového modelu"
+          }
+        },
+        "sl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priprava govornega modela"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbereder talmodell"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konuşma modeli hazırlanıyor"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Підготовка мовленнєвої моделі"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语音模型准备中"
+          }
+        }
+      }
+    },
+    "Storage critically low. Free up space so the model doesn't keep rebuilding. Rebuilding it now": {
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Критично малко пространство за съхранение. Освободете място, за да не се преизгражда моделът многократно. Сега тече преизграждане"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kriticky málo místa v úložišti. Uvolněte místo, aby se model opakovaně nesestavoval. Právě probíhá opětovné sestavení"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagringspladsen er kritisk lav. Frigør plads, så modellen ikke genopbygges gentagne gange. Genopbygger talemodel nu"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speicher kritisch knapp. Geben Sie Speicherplatz frei, damit das Modell nicht wiederholt neu erstellt wird. Wird gerade neu erstellt"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ο χώρος αποθήκευσης είναι κρίσιμα χαμηλός. Ελευθερώστε χώρο για να μην αναδημιουργείται συνεχώς το μοντέλο. Γίνεται αναδημιουργία τώρα"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Almacenamiento casi agotado. Libera espacio para que el modelo no siga reconstruyéndose. Reconstruyéndolo ahora"
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvestusruumi on kriitiliselt vähe. Vabastage ruumi, et mudelit ei ehitataks pidevalt uuesti. Kõnemudelit ehitatakse praegu uuesti"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tallennustilaa on kriittisen vähän. Vapauta tilaa, jottei malli rakennu yhä uudelleen. Puhemallia rakennetaan parhaillaan uudelleen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espace de stockage critique. Libérez de l'espace pour que le modèle ne continue pas à se reconstruire. Reconstruction en cours"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्टोरेज बेहद कम है। जगह खाली करें ताकि मॉडल बार-बार न बने। अभी स्पीच मॉडल फिर से बन रहा है"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kritično malo prostora. Oslobodite prostor da se model ne bi i dalje gradio. Sada je u tijeku ponovna izgradnja"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kritikusan kevés a tárhely. Szabadítson fel helyet, hogy a modell ne épüljön újra folyamatosan. Most újraépül a modell"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archiviazione quasi esaurita. Libera spazio per evitare che il modello continui a ricostruirsi. Ricostruzione in corso"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ストレージの空き容量がほとんどありません。空き容量を確保して、モデルの再構築が続かないようにしてください。現在、音声モデルを再構築中です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 공간이 매우 부족합니다. 모델이 계속 재구축되지 않도록 공간을 확보하세요. 지금 재구축 중입니다"
+          }
+        },
+        "lt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kritiškai mažai vietos saugykloje. Atlaisvinkite vietos, kad modelis nuolat nepersikurtų. Šiuo metu jis perkuriamas"
+          }
+        },
+        "lv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krātuvē kritiski maz vietas. Atbrīvojiet vietu, lai modelis neturpinātu pārbūvēties. Pārbūvē runas modeli"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opslag kritiek laag. Maak ruimte vrij zodat het model niet telkens opnieuw wordt opgebouwd. Bezig met opnieuw opbouwen"
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kritisk lite lagringsplass. Frigjør plass så modellen ikke gjenoppbygges gjentatte ganger. Gjenoppbygger talemodellen nå"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krytycznie mało miejsca. Zwolnij miejsce, aby model nie musiał się wciąż odbudowywać. Trwa odbudowa modelu mowy"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Armazenamento criticamente baixo. Libere espaço para o modelo não continuar sendo reconstruído. Reconstruindo agora"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spațiu de stocare critic de redus. Eliberați spațiu ca modelul să nu se reconstruiască continuu. Se reconstruiește acum"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Критически мало места в хранилище. Освободите его, чтобы модель постоянно не пересобиралась. Сейчас идёт пересборка"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V úložisku je kriticky málo miesta. Uvoľnite miesto, aby sa model opakovane nezostavoval. Práve prebieha opätovné zostavenie"
+          }
+        },
+        "sl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kritično malo prostora v shrambi. Sprostite ga, da se model ne bo stalno gradil. Zdaj poteka ponovna izgradnja"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kritiskt lite lagringsutrymme. Frigör utrymme så att modellen inte byggs om gång på gång. Bygger om talmodellen nu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depolama alanı kritik düzeyde az. Model sürekli yeniden oluşturulmasın diye yer açın. Şimdi yeniden oluşturuluyor"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Критично мало місця у сховищі. Звільніть місце, щоб модель постійно не перезбиралася. Зараз триває перезбирання"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "储存空间严重不足。请腾出空间，以免模型反复重建。正在重建语音模型"
+          }
+        }
+      }
+    },
+    "Preparing speech model for first use": {
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подготовка на речевия модел за първа употреба"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Příprava řečového modelu pro první použití"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forbereder talemodel til første brug"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprachmodell wird für die erste Nutzung vorbereitet"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προετοιμασία μοντέλου ομιλίας για πρώτη χρήση"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando modelo de voz por primera vez"
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kõnemudeli ettevalmistus esmakasutuseks"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valmistellaan puhemallia ensikäyttöä varten"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Préparation du modèle vocal pour la première utilisation"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "पहली बार उपयोग के लिए स्पीच मॉडल तैयार हो रहा है"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priprema govornog modela za prvo korištenje"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beszédmodell előkészítése első használatra"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparazione modello vocale per il primo utilizzo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "初回利用のため音声モデルを準備中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "첫 사용을 위한 음성 모델 준비 중"
+          }
+        },
+        "lt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruošiamas kalbos modelis pirmajam naudojimui"
+          }
+        },
+        "lv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sagatavo runas modeli pirmajai lietošanai"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spraakmodel voorbereiden voor eerste gebruik"
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forbereder talemodell for førstegangsbruk"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Przygotowywanie modelu mowy do pierwszego użycia"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando modelo de voz para o primeiro uso"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se pregătește modelul vocal pentru prima utilizare"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подготовка речевой модели к первому запуску"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Príprava rečového modelu na prvé použitie"
+          }
+        },
+        "sl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priprava govornega modela za prvo uporabo"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbereder talmodell inför första användningen"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İlk kullanım için konuşma modeli hazırlanıyor"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Підготовка мовленнєвої моделі до першого запуску"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "首次使用，语音模型准备中"
           }
         }
       }

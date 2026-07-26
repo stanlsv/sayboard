@@ -12,21 +12,10 @@ struct StandardKeyboardLayout: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      Color.clear
-        .overlay {
-          Group {
-            let showModelLoading = self.keyboardState.isModelLoading && self.keyboardState.isProcessing
-            if showModelLoading {
-              ModelLoadingLabel(isLoading: self.keyboardState.isModelLoading)
-                .transition(.opacity)
-            } else if self.keyboardState.isLowDiskSpace {
-              KeyboardLowDiskSpaceWarning()
-                .transition(.opacity)
-            }
-          }
-          .animation(.easeOut(duration: 0.3), value: self.keyboardState.isModelLoading)
-          .animation(.easeOut(duration: 0.3), value: self.keyboardState.isLowDiskSpace)
-        }
+      KeyboardStatusStrip(
+        keyboardState: self.keyboardState,
+        onContentHeightChange: self.proxy.setStatusStripHeight,
+      )
       VStack(spacing: 8.5.kbScaled) {
         self.micRow
         KeyboardBottomRow(proxy: self.proxy, metrics: self.chrome, keyboardState: self.keyboardState)

@@ -10,9 +10,9 @@ enum KeyboardMetrics {
   /// iPhone portrait base height: 14.5 (top) + 168 (micRow) + 8.5 (spacing) + 49 (bottom) = 240
   static let baseHeight: CGFloat = 240
   /// iPhone portrait extended height:
-  /// 14.5 (top) + 98 (chrome: 74 mic + 12×2 padding) + 4×8.5 (spacing) + 3×45 (symbol rows)
-  ///   + 45 (bottom row) + 4 (bottom padding) = 330.5
-  static let baseExtendedHeight: CGFloat = 330.5
+  /// 14.5 (top) + 57 (chrome: 45 mic + 6×2 padding) + 4×8.5 (spacing) + 3×45 (symbol rows)
+  ///   + 45 (bottom row) + 4 (bottom padding) = 289.5
+  static let baseExtendedHeight: CGFloat = 289.5
   /// Extra height added when the LLM action bar is visible (top 8 + chip 34)
   static let baseActionBarExtra: CGFloat = 42
 

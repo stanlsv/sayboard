@@ -70,6 +70,7 @@ enum SharedKey {
   static let hasCompletedOnboarding = "hasCompletedOnboarding"
   static let hasFullAccess = "hasFullAccess"
   static let isModelLoading = "isModelLoading"
+  static let hasPreparedModelOnce = "hasPreparedModelOnce"
   static let useCustomSpaceBar = "useCustomSpaceBar"
   static let isTranslationMode = "isTranslationMode"
   static let appWritingStyles = "appWritingStyles"

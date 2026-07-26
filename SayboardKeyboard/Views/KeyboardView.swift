@@ -45,7 +45,7 @@ extension View {
         case .pill:
           Capsule(style: .continuous).fill(fill)
         case .rounded:
-          RoundedRectangle(cornerRadius: 8.5.kbScaled, style: .continuous).fill(fill)
+          RoundedRectangle(cornerRadius: KeyboardChromeMetrics.keyCornerRadius, style: .continuous).fill(fill)
         }
       }
       .keyPressTransition(isPressed: isPressed)
@@ -68,6 +68,7 @@ struct KeyboardProxy {
   let undoLLM: () -> Void
   let redoLLM: () -> Void
   let setActionBarVisible: (Bool) -> Void
+  let setStatusStripHeight: (CGFloat) -> Void
 }
 
 // MARK: - SetupBlocker
@@ -132,25 +133,10 @@ struct RectKeyStyle: ButtonStyle {
       .transaction(value: configuration.isPressed) { $0.animation = nil }
       .foregroundStyle(.primary)
       .frame(maxWidth: self.fixedWidth ?? .infinity)
-      .frame(width: self.fixedWidth, height: 45.kbScaled)
+      .frame(width: self.fixedWidth, height: KeyboardChromeMetrics.keyHeight)
       .keyBackground(shape: self.shape, fill: fill, isPressed: showPressed)
       .onChange(of: configuration.isPressed) { _, new in
         self.pressedBinding?.wrappedValue = new
-      }
-  }
-}
-
-// MARK: - CircleKeyStyle
-
-struct CircleKeyStyle: ButtonStyle {
-  let diameter: CGFloat
-
-  func makeBody(configuration: Configuration) -> some View {
-    configuration.label
-      .foregroundStyle(.primary)
-      .frame(width: self.diameter, height: self.diameter)
-      .background {
-        Circle().fill(Color(.keyBackground))
       }
   }
 }
@@ -168,8 +154,10 @@ struct KeyboardView: View {
   var body: some View {
     if let blocker = self.activeBlocker {
       BlockerPrompt(blocker: blocker)
+        .onAppear { self.proxy.setStatusStripHeight(0) }
     } else if let error = self.keyboardState.llmError {
       LLMErrorPrompt(error: error, keyboardState: self.keyboardState)
+        .onAppear { self.proxy.setStatusStripHeight(0) }
     } else {
       Group {
         switch self.keyboardState.keyboardKind {

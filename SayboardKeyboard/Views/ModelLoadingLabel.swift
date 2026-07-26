@@ -1,67 +1,66 @@
 import SwiftUI
 
-// ModelLoadingLabel -- "Initial setup... (XX%)" with animated dots and simulated progress
+// ModelLoadingLabel -- Honest "preparing speech model" status with animated dots.
+//
+// Shown while an installed speech model is being (re-)prepared for the Neural Engine.
+// After iOS purges the Core ML compiled cache under storage pressure, the next load
+// re-specializes the model (the slow "rebuild"); `lowStorage` flags that case so the
+// user understands why the wait is happening.
+//
+// `isFirstUse` marks the genuine first build (no model prepared yet) so the copy can say
+// this setup is one-time; gated by SharedSettings.hasPreparedModelOnce, never on rebuilds.
 
 struct ModelLoadingLabel: View {
 
   // MARK: Internal
 
   var isLoading: Bool
+  var lowStorage: Bool
+  var isFirstUse: Bool
 
   var body: some View {
-    HStack(spacing: 0) {
-      Text("Initial setup")
-      ZStack(alignment: .leading) {
-        Text(verbatim: "...").opacity(0) // reserves 3-dot width
-        Text(verbatim: String(repeating: ".", count: self.dotCount))
+    self.labelText
+      .multilineTextAlignment(.center)
+      .fixedSize(horizontal: false, vertical: true)
+      .font(.subheadline.weight(.semibold))
+      .padding(.horizontal, 12.kbScaled)
+      .padding(.top, 4.kbScaled)
+      .padding(.bottom, 8.kbScaled)
+      .task(id: self.isLoading) {
+        guard self.isLoading else { return }
+        self.dotCount = 1
+        await self.runDotTimer()
       }
-      Text(verbatim: " (\(self.percent)%)")
-        .monospacedDigit()
-    }
-    .font(.subheadline.weight(.semibold))
-    .task(id: self.isLoading) {
-      guard self.isLoading else {
-        self.showCompletion()
-        return
-      }
-      self.elapsed = 0
-      self.percent = 0
-      self.dotCount = 1
-      await self.runTimers()
-    }
   }
 
   // MARK: Private
 
-  private static let tickInterval = Duration.milliseconds(500)
+  private static let maxDots = 3
   private static let dotInterval = Duration.seconds(1)
 
-  // Progress curve breakpoints
-  private static let phase1End: Double = 15 // 0-50% in 15s
-  private static let phase2End: Double = 40 // 50-95% in 25s
-  private static let phase1Rate = 50.0 / 15.0 // ~3.3%/s
-  private static let phase2Rate = 45.0 / 25.0 // ~1.8%/s
-  private static let phase3Rate = 1.0 / 60.0 // 1%/min
-  private static let maxPercent = 99
-
   @State private var dotCount = 1
-  @State private var percent = 0
-  @State private var elapsed: Double = 0
 
-  private func runTimers() async {
-    await withTaskGroup(of: Void.self) { group in
-      group.addTask { await self.runProgressTimer() }
-      group.addTask { await self.runDotTimer() }
-      await group.waitForAll()
-    }
+  /// Message with an animated trailing ellipsis, plus a leading warning emoji in
+  /// the low-storage case so the marker sits inline at the start of the first
+  /// line. The unused dots are kept as a clear (invisible) run so the total width
+  /// stays constant — the text never reflows and the measured keyboard height
+  /// never jitters as the dots animate. One concatenated `Text` so the emoji
+  /// leads and the dots trail even when the message wraps to multiple lines.
+  private var labelText: Text {
+    let dots = Text(verbatim: String(repeating: ".", count: self.dotCount))
+      + Text(verbatim: String(repeating: ".", count: Self.maxDots - self.dotCount)).foregroundColor(.clear)
+    let text = Text(self.message) + dots
+    guard self.lowStorage else { return text }
+    return Text(verbatim: "\u{26A0}\u{FE0F} ") + text
   }
 
-  private func runProgressTimer() async {
-    while !Task.isCancelled {
-      try? await Task.sleep(for: Self.tickInterval)
-      guard !Task.isCancelled else { return }
-      self.elapsed += 0.5
-      self.percent = min(Self.maxPercent, self.computePercent())
+  private var message: LocalizedStringKey {
+    if self.lowStorage {
+      "Storage critically low. Free up space so the model doesn't keep rebuilding. Rebuilding it now"
+    } else if self.isFirstUse {
+      "Preparing speech model for first use"
+    } else {
+      "Preparing speech model"
     }
   }
 
@@ -71,22 +70,5 @@ struct ModelLoadingLabel: View {
       guard !Task.isCancelled else { return }
       self.dotCount = self.dotCount % 3 + 1
     }
-  }
-
-  private func computePercent() -> Int {
-    if self.elapsed <= Self.phase1End {
-      return Int(self.elapsed * Self.phase1Rate)
-    } else if self.elapsed <= Self.phase2End {
-      let extra = (self.elapsed - Self.phase1End) * Self.phase2Rate
-      return Int(50 + extra)
-    } else {
-      let extra = (self.elapsed - Self.phase2End) * Self.phase3Rate
-      return Int(95 + extra)
-    }
-  }
-
-  private func showCompletion() {
-    self.percent = 100
-    self.dotCount = 3
   }
 }

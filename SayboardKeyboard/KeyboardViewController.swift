@@ -138,6 +138,9 @@ final class KeyboardViewController: UIInputViewController {
 
   private var heightConstraint: NSLayoutConstraint?
   private var hostingHeightConstraint: NSLayoutConstraint?
+  /// Height inputs combined into the keyboard height (see `applyKeyboardHeight`).
+  private var actionBarVisible = false
+  private var statusStripHeight: CGFloat = 0
 
   private var hostingController: UIHostingController<KeyboardView>?
   private var staleFallbackTimer: Timer?
@@ -340,6 +343,7 @@ extension KeyboardViewController {
     self.keyboardState.isProcessing = true
     self.keyboardState.syncModelLoading()
     self.keyboardState.stopLevelPolling()
+    let loading = self.keyboardState.isModelLoading
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.requestStopDictation)
     self.startProcessingTimeout()
   }
@@ -401,19 +405,22 @@ extension KeyboardViewController {
 
   // MARK: Internal
 
+  /// Toggles the LLM action-bar contribution to the keyboard height.
+  /// Always recomputes via `applyKeyboardHeight`, whose output guard also
+  /// catches `keyboardKind` changes on a reused controller.
   func updateKeyboardHeight(actionBarVisible: Bool) {
-    guard let hc = self.heightConstraint else { return }
-    let target = KeyboardMetrics.totalHeight(
-      actionBarVisible: actionBarVisible,
-      kind: self.keyboardState.keyboardKind,
-    )
-    guard hc.constant != target else { return }
-    hc.constant = target
-    self.hostingHeightConstraint?.constant = target
-    UIView.performWithoutAnimation {
-      self.view.layoutIfNeeded()
-      self.view.superview?.layoutIfNeeded()
-    }
+    self.actionBarVisible = actionBarVisible
+    self.applyKeyboardHeight()
+  }
+
+  /// Reports the measured height of the status strip content (the model
+  /// loading / low-storage label) so the keyboard can grow to fit it instead
+  /// of the text overflowing the keys. `height` is the SwiftUI-measured size.
+  func updateStatusStripHeight(_ height: CGFloat) {
+    let rounded = height.rounded(.up)
+    guard self.statusStripHeight != rounded else { return }
+    self.statusStripHeight = rounded
+    self.applyKeyboardHeight()
   }
 
   func setupKeyboardView() {
@@ -443,6 +450,26 @@ extension KeyboardViewController {
   }
 
   // MARK: Private
+
+  /// Single source of truth for the keyboard height: base layout (optionally
+  /// including the LLM action bar) plus the measured status-strip content, so
+  /// any status text — model loading, low-storage rebuild — gets real vertical
+  /// space rather than overflowing the keys.
+  private func applyKeyboardHeight() {
+    guard let hc = self.heightConstraint else { return }
+    let base = KeyboardMetrics.totalHeight(
+      actionBarVisible: self.actionBarVisible,
+      kind: self.keyboardState.keyboardKind,
+    )
+    let target = base + self.statusStripHeight
+    guard hc.constant != target else { return }
+    hc.constant = target
+    self.hostingHeightConstraint?.constant = target
+    UIView.performWithoutAnimation {
+      self.view.layoutIfNeeded()
+      self.view.superview?.layoutIfNeeded()
+    }
+  }
 
   private func makeKeyboardProxy() -> KeyboardProxy {
     KeyboardProxy(
@@ -477,6 +504,9 @@ extension KeyboardViewController {
       redoLLM: { [weak self] in self?.redoLLM() },
       setActionBarVisible: { [weak self] visible in
         self?.updateKeyboardHeight(actionBarVisible: visible)
+      },
+      setStatusStripHeight: { [weak self] height in
+        self?.updateStatusStripHeight(height)
       },
     )
   }

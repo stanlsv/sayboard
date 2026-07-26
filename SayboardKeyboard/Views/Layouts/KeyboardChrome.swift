@@ -38,6 +38,18 @@ struct KeyboardChromeMetrics {
     6.kbScaled
   }
 
+  /// Shared key metrics — the single source of truth for a key's height and
+  /// corner radius, reused by the key styles and the extended mic button.
+  @MainActor
+  static var keyHeight: CGFloat {
+    45.kbScaled
+  }
+
+  @MainActor
+  static var keyCornerRadius: CGFloat {
+    8.5.kbScaled
+  }
+
   let sideButtonWidth: CGFloat
   let trashWidth: CGFloat
   let returnWidth: CGFloat
@@ -45,15 +57,52 @@ struct KeyboardChromeMetrics {
 
 }
 
-// MARK: - KeyboardLowDiskSpaceWarning
+// MARK: - KeyboardStatusStrip
 
-struct KeyboardLowDiskSpaceWarning: View {
+/// Thin status row above the keys: model (re)build progress while a load is in
+/// flight, with a low-storage note when space is critically low. Shared verbatim
+/// by both keyboard layouts.
+struct KeyboardStatusStrip: View {
+
+  // MARK: Internal
+
+  @ObservedObject var keyboardState: KeyboardState
+
+  /// Reports the measured content height so the keyboard can grow to fit
+  /// multi-line status text instead of letting it overflow the keys.
+  let onContentHeightChange: (CGFloat) -> Void
+
   var body: some View {
-    HStack(spacing: 4) {
-      Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
-      Text("Low storage causes constant model rebuilds")
-    }
-    .font(.subheadline.weight(.semibold))
+    Color.clear
+      .overlay(alignment: .top) {
+        Group {
+          if self.showModelLoading {
+            ModelLoadingLabel(
+              isLoading: self.keyboardState.isModelLoading,
+              lowStorage: self.keyboardState.isLowDiskSpace,
+              isFirstUse: !self.keyboardState.hasPreparedModelOnce,
+            )
+            .transition(.opacity)
+          }
+        }
+        .animation(.easeOut(duration: 0.3), value: self.keyboardState.isModelLoading)
+        .animation(.easeOut(duration: 0.3), value: self.keyboardState.isLowDiskSpace)
+        .background {
+          GeometryReader { geo in
+            Color.clear
+              .onAppear { self.onContentHeightChange(geo.size.height) }
+              .onChange(of: geo.size.height) { _, height in
+                self.onContentHeightChange(height)
+              }
+          }
+        }
+      }
+  }
+
+  // MARK: Private
+
+  private var showModelLoading: Bool {
+    self.keyboardState.isModelLoading && self.keyboardState.isProcessing
   }
 }
 

@@ -3,7 +3,9 @@ import SwiftUI
 // MARK: - MicSizing
 
 struct MicSizing {
-  let buttonDiameter: CGFloat
+  let buttonWidth: CGFloat
+  let buttonHeight: CGFloat
+  let cornerRadius: CGFloat
   let labelWidth: CGFloat
   let labelHeight: CGFloat
   let spinnerSize: CGFloat
@@ -12,10 +14,13 @@ struct MicSizing {
 }
 
 extension MicSizing {
+  /// Standard layout: a large circular mic (corner radius = half the size).
   @MainActor
   static var standard: MicSizing {
     MicSizing(
-      buttonDiameter: 106.kbScaled,
+      buttonWidth: 106.kbScaled,
+      buttonHeight: 106.kbScaled,
+      cornerRadius: 53.kbScaled,
       labelWidth: 56.kbScaled,
       labelHeight: 42.kbScaled,
       spinnerSize: 42.kbScaled,
@@ -24,15 +29,23 @@ extension MicSizing {
     )
   }
 
+  /// Extended layout: a capsule-shaped mic — the Enter key's `width` (passed in)
+  /// and height (`keyHeight`), but fully rounded ends (corner radius = height / 2)
+  /// so it reads as a pill while the chrome row stays short.
   @MainActor
-  static var extended: MicSizing {
+  static func extended(width: CGFloat) -> MicSizing {
     let micScale: CGFloat = 74.0 / 106.0
+    // Inner content (icon, waveform, spinner) trimmed a further 18% so it doesn't
+    // crowd the capsule; the pulse rings keep the original scale.
+    let contentScale = micScale * 0.82
     return MicSizing(
-      buttonDiameter: 74.kbScaled,
-      labelWidth: 56.kbScaled * micScale,
-      labelHeight: 42.kbScaled * micScale,
-      spinnerSize: 42.kbScaled * micScale,
-      waveformScale: micScale,
+      buttonWidth: width,
+      buttonHeight: KeyboardChromeMetrics.keyHeight,
+      cornerRadius: KeyboardChromeMetrics.keyHeight / 2,
+      labelWidth: 56.kbScaled * contentScale,
+      labelHeight: 42.kbScaled * contentScale,
+      spinnerSize: 42.kbScaled * contentScale,
+      waveformScale: contentScale,
       pulseRingSpacing: 24.kbScaled * micScale,
     )
   }
@@ -54,7 +67,11 @@ struct MicAnimatedButton: View {
     Button(action: self.handleTap) {
       self.micButtonLabel
     }
-    .buttonStyle(CircleKeyStyle(diameter: self.sizing.buttonDiameter))
+    .buttonStyle(MicButtonStyle(
+      width: self.sizing.buttonWidth,
+      height: self.sizing.buttonHeight,
+      cornerRadius: self.sizing.cornerRadius,
+    ))
     .allowsHitTesting(!self.keyboardState.isProcessing)
     .onChange(of: self.keyboardState.isRecording, self.handleRecordingChanged)
     .task(id: self.keyboardState.isProcessing, self.observeProcessing)
@@ -214,14 +231,19 @@ struct MicButtonWithPulse: View {
   @ObservedObject var keyboardState: KeyboardState
 
   var body: some View {
-    let pulse = PulseRings(buttonDiameter: self.sizing.buttonDiameter, ringSpacing: self.sizing.pulseRingSpacing)
+    let pulse = PulseRings(
+      buttonWidth: self.sizing.buttonWidth,
+      buttonHeight: self.sizing.buttonHeight,
+      cornerRadius: self.sizing.cornerRadius,
+      ringSpacing: self.sizing.pulseRingSpacing,
+    )
     let showPulseRings = self.keyboardState.isRecording && !self.keyboardState.isProcessing
     if self.reservesPulseSpace {
       ZStack {
         self.decoratedPulse(pulse: pulse, show: showPulseRings)
         self.micButton
       }
-      .frame(minHeight: pulse.maxDiameter)
+      .frame(minHeight: pulse.maxHeight)
     } else {
       self.micButton.overlay {
         self.decoratedPulse(pulse: pulse, show: showPulseRings)
@@ -241,5 +263,24 @@ struct MicButtonWithPulse: View {
       .scaleEffect(show ? 1 : 0.69)
       .animation(.easeOut(duration: 0.4), value: show)
       .allowsHitTesting(false)
+  }
+}
+
+// MARK: - MicButtonStyle
+
+/// Rounded-rectangle mic background — a circle when cornerRadius is half the size
+/// (standard layout), a wide rounded rect when it isn't (extended layout).
+struct MicButtonStyle: ButtonStyle {
+  let width: CGFloat
+  let height: CGFloat
+  let cornerRadius: CGFloat
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .foregroundStyle(.primary)
+      .frame(width: self.width, height: self.height)
+      .background {
+        RoundedRectangle(cornerRadius: self.cornerRadius, style: .continuous).fill(Color(.keyBackground))
+      }
   }
 }

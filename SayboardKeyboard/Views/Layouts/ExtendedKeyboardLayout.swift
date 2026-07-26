@@ -12,21 +12,10 @@ struct ExtendedKeyboardLayout: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      Color.clear
-        .overlay {
-          Group {
-            let showModelLoading = self.keyboardState.isModelLoading && self.keyboardState.isProcessing
-            if showModelLoading {
-              ModelLoadingLabel(isLoading: self.keyboardState.isModelLoading)
-                .transition(.opacity)
-            } else if self.keyboardState.isLowDiskSpace {
-              KeyboardLowDiskSpaceWarning()
-                .transition(.opacity)
-            }
-          }
-          .animation(.easeOut(duration: 0.3), value: self.keyboardState.isModelLoading)
-          .animation(.easeOut(duration: 0.3), value: self.keyboardState.isLowDiskSpace)
-        }
+      KeyboardStatusStrip(
+        keyboardState: self.keyboardState,
+        onContentHeightChange: self.proxy.setStatusStripHeight,
+      )
       VStack(spacing: Self.rowSpacing) {
         self.chromeRow
         self.symbolsRow1View
@@ -114,16 +103,27 @@ extension ExtendedKeyboardLayout {
           .transition(.opacity.combined(with: .scale))
       }
       Spacer()
-      MicButtonWithPulse(sizing: .extended, proxy: self.proxy, reservesPulseSpace: false, keyboardState: self.keyboardState)
-        .padding(12.kbScaled)
+      self.micButton
     }
-    // Leading 12pt mirrors the mic button's own 12pt padding on the right; trailing 4pt
-    // is the residual outer gap so the mic compartment hugs the keyboard edge symmetrically.
+    // Leading padding matches the mic button's own horizontal padding, so the settings pill
+    // and the mic capsule sit the same distance from their respective keyboard edges.
     .padding(.leading, 12.kbScaled)
-    .padding(.trailing, 4.kbScaled)
     .animation(.easeInOut(duration: 0.35), value: self.keyboardState.selectedVariantSupportsTranslation)
     .animation(.easeInOut(duration: 0.35), value: self.keyboardState.showsAIButton)
     .animation(.easeInOut(duration: 0.25), value: self.keyboardState.hasLLMHistory)
+  }
+
+  /// Mic compartment: an Enter-key-shaped mic (reuses the key's width, height,
+  /// and corner radius) pushed to the trailing edge of the chrome row.
+  private var micButton: some View {
+    MicButtonWithPulse(
+      sizing: .extended(width: self.chrome.returnWidth),
+      proxy: self.proxy,
+      reservesPulseSpace: false,
+      keyboardState: self.keyboardState,
+    )
+    .padding(.horizontal, 12.kbScaled)
+    .padding(.vertical, 6.kbScaled)
   }
 
   private var undoRedoRow: some View {

@@ -45813,180 +45813,180 @@
         }
       }
     },
-    "— if you see this orange indicator in the corner of the screen, don’t worry. It means Sayboard is keeping the microphone session ready so the keyboard can start dictation instantly. No hidden recording is happening — the microphone only activates when you press the record button. As a reminder, your voice is processed locally on your device and never leaves it.\n\nSwitching to the app when you tap the record button is a necessary measure. The system does not allow keyboard extensions to access the microphone directly, so Sayboard briefly opens to activate it and immediately returns you back. To see these transitions less often, increase the time in the “Auto-Stop” setting.\n\nBattery usage while the orange indicator is on is minimal over a full day of an active session. However, you can reduce the time in the “Auto-Stop” setting, but keep in mind: the lower the value, the more often the app will switch you back and forth to activate the microphone.": {
+    "— if you spot this orange indicator in the corner, there’s nothing to worry about. It simply means Sayboard is keeping the microphone session ready, so the keyboard can start dictation the instant you want it. Nothing is recorded in the background — the microphone only turns on when you press the record button. Whatever you say stays on your device and never leaves it. Sayboard’s code is open — if you like, you can go through it yourself and see first-hand that this is true.\n\nWhen you tap record, you’ll see the app open for a moment. The system doesn’t allow keyboards to use the microphone directly, so Sayboard briefly opens to turn it on and brings you right back. Prefer to see that less often? Increase the “Auto-Stop” time — the lower it is, the more often you’ll be switched back and forth.\n\nThe convenience of instant dictation does come at a small battery cost — usually up to about 15% of your charge over a full day.": {
       "localizations": {
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "— если вы видите этот оранжевый индикатор в углу экрана, не волнуйтесь. Это значит, что Sayboard поддерживает сессию микрофона в готовности, чтобы клавиатура могла мгновенно начать диктовку. Никакой скрытой записи не происходит — микрофон включается, только когда вы нажимаете на кнопку записи. Напоминаем, что голос обрабатывается локально на вашем устройстве и никогда не покидает его.\n\nПереход в приложение при нажатии кнопки записи — вынужденная мера. Система не позволяет расширениям клавиатуры напрямую использовать микрофон, поэтому Sayboard ненадолго открывается для его активации и сразу возвращает вас обратно. Чтобы видеть эти переходы реже, увеличьте время в настройке «Автоотключение».\n\nРасход батареи при активном оранжевом индикаторе минимален за целый день активной сессии. Впрочем, вы можете уменьшить время в настройке «Автоотключение», но учтите: чем меньше значение, тем чаще приложение будет перебрасывать вас туда-обратно для активации микрофона."
+            "value": "— если вы видите в углу этот оранжевый индикатор, беспокоиться не о чем. Он лишь означает, что Sayboard держит сессию микрофона наготове, чтобы клавиатура могла начать диктовку в ту же секунду, как вам это нужно. В фоне ничего не записывается — микрофон включается, только когда вы нажимаете кнопку записи. Всё, что вы произносите, остаётся на вашем устройстве и никогда его не покидает. Код Sayboard открыт — при желании вы можете сами изучить его и лично убедиться, что это правда.\n\nКогда вы нажимаете запись, приложение на миг открывается. Система не позволяет клавиатурам обращаться к микрофону напрямую, поэтому Sayboard ненадолго открывается, чтобы его включить, и сразу возвращает вас назад. Хотите видеть это реже — увеличьте время в настройке «Автоотключение»: чем оно меньше, тем чаще вас перебрасывает туда-обратно.\n\nЗа удобство мгновенной диктовки приходится платить небольшим расходом батареи — обычно это до ~15% заряда за сутки."
           }
         },
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "— pokud vidíte tento oranžový indikátor v rohu obrazovky, nemějte obavy. Znamená to, že Sayboard udržuje relaci mikrofonu připravenou, aby klávesnice mohla okamžitě zahájit diktování. Nedochází k žádnému skrytému nahrávání — mikrofon se aktivuje, pouze když stisknete tlačítko nahrávání. Připomínáme, že váš hlas se zpracovává lokálně na vašem zařízení a nikdy ho neopustí.\n\nPřepnutí do aplikace po klepnutí na tlačítko nahrávání je nezbytné opatření. Systém neumožňuje rozšířením klávesnice přímý přístup k mikrofonu, proto se Sayboard krátce otevře, aby ho aktivoval, a okamžitě vás vrátí zpět. Chcete-li tyto přechody vidět méně často, zvyšte čas v nastavení „Automatické zastavení“.\n\nSpotřeba baterie při zapnutém oranžovém indikátoru je za celý den aktivní relace minimální. Můžete však snížit čas v nastavení „Automatické zastavení“, ale mějte na paměti: čím nižší hodnota, tím častěji vás aplikace bude přepínat tam a zpět kvůli aktivaci mikrofonu."
+            "value": "— pokud si v rohu všimnete tohoto oranžového indikátoru, není třeba se ničeho obávat. Znamená to jen, že Sayboard udržuje relaci mikrofonu připravenou, aby klávesnice mohla zahájit diktování v okamžiku, kdy budete chtít. Na pozadí se nic nenahrává — mikrofon se zapne, jen když stisknete tlačítko nahrávání. Cokoli řeknete, zůstává ve vašem zařízení a nikdy je neopustí. Kód aplikace Sayboard je otevřený — pokud chcete, můžete si ho sami projít a na vlastní oči se přesvědčit, že je to pravda.\n\nKdyž klepnete na nahrávání, na okamžik se otevře aplikace. Systém neumožňuje klávesnicím používat mikrofon přímo, a tak se Sayboard na chvíli otevře, aby jej zapnul, a hned vás vrátí zpět. Chcete to vidět méně často? Prodlužte dobu „Automatické zastavení\" — čím je nižší, tím častěji bude docházet k přepínání tam a zpět.\n\nPohodlí okamžitého diktování s sebou nese malé náklady na baterii — obvykle až zhruba 15 % nabití během celého dne."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "— hvis du ser denne orange indikator i hjørnet af skærmen, skal du ikke være urolig. Det betyder, at Sayboard holder mikrofonsessionen klar, så tastaturet kan starte diktering med det samme. Der sker ingen skjult optagelse — mikrofonen aktiveres kun, når du trykker på optageknappen. Husk, at din stemme behandles lokalt på din enhed og aldrig forlader den.\n\nAt skifte til appen, når du trykker på optageknappen, er nødvendigt. Systemet tillader ikke tastaturudvidelser at få direkte adgang til mikrofonen, så Sayboard åbnes kort for at aktivere den og sender dig straks tilbage. For at se disse skift sjældnere kan du øge tiden i indstillingen \"Automatisk stop\".\n\nBatteriforbruget er minimalt, mens den orange indikator er tændt, henover en hel dag med en aktiv session. Du kan dog mindske tiden i indstillingen \"Automatisk stop\", men husk: jo lavere værdien er, jo oftere vil appen skifte dig frem og tilbage for at aktivere mikrofonen."
+            "value": "— hvis du får øje på denne orange indikator i hjørnet, er der ingen grund til bekymring. Det betyder blot, at Sayboard holder mikrofonsessionen klar, så tastaturet kan starte diktering, i samme øjeblik du ønsker det. Der optages intet i baggrunden — mikrofonen tændes kun, når du trykker på optageknappen. Alt, hvad du siger, bliver på din enhed og forlader den aldrig. Sayboards kode er åben — hvis du har lyst, kan du selv gennemgå den og med egne øjne se, at det passer.\n\nNår du trykker på optag, vil du se appen åbne et kort øjeblik. Systemet tillader ikke tastaturer at bruge mikrofonen direkte, så Sayboard åbner kortvarigt for at tænde den og sender dig straks tilbage. Vil du hellere se det sjældnere? Øg tiden for »Automatisk stop« — jo lavere den er, jo oftere bliver du skiftet frem og tilbage.\n\nBekvemmeligheden ved øjeblikkelig diktering har ganske vist en lille pris i batteriforbrug — typisk op til omkring 15 % af din opladning i løbet af en hel dag."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "— wenn Sie diesen orangefarbenen Indikator in der Ecke des Bildschirms sehen, machen Sie sich keine Sorgen. Er bedeutet, dass Sayboard die Mikrofonsitzung bereit hält, damit die Tastatur sofort mit dem Diktieren beginnen kann. Es findet keine versteckte Aufnahme statt — das Mikrofon wird nur aktiviert, wenn Sie die Aufnahmetaste drücken. Zur Erinnerung: Ihre Stimme wird lokal auf Ihrem Gerät verarbeitet und verlässt es niemals.\n\nDer Wechsel zur App beim Drücken der Aufnahmetaste ist eine notwendige Maßnahme. Das System erlaubt Tastaturerweiterungen keinen direkten Zugriff auf das Mikrofon, daher öffnet Sayboard kurz die App zur Aktivierung und kehrt sofort zu Ihnen zurück. Um diese Übergänge seltener zu sehen, erhöhen Sie die Zeit in der Einstellung „Automatischer Stopp“.\n\nDer Batterieverbrauch bei eingeschaltetem orangefarbenem Indikator ist über einen ganzen Tag einer aktiven Sitzung minimal. Sie können jedoch die Zeit in der Einstellung „Automatischer Stopp“ verringern, aber bedenken Sie: Je niedriger der Wert, desto häufiger wird die App Sie hin und her wechseln, um das Mikrofon zu aktivieren."
+            "value": "— Wenn Ihnen diese orangefarbene Anzeige in der Ecke auffällt, gibt es keinen Grund zur Sorge. Sie bedeutet lediglich, dass Sayboard die Mikrofonsitzung bereithält, damit die Tastatur das Diktieren genau in dem Moment starten kann, in dem Sie es möchten. Im Hintergrund wird nichts aufgezeichnet — das Mikrofon schaltet sich nur ein, wenn Sie die Aufnahmetaste drücken. Was Sie sagen, bleibt auf Ihrem Gerät und verlässt es nie. Der Code von Sayboard ist offen — wenn Sie möchten, können Sie ihn selbst durchsehen und sich aus erster Hand davon überzeugen, dass das stimmt.\n\nWenn Sie auf die Aufnahmetaste tippen, sehen Sie kurz, wie sich die App öffnet. Das System erlaubt Tastaturen nicht, das Mikrofon direkt zu nutzen; deshalb öffnet sich Sayboard kurz, um es einzuschalten, und bringt Sie sofort zurück. Möchten Sie das seltener sehen? Erhöhen Sie die Zeit für „Automatischer Stopp\" — je niedriger sie ist, desto öfter werden Sie hin- und hergeschaltet.\n\nDer Komfort des sofortigen Diktierens hat durchaus einen kleinen Preis bei der Akkulaufzeit — in der Regel bis zu etwa 15% Ihrer Ladung im Laufe eines ganzen Tages."
           }
         },
         "el": {
           "stringUnit": {
             "state": "translated",
-            "value": "— αν βλέπετε αυτόν τον πορτοκαλί δείκτη στη γωνία της οθόνης, μην ανησυχείτε. Σημαίνει ότι το Sayboard κρατά τη συνεδρία μικροφώνου έτοιμη ώστε το πληκτρολόγιο να μπορεί να ξεκινήσει αμέσως την υπαγόρευση. Δεν γίνεται κρυφή εγγραφή — το μικρόφωνο ενεργοποιείται μόνο όταν πατάτε το κουμπί εγγραφής. Υπενθυμίζουμε ότι η φωνή σας επεξεργάζεται τοπικά στη συσκευή σας και δεν φεύγει ποτέ από αυτή.\n\nΗ εναλλαγή στην εφαρμογή όταν πατάτε το κουμπί εγγραφής είναι ένα απαραίτητο μέτρο. Το σύστημα δεν επιτρέπει στις επεκτάσεις πληκτρολογίου να έχουν απευθείας πρόσβαση στο μικρόφωνο, οπότε το Sayboard ανοίγει σύντομα για να το ενεργοποιήσει και σας επιστρέφει αμέσως. Για να βλέπετε αυτές τις μεταβάσεις λιγότερο συχνά, αυξήστε τον χρόνο στη ρύθμιση «Αυτόματη διακοπή».\n\nΗ κατανάλωση μπαταρίας ενώ ο πορτοκαλί δείκτης είναι ενεργός είναι ελάχιστη σε μια ολόκληρη μέρα ενεργής συνεδρίας. Μπορείτε ωστόσο να μειώσετε τον χρόνο στη ρύθμιση «Αυτόματη διακοπή», αλλά να έχετε υπόψη: όσο χαμηλότερη η τιμή, τόσο πιο συχνά η εφαρμογή θα σας εναλλάσσει για να ενεργοποιήσει το μικρόφωνο."
+            "value": "— αν παρατηρήσετε αυτήν την πορτοκαλί ένδειξη στη γωνία, δεν υπάρχει λόγος ανησυχίας. Σημαίνει απλώς ότι το Sayboard διατηρεί έτοιμη τη συνεδρία του μικροφώνου, ώστε το πληκτρολόγιο να μπορεί να ξεκινήσει την υπαγόρευση τη στιγμή ακριβώς που τη θέλετε. Τίποτα δεν καταγράφεται στο παρασκήνιο — το μικρόφωνο ενεργοποιείται μόνο όταν πατάτε το κουμπί εγγραφής. Ό,τι λέτε παραμένει στη συσκευή σας και δεν φεύγει ποτέ από αυτήν. Ο κώδικας του Sayboard είναι ανοιχτός — αν θέλετε, μπορείτε να τον εξετάσετε μόνοι σας και να διαπιστώσετε από πρώτο χέρι ότι αυτό ισχύει.\n\nΌταν πατάτε την εγγραφή, θα δείτε την εφαρμογή να ανοίγει για μια στιγμή. Το σύστημα δεν επιτρέπει στα πληκτρολόγια να χρησιμοποιούν απευθείας το μικρόφωνο, γι' αυτό το Sayboard ανοίγει για λίγο για να το ενεργοποιήσει και σας επαναφέρει αμέσως. Προτιμάτε να το βλέπετε πιο σπάνια; Αυξήστε τον χρόνο για την «Αυτόματη διακοπή» — όσο μικρότερος είναι, τόσο πιο συχνά θα μεταφέρεστε μπρος-πίσω.\n\nΗ άνεση της άμεσης υπαγόρευσης έχει όντως ένα μικρό κόστος σε μπαταρία — συνήθως έως περίπου 15% της φόρτισής σας στη διάρκεια μιας ολόκληρης ημέρας."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "— si ve este indicador naranja en la esquina de la pantalla, no se preocupe. Significa que Sayboard mantiene la sesión del micrófono lista para que el teclado pueda iniciar el dictado al instante. No hay ninguna grabación oculta — el micrófono solo se activa cuando pulsa el botón de grabar. Como recordatorio, su voz se procesa localmente en su dispositivo y nunca sale de él.\n\nCambiar a la app al pulsar el botón de grabar es una medida necesaria. El sistema no permite que las extensiones de teclado accedan directamente al micrófono, por lo que Sayboard se abre brevemente para activarlo y le devuelve enseguida. Para ver estos cambios con menos frecuencia, aumente el tiempo en el ajuste «Parada automática».\n\nEl consumo de batería mientras el indicador naranja está encendido es mínimo a lo largo de un día completo de sesión activa. Aun así, puede reducir el tiempo en el ajuste «Parada automática», pero tenga en cuenta: cuanto menor sea el valor, con más frecuencia la app le cambiará de un lado a otro para activar el micrófono."
+            "value": "— si ve este indicador naranja en la esquina, no hay nada de qué preocuparse. Simplemente significa que Sayboard mantiene lista la sesión del micrófono, para que el teclado pueda empezar a dictar en el instante en que lo desee. No se graba nada en segundo plano — el micrófono solo se enciende cuando pulsa el botón de grabar. Todo lo que diga permanece en su dispositivo y nunca sale de él. El código de Sayboard es abierto — si lo desea, puede revisarlo por su cuenta y comprobar de primera mano que esto es cierto.\n\nCuando pulsa grabar, verá que la app se abre por un momento. El sistema no permite que los teclados usen el micrófono directamente, así que Sayboard se abre brevemente para encenderlo y le devuelve enseguida a donde estaba. ¿Prefiere ver esto con menos frecuencia? Aumente el tiempo de «Parada automática» — cuanto más bajo sea, más a menudo tendrá que ir y venir.\n\nLa comodidad del dictado instantáneo sí tiene un pequeño coste de batería — normalmente hasta alrededor del 15% de la carga a lo largo de un día completo."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "— jos näet näytön kulmassa tämän oranssin merkin, älä huoli. Se tarkoittaa, että Sayboard pitää mikrofoni-istunnon valmiina, jotta näppäimistö voi aloittaa sanelun heti. Mitään piilotettua tallennusta ei tapahdu — mikrofoni aktivoituu vain, kun painat tallennuspainiketta. Muistutuksena: äänesi käsitellään laitteessa, eikä se koskaan poistu siitä.\n\nOhjelmaan vaihtaminen tallennuspainiketta painettaessa on välttämätöntä. Järjestelmä ei salli näppäimistölaajennusten käyttää mikrofonia suoraan, joten Sayboard avautuu hetkeksi aktivoidakseen sen ja palauttaa sinut heti takaisin. Jos haluat nähdä nämä siirtymät harvemmin, kasvata aikaa ”Automaattinen pysäytys” -asetuksessa.\n\nAkun kulutus oranssin merkin ollessa päällä on vähäistä koko aktiivisen päivän aikana. Voit kuitenkin pienentää aikaa ”Automaattinen pysäytys” -asetuksessa, mutta muista: mitä pienempi arvo, sitä useammin ohjelma vaihtaa edestakaisin mikrofonin aktivoimiseksi."
+            "value": "– jos huomaat tämän oranssin merkkivalon kulmassa, ei ole syytä huoleen. Se tarkoittaa vain, että Sayboard pitää mikrofoni-istunnon valmiina, jotta näppäimistö voi aloittaa sanelun heti, kun haluat. Mitään ei tallenneta taustalla – mikrofoni kytkeytyy päälle vasta, kun painat äänityspainiketta. Kaikki, mitä sanot, pysyy laitteessasi eikä poistu siitä koskaan. Sayboardin koodi on avoin – halutessasi voit käydä sen itse läpi ja todeta omin silmin, että tämä pitää paikkansa.\n\nKun napautat äänityspainiketta, näet sovelluksen aukeavan hetkeksi. Järjestelmä ei salli näppäimistöjen käyttää mikrofonia suoraan, joten Sayboard avautuu hetkeksi kytkeäkseen sen päälle ja tuo sinut heti takaisin. Haluatko nähdä tämän harvemmin? Pidennä ”Automaattinen pysäytys” -aikaa – mitä pienempi se on, sitä useammin sinut siirretään edestakaisin.\n\nVälittömän sanelun mukavuudella on pieni hintansa akunkulutuksessa – yleensä enintään noin 15 % varauksesta koko päivän aikana."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "— si vous voyez cet indicateur orange dans le coin de l'écran, ne vous inquiétez pas. Cela signifie que Sayboard maintient la session du microphone prête pour que le clavier puisse démarrer la dictée instantanément. Aucun enregistrement caché n'a lieu — le microphone ne s'active que lorsque vous appuyez sur le bouton d'enregistrement. Pour rappel, votre voix est traitée localement sur votre appareil et ne le quitte jamais.\n\nLe passage à l'application lorsque vous appuyez sur le bouton d'enregistrement est une mesure nécessaire. Le système ne permet pas aux extensions de clavier d'accéder directement au microphone, donc Sayboard s'ouvre brièvement pour l'activer et vous ramène immédiatement. Pour voir ces transitions moins souvent, augmentez le temps dans le réglage « Arrêt automatique ».\n\nLa consommation de batterie lorsque l'indicateur orange est allumé est minimale sur une journée complète de session active. Cependant, vous pouvez réduire le temps dans le réglage « Arrêt automatique », mais gardez à l'esprit : plus la valeur est basse, plus souvent l'application vous fera basculer pour activer le microphone."
+            "value": "— si vous remarquez cet indicateur orange dans le coin, il n’y a pas de quoi s’inquiéter. Cela signifie simplement que Sayboard garde la session du microphone prête, pour que le clavier puisse lancer la dictée à l’instant où vous le souhaitez. Rien n’est enregistré en arrière-plan — le microphone ne s’active que lorsque vous appuyez sur le bouton d’enregistrement. Tout ce que vous dites reste sur votre appareil et ne le quitte jamais. Le code de Sayboard est ouvert : si vous le souhaitez, vous pouvez l’examiner par vous-même et constater directement que c’est vrai.\n\nLorsque vous appuyez sur enregistrer, vous verrez l’application s’ouvrir un court instant. Le système n’autorise pas les claviers à utiliser directement le microphone : Sayboard s’ouvre donc brièvement pour l’activer, puis vous ramène aussitôt. Vous préférez voir cela moins souvent ? Augmentez la durée « Arrêt automatique » — plus elle est courte, plus vous ferez d’allers-retours.\n\nLa commodité de la dictée instantanée a bien un léger coût en batterie — généralement jusqu’à environ 15 % de votre charge sur une journée entière."
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "— अगर आप स्क्रीन के कोने में यह नारंगी संकेतक देखते हैं, तो चिंता न करें। इसका मतलब है कि Sayboard माइक्रोफ़ोन सत्र को तैयार रख रहा है ताकि कीबोर्ड तुरंत डिक्टेशन शुरू कर सके। कोई छिपी हुई रिकॉर्डिंग नहीं हो रही — माइक्रोफ़ोन केवल तभी सक्रिय होता है जब आप रिकॉर्ड बटन दबाते हैं। याद रखें, आपकी आवाज़ आपके डिवाइस पर स्थानीय रूप से प्रोसेस होती है और इससे कभी बाहर नहीं जाती।\n\nरिकॉर्ड बटन दबाने पर ऐप पर स्विच होना एक आवश्यक उपाय है। सिस्टम कीबोर्ड एक्सटेंशन को सीधे माइक्रोफ़ोन एक्सेस करने की अनुमति नहीं देता, इसलिए Sayboard इसे सक्रिय करने के लिए संक्षेप में खुलता है और तुरंत आपको वापस भेज देता है। इन ट्रांज़िशन को कम बार देखने के लिए, “ऑटो-स्टॉप” सेटिंग में समय बढ़ाएँ।\n\nनारंगी संकेतक चालू रहने पर बैटरी की खपत एक सक्रिय सत्र के पूरे दिन में न्यूनतम होती है। हालाँकि, आप “ऑटो-स्टॉप” सेटिंग में समय कम कर सकते हैं, लेकिन ध्यान रखें: मान जितना कम होगा, ऐप माइक्रोफ़ोन सक्रिय करने के लिए आपको उतनी ही बार आगे-पीछे स्विच करेगा।"
+            "value": "— अगर आपको कोने में यह नारंगी संकेतक दिखे, तो चिंता की कोई बात नहीं है। इसका सीधा-सा मतलब है कि Sayboard माइक्रोफ़ोन सत्र को तैयार रखता है, ताकि जिस पल आप चाहें, कीबोर्ड उसी क्षण डिक्टेशन शुरू कर सके। पृष्ठभूमि में कुछ भी रिकॉर्ड नहीं होता — माइक्रोफ़ोन तभी चालू होता है जब आप रिकॉर्ड बटन दबाते हैं। आप जो कुछ भी बोलते हैं, वह आपके डिवाइस पर ही रहता है और उसे कभी नहीं छोड़ता। Sayboard का कोड खुला है — अगर आप चाहें, तो आप स्वयं उसे पढ़कर प्रत्यक्ष रूप से देख सकते हैं कि यह बात सच है।\n\nजब आप रिकॉर्ड दबाते हैं, तो आपको ऐप एक पल के लिए खुलता हुआ दिखेगा। सिस्टम कीबोर्ड को सीधे माइक्रोफ़ोन इस्तेमाल करने की अनुमति नहीं देता, इसलिए Sayboard उसे चालू करने के लिए थोड़ी देर के लिए खुलता है और आपको तुरंत वापस ले आता है। इसे कम बार देखना चाहते हैं? “ऑटो-स्टॉप” का समय बढ़ा दें — यह जितना कम होगा, आपको उतनी ही बार आगे-पीछे भेजा जाएगा।\n\nतुरंत डिक्टेशन की सुविधा के साथ थोड़ा बैटरी खर्च ज़रूर जुड़ा है — आमतौर पर पूरे दिन में आपके चार्ज का ~15% तक।"
           }
         },
         "hu": {
           "stringUnit": {
             "state": "translated",
-            "value": "— ha ezt a narancssárga jelzőt látja a képernyő sarkában, ne aggódjon. Ez azt jelenti, hogy a Sayboard készenlétben tartja a mikrofon-munkamenetet, hogy a billentyűzet azonnal elindíthassa a diktálást. Nincs rejtett felvétel — a mikrofon csak akkor aktiválódik, amikor megnyomja a felvétel gombot. Emlékeztetőül: a hangját helyben, az eszközén dolgozza fel a rendszer, és soha nem hagyja el azt.\n\nA felvétel gomb megnyomásakor az alkalmazásra váltás szükséges. A rendszer nem engedi, hogy a billentyűzet-bővítmények közvetlenül hozzáférjenek a mikrofonhoz, ezért a Sayboard röviden megnyílik az aktiváláshoz, majd azonnal visszatér. Ha ritkábban szeretné látni ezeket az átmeneteket, növelje az „Automatikus leállítás” beállítás idejét.\n\nA narancssárga jelző bekapcsolt állapotában az akkumulátor-fogyasztás egy aktív munkamenet teljes napja alatt is minimális. Csökkentheti azonban az időt az „Automatikus leállítás” beállításban, de ne feledje: minél alacsonyabb az érték, annál gyakrabban fog az alkalmazás oda-vissza váltani a mikrofon aktiválásához."
+            "value": "— ha ezt a narancssárga jelzést látja a sarokban, nincs miért aggódnia. Egyszerűen azt jelenti, hogy a Sayboard készenlétben tartja a mikrofon-munkamenetet, így a billentyűzet abban a pillanatban elindíthatja a diktálást, amikor csak szeretné. A háttérben semmi sem kerül rögzítésre — a mikrofon csak akkor kapcsol be, amikor megnyomja a felvétel gombot. Amit mond, az a készülékén marad, és soha nem hagyja el azt. A Sayboard kódja nyílt — ha szeretné, saját maga is átnézheti, és első kézből meggyőződhet arról, hogy ez így van.\n\nAmikor a felvételre koppint, egy pillanatra látni fogja, ahogy megnyílik az alkalmazás. A rendszer nem engedi, hogy a billentyűzetek közvetlenül használják a mikrofont, ezért a Sayboard rövid időre megnyílik, hogy bekapcsolja azt, majd rögtön vissza is visz. Szeretné ezt ritkábban látni? Növelje az „Automatikus leállítás” idejét — minél alacsonyabb, annál gyakrabban vált ide-oda a rendszer.\n\nAz azonnali diktálás kényelme némi akkumulátorköltséggel jár — ez általában egy teljes nap alatt a töltöttség körülbelül 15%-áig terjed."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "— se vede questo indicatore arancione nell'angolo dello schermo, non si preoccupi. Significa che Sayboard mantiene pronta la sessione del microfono in modo che la tastiera possa avviare la dettatura immediatamente. Non avviene alcuna registrazione nascosta: il microfono si attiva solo quando preme il pulsante di registrazione. Le ricordiamo che la Sua voce viene elaborata localmente sul dispositivo e non lo lascia mai.\n\nIl passaggio all'app quando preme il pulsante di registrazione è una misura necessaria. Il sistema non consente alle estensioni di tastiera di accedere direttamente al microfono, quindi Sayboard si apre brevemente per attivarlo e La riporta subito indietro. Per vedere queste transizioni meno spesso, aumenti il tempo nell'impostazione “Arresto automatico”.\n\nIl consumo della batteria con l'indicatore arancione acceso è minimo nell'arco di un'intera giornata di sessione attiva. Tuttavia, può ridurre il tempo nell'impostazione “Arresto automatico”, ma tenga presente: più basso è il valore, più spesso l'app La farà passare avanti e indietro per attivare il microfono."
+            "value": "— se nota questo indicatore arancione nell'angolo, non c'è nulla di cui preoccuparsi. Significa semplicemente che Sayboard mantiene pronta la sessione del microfono, così la tastiera può avviare la dettatura nell'istante in cui lo desidera. Nulla viene registrato in background — il microfono si attiva solo quando preme il pulsante di registrazione. Tutto ciò che dice resta sul suo dispositivo e non lo lascia mai. Il codice di Sayboard è aperto — se vuole, può esaminarlo di persona e constatare di prima mano che è così.\n\nQuando avvia la registrazione, vedrà l'app aprirsi per un momento. Il sistema non consente alle tastiere di usare direttamente il microfono, perciò Sayboard si apre brevemente per attivarlo e la riporta subito indietro. Preferisce vederlo accadere meno spesso? Aumenti il tempo di «Arresto automatico» — più è basso, più spesso dovrà passare avanti e indietro.\n\nLa comodità della dettatura istantanea comporta comunque un piccolo costo per la batteria — di solito fino a circa il 15% della carica nell'arco di un'intera giornata."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "— 画面の隅にこのオレンジ色のインジケーターが表示されていても心配しないでください。これはSayboardがマイクセッションを準備状態に保ち、キーボードがすぐに音声入力を開始できるようにしていることを意味します。隠れた録音は行われていません — マイクは録音ボタンを押したときにのみ有効になります。念のため、あなたの音声はデバイス上でローカルに処理され、外部に送信されることはありません。\n\n録音ボタンをタップしたときにアプリに切り替わるのは必要な措置です。システムはキーボード拡張機能がマイクに直接アクセスすることを許可していないため、Sayboardは短時間開いてマイクを有効にし、すぐに戻ります。この切り替えの頻度を減らすには、「自動停止」設定の時間を長くしてください。\n\nオレンジ色のインジケーターがオンの間のバッテリー消費は、アクティブなセッションの1日を通して最小限です。ただし、「自動停止」設定の時間を短くすることもできますが、ご注意ください：値が低いほど、マイクを有効にするためにアプリがより頻繁に切り替わります。"
+            "value": "—隅にこのオレンジ色のインジケーターが表示されても、心配は要りません。これは、必要なときにすぐキーボードで音声入力を始められるよう、Sayboardがマイクのセッションを準備状態に保っているというだけの意味です。バックグラウンドで録音されることはありません—マイクがオンになるのは、録音ボタンを押したときだけです。話した内容はすべてお使いのデバイス内にとどまり、外部に出ることは決してありません。Sayboardのコードはオープンなので、ご希望であればご自分で中身を確認し、これが本当であることを直接お確かめいただけます。\n\n録音をタップすると、アプリが一瞬開くのが見えます。システムはキーボードがマイクを直接使うことを許可していないため、Sayboardはほんの短い間だけ開いてマイクをオンにし、すぐに元の画面へお戻しします。これを目にする回数を減らしたい場合は、「自動停止」の時間を長くしてください—この時間が短いほど、画面が行き来する回数は増えます。\n\nすぐに音声入力できる便利さには、わずかなバッテリー消費が伴います—通常、丸一日でバッテリー残量の最大15%ほどです。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "— 화면 모서리에 이 주황색 표시가 보여도 걱정하지 마세요. Sayboard가 키보드에서 즉시 받아쓰기를 시작할 수 있도록 마이크 세션을 준비 상태로 유지하고 있다는 의미입니다. 숨겨진 녹음은 이루어지지 않으며 — 마이크는 녹음 버튼을 누를 때만 활성화됩니다. 참고로, 음성은 기기에서 로컬로 처리되며 외부로 전송되지 않습니다.\n\n녹음 버튼을 탭할 때 앱으로 전환되는 것은 필수적인 조치입니다. 시스템은 키보드 확장이 마이크에 직접 접근하는 것을 허용하지 않으므로, Sayboard가 잠시 열려 마이크를 활성화한 후 즉시 돌아갑니다. 이러한 전환을 덜 자주 보려면 “자동 중지” 설정에서 시간을 늘리세요.\n\n주황색 표시가 켜져 있는 동안의 배터리 사용량은 활성 세션 하루 동안 최소한입니다. 그러나 “자동 중지” 설정에서 시간을 줄일 수 있지만 유의하세요: 값이 낮을수록 마이크를 활성화하기 위해 앱이 더 자주 전환됩니다."
+            "value": "— 화면 구석에서 이 주황색 표시를 발견하시더라도 걱정하실 것은 없습니다. 이는 Sayboard가 마이크 세션을 준비된 상태로 유지하고 있어, 원하시는 순간 키보드가 곧바로 받아쓰기를 시작할 수 있다는 뜻일 뿐입니다. 백그라운드에서 녹음되는 것은 아무것도 없습니다 — 마이크는 녹음 버튼을 누르실 때만 켜집니다. 말씀하시는 내용은 모두 기기 안에 남으며, 절대 기기를 벗어나지 않습니다. Sayboard의 코드는 공개되어 있습니다 — 원하신다면 직접 살펴보고 이것이 사실임을 두 눈으로 확인하실 수 있습니다.\n\n녹음을 누르시면 앱이 잠시 열리는 것을 보시게 됩니다. 시스템은 키보드가 마이크를 직접 사용하도록 허용하지 않기 때문에, Sayboard가 잠깐 열려 마이크를 켠 뒤 곧바로 원래 화면으로 돌려보내 드립니다. 이 과정을 덜 보고 싶으신가요? “자동 중지” 시간을 늘려 보세요 — 이 값이 낮을수록 화면이 더 자주 전환됩니다.\n\n즉각적인 받아쓰기의 편리함에는 약간의 배터리 소모가 따릅니다 — 보통 하루 동안 충전량의 최대 약 15% 정도입니다."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "— als u deze oranje indicator in de hoek van het scherm ziet, maak u dan geen zorgen. Het betekent dat Sayboard de microfoonsessie gereed houdt zodat het toetsenbord direct met dicteren kan beginnen. Er vindt geen verborgen opname plaats — de microfoon wordt alleen geactiveerd wanneer u op de opnameknop drukt. Ter herinnering: uw stem wordt lokaal op uw apparaat verwerkt en verlaat het nooit.\n\nHet overschakelen naar de app wanneer u op de opnameknop tikt is een noodzakelijke maatregel. Het systeem staat toetsenbordextensies niet toe om rechtstreeks toegang tot de microfoon te krijgen, dus Sayboard opent kort om deze te activeren en brengt u onmiddellijk terug. Om deze overgangen minder vaak te zien, verhoogt u de tijd in de instelling 'Automatisch stoppen'.\n\nHet batterijverbruik terwijl de oranje indicator aan is, is minimaal gedurende een hele dag van een actieve sessie. U kunt echter de tijd in de instelling 'Automatisch stoppen' verlagen, maar houd er rekening mee: hoe lager de waarde, hoe vaker de app u heen en weer schakelt om de microfoon te activeren."
+            "value": "— ziet u deze oranje indicator in de hoek, dan is er niets om u zorgen over te maken. Het betekent simpelweg dat Sayboard de microfoonsessie gereed houdt, zodat het toetsenbord meteen met dicteren kan beginnen zodra u dat wilt. Er wordt niets op de achtergrond opgenomen — de microfoon gaat alleen aan wanneer u op de opnameknop drukt. Alles wat u zegt, blijft op uw apparaat en verlaat het nooit. De code van Sayboard is openbaar — als u wilt, kunt u die zelf doornemen en met eigen ogen vaststellen dat dit klopt.\n\nWanneer u op opnemen tikt, ziet u de app even openen. Het systeem staat toetsenborden niet toe de microfoon rechtstreeks te gebruiken, dus opent Sayboard zich kort om die in te schakelen en brengt u meteen weer terug. Wilt u dat liever minder vaak zien? Verhoog de tijd bij “Automatisch stoppen” — hoe lager die staat, hoe vaker u heen en weer wordt geschakeld.\n\nHet gemak van direct dicteren kost wel wat batterij — meestal tot ongeveer 15% van uw acculading over een hele dag."
           }
         },
         "no": {
           "stringUnit": {
             "state": "translated",
-            "value": "— hvis du ser denne oransje indikatoren i hjørnet av skjermen, ikke vær urolig. Det betyr at Sayboard holder mikrofonøkten klar slik at tastaturet kan starte diktering umiddelbart. Det skjer ingen skjult opptak — mikrofonen aktiveres kun når du trykker på opptaksknappen. Som en påminnelse: stemmen din behandles lokalt på enheten og forlater den aldri.\n\nÅ bytte til appen når du trykker på opptaksknappen er et nødvendig tiltak. Systemet tillater ikke at tastaturutvidelser får direkte tilgang til mikrofonen, så Sayboard åpnes kort for å aktivere den og sender deg umiddelbart tilbake. For å se disse overgangene sjeldnere, øk tiden i innstillingen «Auto-stopp».\n\nBatteriforbruket mens den oransje indikatoren er på, er minimalt gjennom en hel dag med aktiv økt. Du kan likevel redusere tiden i innstillingen «Auto-stopp», men husk: jo lavere verdien er, desto oftere bytter appen deg frem og tilbake for å aktivere mikrofonen."
+            "value": "— ser du denne oransje indikatoren i hjørnet, er det ingenting å bekymre seg for. Det betyr bare at Sayboard holder mikrofonøkten klar, slik at tastaturet kan starte diktering i det øyeblikket du ønsker det. Ingenting tas opp i bakgrunnen — mikrofonen slås bare på når du trykker på opptaksknappen. Alt du sier, blir værende på enheten din og forlater den aldri. Koden til Sayboard er åpen — om du vil, kan du gå gjennom den selv og se med egne øyne at dette stemmer.\n\nNår du trykker på opptak, ser du at appen åpner seg et øyeblikk. Systemet tillater ikke at tastaturer bruker mikrofonen direkte, så Sayboard åpnes kort for å slå den på og tar deg rett tilbake. Vil du helst se dette sjeldnere? Øk tiden for «Auto-stopp» — jo lavere den er, desto oftere blir du vekslet frem og tilbake.\n\nBekvemmeligheten med umiddelbar diktering koster litt batteri — vanligvis opptil rundt 15 % av batteriet i løpet av en hel dag."
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "— pomarańczowy wskaźnik w rogu ekranu nie jest powodem do niepokoju. Oznacza, że Sayboard utrzymuje sesję mikrofonu w gotowości, aby klawiatura mogła błyskawicznie rozpocząć dyktowanie. Nie odbywa się żadne ukryte nagrywanie — mikrofon aktywuje się tylko po naciśnięciu przycisku nagrywania. Przypominamy, że głos jest przetwarzany lokalnie na urządzeniu i nigdy go nie opuszcza.\n\nPrzełączenie do aplikacji po naciśnięciu przycisku nagrywania jest konieczne. System nie pozwala rozszerzeniom klawiatury na bezpośredni dostęp do mikrofonu, dlatego Sayboard na chwilę się otwiera, aby go aktywować, i od razu wraca do poprzedniej aplikacji. Aby te przełączenia były rzadsze, zwiększ czas w ustawieniu „Automatyczne zatrzymanie”.\n\nZużycie baterii przy włączonym pomarańczowym wskaźniku jest minimalne w ciągu całego dnia aktywnej sesji. Można jednak zmniejszyć czas w ustawieniu „Automatyczne zatrzymanie”, ale warto pamiętać: im niższa wartość, tym częściej aplikacja będzie się przełączać tam i z powrotem, by aktywować mikrofon."
+            "value": "— jeśli w rogu pojawi się ta pomarańczowa kontrolka, nie ma się czym martwić. Oznacza to po prostu, że Sayboard utrzymuje sesję mikrofonu w gotowości, dzięki czemu klawiatura może rozpocząć dyktowanie natychmiast, gdy tylko zajdzie taka potrzeba. W tle nic nie jest nagrywane — mikrofon włącza się dopiero po naciśnięciu przycisku nagrywania. Wszystko, co Pan/Pani powie, pozostaje na urządzeniu i nigdy go nie opuszcza. Kod Sayboard jest otwarty — jeśli Pan/Pani zechce, może samodzielnie go przejrzeć i na własne oczy przekonać się, że to prawda.\n\nPo dotknięciu przycisku nagrywania na moment otworzy się aplikacja. System nie pozwala klawiaturom korzystać z mikrofonu bezpośrednio, dlatego Sayboard na chwilę się otwiera, aby go włączyć, i od razu przywraca poprzedni ekran. Woli Pan/Pani widzieć to rzadziej? Proszę wydłużyć czas „Automatyczne zatrzymanie” — im jest on krótszy, tym częściej następuje przełączanie tam i z powrotem.\n\nWygoda natychmiastowego dyktowania rzeczywiście wiąże się z niewielkim zużyciem baterii — zwykle do około 15% naładowania w ciągu całego dnia."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "— se você vir este indicador laranja no canto da tela, não se preocupe. Significa que o Sayboard está mantendo a sessão do microfone pronta para que o teclado possa iniciar o ditado instantaneamente. Não há nenhuma gravação oculta — o microfone só é ativado quando você pressiona o botão de gravação. Lembre-se: sua voz é processada localmente no seu dispositivo e nunca sai dele.\n\nAlternar para o app quando você toca no botão de gravação é uma medida necessária. O sistema não permite que extensões de teclado acessem o microfone diretamente, então o Sayboard abre rapidamente para ativá-lo e logo retorna você ao app anterior. Para ver essas transições com menos frequência, aumente o tempo no ajuste \"Parada automática\".\n\nO consumo de bateria com o indicador laranja ligado é mínimo ao longo de um dia inteiro de sessão ativa. Mesmo assim, você pode reduzir o tempo no ajuste \"Parada automática\", mas lembre-se: quanto menor o valor, mais o app vai alternar para ativar o microfone."
+            "value": "— se você notar este indicador laranja no canto, não há com o que se preocupar. Ele apenas significa que o Sayboard mantém a sessão do microfone pronta, para que o teclado possa iniciar a ditação no instante em que você quiser. Nada é gravado em segundo plano — o microfone só é ativado quando você pressiona o botão de gravação. Tudo o que você disser permanece no seu dispositivo e nunca sai dele. O código do Sayboard é aberto — se quiser, você mesmo pode examiná-lo e comprovar em primeira mão que isso é verdade.\n\nAo tocar em gravar, você verá o app abrir por um instante. O sistema não permite que teclados usem o microfone diretamente, então o Sayboard abre rapidamente para ativá-lo e leva você de volta imediatamente. Prefere ver isso com menos frequência? Aumente o tempo de “Parada automática” — quanto menor ele for, mais vezes você vai de um lado para o outro.\n\nA comodidade da ditação instantânea tem, sim, um pequeno custo de bateria — normalmente até cerca de 15% da sua carga ao longo de um dia inteiro."
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "— dacă vedeți acest indicator portocaliu în colțul ecranului, nu vă faceți griji. Înseamnă că Sayboard menține sesiunea microfonului pregătită pentru ca tastatura să poată începe dictarea instantaneu. Nu are loc nicio înregistrare ascunsă — microfonul se activează doar când apăsați butonul de înregistrare. Ca un memento, vocea dvs. este procesată local pe dispozitivul dvs. și nu îl părăsește niciodată.\n\nComutarea la aplicație când apăsați butonul de înregistrare este o măsură necesară. Sistemul nu permite extensiilor de tastatură să acceseze direct microfonul, așa că Sayboard se deschide pe scurt pentru a-l activa și vă readuce imediat înapoi. Pentru a vedea aceste tranziții mai rar, măriți timpul din setarea „Oprire automată”.\n\nConsumul bateriei cât timp indicatorul portocaliu este aprins este minim pe parcursul unei zile întregi de sesiune activă. Cu toate acestea, puteți reduce timpul din setarea „Oprire automată”, dar rețineți: cu cât valoarea este mai mică, cu atât mai des aplicația vă va comuta înainte și înapoi pentru a activa microfonul."
+            "value": "— dacă observați acest indicator portocaliu în colț, nu aveți de ce să vă îngrijorați. Înseamnă pur și simplu că Sayboard menține pregătită sesiunea microfonului, astfel încât tastatura să poată începe dictarea în chiar clipa în care o doriți. Nimic nu este înregistrat în fundal — microfonul se activează doar când apăsați butonul de înregistrare. Tot ceea ce spuneți rămâne pe dispozitivul dumneavoastră și nu îl părăsește niciodată. Codul sursă al Sayboard este deschis — dacă doriți, îl puteți parcurge chiar dumneavoastră și puteți vedea cu propriii ochi că acest lucru este adevărat.\n\nCând apăsați înregistrarea, veți vedea aplicația deschizându-se pentru o clipă. Sistemul nu permite tastaturilor să folosească microfonul direct, așa că Sayboard se deschide pentru scurt timp ca să îl activeze și vă aduce imediat înapoi. Preferați să vedeți acest lucru mai rar? Măriți timpul „Oprire automată\" — cu cât este mai mic, cu atât mai des aplicația se va deschide și vă va aduce înapoi.\n\nComoditatea dictării instantanee are totuși un mic cost la baterie — de obicei până la aproximativ 15% din încărcare pe parcursul unei zile întregi."
           }
         },
         "sk": {
           "stringUnit": {
             "state": "translated",
-            "value": "— ak vidíte tento oranžový indikátor v rohu obrazovky, neznepokojujte sa. Znamená to, že Sayboard udržiava reláciu mikrofónu v pohotovosti, aby klávesnica mohla okamžite začať diktovanie. Žiadne skryté nahrávanie neprebieha — mikrofón sa aktivuje až po stlačení tlačidla nahrávania. Pripomíname, že váš hlas sa spracováva lokálne na vašom zariadení a nikdy ho neopustí.\n\nPrepnutie do aplikácie po ťuknutí na tlačidlo nahrávania je nevyhnutné opatrenie. Systém neumožňuje rozšíreniam klávesnice priamy prístup k mikrofónu, preto sa Sayboard nakrátko otvorí, aby ho aktivoval, a okamžite vás vráti späť. Ak chcete tieto prechody vidieť menej často, zvýšte čas v nastavení „Automatické zastavenie“.\n\nSpotreba batérie pri zapnutom oranžovom indikátore je počas celého dňa aktívnej relácie minimálna. Môžete však znížiť čas v nastavení „Automatické zastavenie“, ale majte na pamäti: čím nižšia hodnota, tým častejšie vás aplikácia bude prepínať tam a späť kvôli aktivácii mikrofónu."
+            "value": "— ak si v rohu všimnete tento oranžový indikátor, nie je dôvod na obavy. Znamená to len, že Sayboard udržiava reláciu mikrofónu pripravenú, aby klávesnica mohla spustiť diktovanie v okamihu, keď to budete chcieť. Na pozadí sa nič nenahráva — mikrofón sa zapne až vtedy, keď stlačíte tlačidlo nahrávania. Čokoľvek poviete, zostáva vo vašom zariadení a nikdy ho neopustí. Kód aplikácie Sayboard je otvorený — ak chcete, môžete si ho sami prejsť a na vlastné oči sa presvedčiť, že je to tak.\n\nKeď klepnete na nahrávanie, na chvíľu uvidíte, ako sa aplikácia otvorí. Systém neumožňuje klávesniciam používať mikrofón priamo, takže Sayboard sa nakrátko otvorí, aby ho zapol, a hneď vás vráti späť. Chcete to vidieť menej často? Predĺžte čas „Automatické zastavenie“ — čím je nižší, tým častejšie vás bude prepínať tam a späť.\n\nPohodlie okamžitého diktovania má svoju malú cenu v podobe spotreby batérie — zvyčajne až približne 15 % nabitia batérie počas celého dňa."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "— om du ser denna orange indikator i hörnet av skärmen, oroa dig inte. Det betyder att Sayboard håller mikrofonsessionen redo så att tangentbordet kan starta diktering omedelbart. Ingen dold inspelning pågår — mikrofonen aktiveras bara när du trycker på inspelningsknappen. Som en påminnelse: din röst bearbetas lokalt på din enhet och lämnar den aldrig.\n\nAtt växla till appen när du trycker på inspelningsknappen är en nödvändig åtgärd. Systemet tillåter inte tangentbordstillägg att komma åt mikrofonen direkt, så Sayboard öppnas kort för att aktivera den och tar dig sedan tillbaka direkt. För att se dessa övergångar mer sällan, öka tiden i inställningen \"Automatiskt stopp\".\n\nBatteriförbrukningen medan den orange indikatorn är på är minimal under en hel dag av en aktiv session. Du kan dock minska tiden i inställningen \"Automatiskt stopp\", men tänk på att: ju lägre värdet är, desto oftare växlar appen dig fram och tillbaka för att aktivera mikrofonen."
+            "value": "— om du ser den här orangea indikatorn i hörnet är det inget att oroa sig för. Det betyder helt enkelt att Sayboard håller mikrofonsessionen redo, så att tangentbordet kan börja diktera i samma ögonblick som du vill. Inget spelas in i bakgrunden — mikrofonen slås bara på när du trycker på inspelningsknappen. Allt du säger stannar på din enhet och lämnar den aldrig. Sayboards kod är öppen — om du vill kan du själv gå igenom den och med egna ögon se att det stämmer.\n\nNär du trycker på inspelning ser du att appen öppnas ett kort ögonblick. Systemet tillåter inte att tangentbord använder mikrofonen direkt, så Sayboard öppnas helt kort för att slå på den och tar dig sedan direkt tillbaka. Vill du se det mer sällan? Öka tiden för ”Automatiskt stopp” — ju lägre den är, desto oftare växlas du fram och tillbaka.\n\nBekvämligheten med omedelbar diktering kostar lite batteri — vanligtvis upp till omkring 15 % av laddningen under en hel dag."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "— ekranın köşesinde bu turuncu göstergeyi görüyorsanız endişelenmeyin. Bu, Sayboard'un mikrofon oturumunu hazır tuttuğu anlamına gelir; böylece klavye dikteyi anında başlatabilir. Gizli bir kayıt yapılmıyor — mikrofon yalnızca kayıt düğmesine bastığınızda etkinleşir. Hatırlatma: sesiniz cihazınızda yerel olarak işlenir ve cihazınızdan asla çıkmaz.\n\nKayıt düğmesine dokunduğunuzda uygulamaya geçilmesi zorunlu bir önlemdir. Sistem, klavye uzantılarının mikrofona doğrudan erişmesine izin vermez, bu nedenle Sayboard etkinleştirmek için kısaca açılır ve sizi hemen geri götürür. Bu geçişleri daha seyrek görmek için \"Otomatik Durdurma\" ayarındaki süreyi artırın.\n\nTuruncu gösterge açıkken pil tüketimi, aktif bir oturumun tüm gününde minimum düzeydedir. \"Otomatik Durdurma\" ayarındaki süreyi azaltabilirsiniz, ancak unutmayın: değer ne kadar düşükse, uygulama mikrofonu etkinleştirmek için sizi o kadar sık ileri geri değiştirir."
+            "value": "— köşede bu turuncu göstergeyi fark ederseniz endişelenecek bir şey yok. Bu yalnızca Sayboard'ın mikrofon oturumunu hazır tuttuğu anlamına gelir; böylece klavye, istediğiniz an dikteyi hemen başlatabilir. Arka planda hiçbir şey kaydedilmez — mikrofon yalnızca kayıt düğmesine bastığınızda açılır. Söyledikleriniz cihazınızda kalır ve oradan asla çıkmaz. Sayboard'ın kodu açıktır — isterseniz kodu kendiniz inceleyip bunun doğru olduğunu bizzat görebilirsiniz.\n\nKayıt düğmesine dokunduğunuzda uygulamanın bir an için açıldığını görürsünüz. Sistem, klavyelerin mikrofonu doğrudan kullanmasına izin vermez; bu yüzden Sayboard mikrofonu açmak için kısa bir süre açılıp sizi hemen geri getirir. Bunu daha seyrek görmeyi mi tercih edersiniz? “Otomatik Durdurma” süresini artırın — bu süre ne kadar kısaysa, o kadar sık ileri geri geçiş yaşarsınız.\n\nAnlık diktenin sağladığı kolaylığın küçük bir pil maliyeti vardır — genellikle tüm gün boyunca şarjınızın yaklaşık %15'ine varan bir kısmı."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "— якщо ви бачите цей помаранчевий індикатор у кутку екрана, не хвилюйтеся. Це означає, що Sayboard підтримує сесію мікрофона в готовності, щоб клавіатура могла миттєво розпочати диктування. Жодного прихованого запису не відбувається — мікрофон вмикається лише тоді, коли ви натискаєте кнопку запису. Нагадуємо, що ваш голос обробляється локально на вашому пристрої й ніколи його не залишає.\n\nПерехід до застосунку при натисканні кнопки запису — це необхідний захід. Система не дозволяє розширенням клавіатури напряму використовувати мікрофон, тому Sayboard ненадовго відкривається для його активації та одразу повертає вас назад. Щоб бачити ці переходи рідше, збільшіть час у налаштуванні «Автоматична зупинка».\n\nВитрата батареї при увімкненому помаранчевому індикаторі є мінімальною протягом цілого дня активної сесії. Втім, ви можете зменшити час у налаштуванні «Автоматична зупинка», але майте на увазі: чим менше значення, тим частіше застосунок перемикатиме вас туди-назад для активації мікрофона."
+            "value": "— якщо ви помітили цей помаранчевий індикатор у кутку, хвилюватися немає про що. Він лише означає, що Sayboard тримає сеанс мікрофона напоготові, щоб клавіатура могла почати диктування тієї ж миті, коли вам це потрібно. У фоновому режимі нічого не записується — мікрофон вмикається лише тоді, коли ви натискаєте кнопку запису. Усе, що ви кажете, залишається на вашому пристрої й ніколи його не покидає. Код Sayboard відкритий — за бажання ви можете самостійно переглянути його й на власні очі переконатися, що це правда.\n\nКоли ви натискаєте запис, ви на мить побачите, як відкривається застосунок. Система не дозволяє клавіатурам користуватися мікрофоном безпосередньо, тож Sayboard ненадовго відкривається, щоб увімкнути його, і одразу повертає вас назад. Хочете бачити це рідше? Збільште час у налаштуванні «Автоматична зупинка» — що він менший, то частіше вас перемикатиме туди й назад.\n\nЗручність миттєвого диктування таки має невелику ціну для батареї — зазвичай до приблизно 15% заряду за цілий день."
           }
         },
         "zh": {
           "stringUnit": {
             "state": "translated",
-            "value": "——如果您在屏幕角落看到这个橙色指示器，请不要担心。这表示 Sayboard 正在保持麦克风会话就绪，以便键盘可以即时开始听写。没有进行隐藏录音——只有当您按下录音按钮时麦克风才会激活。提醒您，您的语音是在您的设备上本地处理的，绝不会离开设备。\n\n点击录音按钮时切换到应用是必要的措施。系统不允许键盘扩展直接访问麦克风，因此 Sayboard 会短暂打开以激活麦克风，然后立即返回。要减少这些切换的频率，请增加「自动停止」设置中的时间。\n\n橙色指示器开启时的电池消耗在活跃会话整整一天中也是很小的。当然，您也可以减少「自动停止」设置中的时间，但请注意：值越低，应用为激活麦克风而来回切换的频率就越高。"
+            "value": "——如果您在角落里看到这个橙色指示灯，无需担心。它只是表示 Sayboard 正在让麦克风会话保持就绪，好让键盘在您需要的一瞬间就能开始听写。后台不会录制任何内容——只有当您按下录音按钮时，麦克风才会开启。您说的一切都留在您的设备上，绝不会离开设备。Sayboard 的代码是开源的——如果您愿意，可以亲自查看，亲眼确认这一点属实。\n\n当您点按录音时，会看到应用短暂打开。系统不允许键盘直接使用麦克风，因此 Sayboard 会短暂打开以将其启用，随后立即把您带回来。希望少看到这种切换？请调高\"自动停止\"的时间——时间设得越短，您被来回切换的次数就越多。\n\n即时听写的便利确实会带来少量电量消耗——通常在一整天中最多约占电量的 15%。"
           }
         },
         "bg": {
           "stringUnit": {
             "state": "translated",
-            "value": "— ако видите този оранжев индикатор в ъгъла на екрана, не се притеснявайте. Това означава, че Sayboard поддържа сесията на микрофона в готовност, за да може клавиатурата да започне диктовка мигновено. Няма скрит запис — микрофонът се активира само когато натиснете бутона за запис. За напомняне, гласът Ви се обработва локално на устройството и никога не го напуска.\n\nПревключването към приложението при натискане на бутона за запис е необходима мярка. Системата не позволява на разширенията на клавиатурата директен достъп до микрофона, затова Sayboard се отваря за кратко, за да го активира, и веднага Ви връща обратно. За да виждате тези превключвания по-рядко, увеличете времето в настройката „Автоматично спиране“.\n\nРазходът на батерия, докато оранжевият индикатор свети, е минимален за цял ден активна сесия. Все пак можете да намалите времето в настройката „Автоматично спиране“, но имайте предвид: колкото по-ниска е стойността, толкова по-често приложението ще Ви прехвърля напред-назад, за да активира микрофона."
+            "value": "— ако забележите този оранжев индикатор в ъгъла, няма за какво да се притеснявате. Той просто означава, че Sayboard поддържа микрофонната сесия готова, така че клавиатурата да може да започне диктовката в мига, в който пожелаете. Нищо не се записва във фонов режим — микрофонът се включва само когато натиснете бутона за запис. Каквото и да кажете, остава на вашето устройство и никога не го напуска. Кодът на Sayboard е отворен — ако желаете, можете сами да го прегледате и да се уверите лично, че това е така.\n\nКогато натиснете за запис, ще видите приложението да се отваря за момент. Системата не позволява на клавиатурите да използват микрофона директно, затова Sayboard се отваря за кратко, за да го включи, и веднага ви връща обратно. Предпочитате да виждате това по-рядко? Увеличете времето на „Автоматично спиране“ — колкото по-ниско е то, толкова по-често ще ви превключва напред-назад.\n\nУдобството на мигновената диктовка все пак има малка цена за батерията — обикновено до около 15% от заряда за цял ден."
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "— ako vidite ovaj narančasti indikator u kutu zaslona, ne brinite. To znači da Sayboard održava sesiju mikrofona spremnom kako bi tipkovnica mogla odmah započeti diktiranje. Nema skrivenog snimanja — mikrofon se aktivira samo kad pritisnete gumb za snimanje. Kao podsjetnik, vaš se glas obrađuje lokalno na vašem uređaju i nikad ga ne napušta.\n\nPrebacivanje u aplikaciju kad dodirnete gumb za snimanje nužna je mjera. Sustav ne dopušta proširenjima tipkovnice izravan pristup mikrofonu, pa se Sayboard nakratko otvori kako bi ga aktivirao i odmah vas vrati natrag. Da biste te prijelaze viđali rjeđe, povećajte vrijeme u postavci „Automatsko zaustavljanje“.\n\nPotrošnja baterije dok je narančasti indikator uključen minimalna je tijekom cijelog dana aktivne sesije. Možete smanjiti vrijeme u postavci „Automatsko zaustavljanje“, ali imajte na umu: što je niža vrijednost, to će vas aplikacija češće prebacivati naprijed-natrag radi aktivacije mikrofona."
+            "value": "— ako u kutu primijetite ovaj narančasti indikator, nema razloga za brigu. To jednostavno znači da Sayboard održava mikrofonsku sesiju spremnom kako bi tipkovnica mogla započeti diktiranje istog trena kad to poželite. Ništa se ne snima u pozadini — mikrofon se uključuje tek kada pritisnete gumb za snimanje. Što god izgovorite ostaje na vašem uređaju i nikada ga ne napušta. Sayboardov kod je otvoren — ako želite, možete ga sami pregledati i iz prve ruke se uvjeriti da je to točno.\n\nKada dodirnete snimanje, na trenutak ćete vidjeti kako se aplikacija otvara. Sustav ne dopušta tipkovnicama da izravno koriste mikrofon, pa se Sayboard nakratko otvori kako bi ga uključio i odmah vas vraća natrag. Želite li to viđati rjeđe? Povećajte vrijeme za „Automatsko zaustavljanje” — što je ono kraće, to će vas češće prebacivati naprijed-natrag.\n\nPraktičnost trenutnog diktiranja ipak dolazi uz mali trošak baterije — obično do otprilike 15% napunjenosti tijekom cijelog dana."
           }
         },
         "et": {
           "stringUnit": {
             "state": "translated",
-            "value": "— kui näete ekraani nurgas seda oranži näidikut, ärge muretsege. See tähendab, et Sayboard hoiab mikrofoniseanssi valmis, et klaviatuur saaks dikteerimist kohe alustada. Mingit varjatud salvestamist ei toimu — mikrofon aktiveerub ainult siis, kui vajutate salvestusnuppu. Meeldetuletuseks: teie häält töödeldakse kohalikult teie seadmes ja see ei lahku sealt kunagi.\n\nRakendusele ülemineku salvestusnupu vajutamisel on hädavajalik meede. Süsteem ei luba klaviatuurilaiendustel mikrofonile otse juurde pääseda, seega avaneb Sayboard hetkeks selle aktiveerimiseks ja toob teid kohe tagasi. Et neid üleminekuid harvemini näha, suurendage aega seades „Automaatne peatamine“.\n\nAku tarbimine, kui oranž näidik on sees, on terve aktiivse seansi päeva jooksul minimaalne. Siiski saate aega seades „Automaatne peatamine“ vähendada, kuid pidage meeles: mida väiksem väärtus, seda sagedamini rakendus teid mikrofoni aktiveerimiseks edasi-tagasi lülitab."
+            "value": "— kui märkate nurgas seda oranži märgutuld, pole midagi karta. See tähendab lihtsalt, et Sayboard hoiab mikrofoniseanssi valmis, nii et klaviatuur saab dikteerimist alustada kohe, kui te seda soovite. Taustal ei salvestata midagi — mikrofon lülitub sisse ainult siis, kui vajutate salvestusnuppu. Kõik, mida ütlete, jääb teie seadmesse ega lahku sellest kunagi. Sayboardi kood on avatud — kui soovite, võite selle ise läbi vaadata ja omal käel veenduda, et see vastab tõele.\n\nKui vajutate salvestusnuppu, näete, kuidas rakendus korraks avaneb. Süsteem ei luba klaviatuuridel mikrofoni otse kasutada, seega avaneb Sayboard hetkeks, et see sisse lülitada, ja toob teid kohe tagasi. Soovite seda harvemini näha? Pikendage „Automaatne peatamine\" aega — mida väiksem see on, seda sagedamini teid edasi-tagasi lülitatakse.\n\nKohese dikteerimise mugavus läheb siiski pisut aku arvelt — tavaliselt kuni umbes 15% teie akulaengust terve päeva jooksul."
           }
         },
         "lv": {
           "stringUnit": {
             "state": "translated",
-            "value": "— ja Jūs redzat šo oranžo indikatoru ekrāna stūrī, neuztraucieties. Tas nozīmē, ka Sayboard uztur mikrofona sesiju gatavībā, lai tastatūra varētu uzreiz sākt diktēšanu. Neviena slēpta ierakstīšana nenotiek — mikrofons aktivizējas tikai tad, kad Jūs nospiežat ierakstīšanas pogu. Atgādinām, ka Jūsu balss tiek apstrādāta lokāli Jūsu ierīcē un nekad to nepamet.\n\nPārslēgšanās uz lietotni, pieskaroties ierakstīšanas pogai, ir nepieciešams pasākums. Sistēma neļauj tastatūras paplašinājumiem tieši piekļūt mikrofonam, tāpēc Sayboard īsi atveras, lai to aktivizētu, un nekavējoties atgriež Jūs atpakaļ. Lai šīs pārejas redzētu retāk, palieliniet laiku iestatījumā „Automātiska apturēšana”.\n\nBaterijas patēriņš, kad oranžais indikators ir ieslēgts, ir minimāls visā aktīvas sesijas dienā. Taču Jūs varat samazināt laiku iestatījumā „Automātiska apturēšana”, bet ņemiet vērā: jo zemāka vērtība, jo biežāk lietotne pārslēgs Jūs uz priekšu un atpakaļ, lai aktivizētu mikrofonu."
+            "value": "— ja pamanāt šo oranžo indikatoru stūrī, nav par ko uztraukties. Tas vienkārši nozīmē, ka Sayboard uztur mikrofona sesiju gatavībā, lai tastatūra varētu sākt diktēšanu tajā pašā mirklī, kad to vēlaties. Fonā nekas netiek ierakstīts — mikrofons ieslēdzas tikai tad, kad nospiežat ierakstīšanas pogu. Viss, ko sakāt, paliek Jūsu ierīcē un nekad to nepamet. Sayboard kods ir atvērts — ja vēlaties, varat to izpētīt un no pirmavota pārliecināties, ka tas tā ir.\n\nKad pieskaraties ierakstīšanas pogai, uz brīdi redzēsiet, kā atveras lietotne. Sistēma neļauj tastatūrām tieši izmantot mikrofonu, tāpēc Sayboard uz brīdi atveras, lai to ieslēgtu, un uzreiz atgriež Jūs atpakaļ. Vēlaties to redzēt retāk? Palieliniet „Automātiska apturēšana\" laiku — jo tas ir mazāks, jo biežāk Jūs pārslēgs turp un atpakaļ.\n\nTūlītējas diktēšanas ērtība tomēr prasa nelielu baterijas patēriņu — parasti līdz aptuveni 15% no uzlādes visas dienas garumā."
           }
         },
         "lt": {
           "stringUnit": {
             "state": "translated",
-            "value": "— jei matote šį oranžinį indikatorių ekrano kampe, nesijaudinkite. Tai reiškia, kad Sayboard palaiko mikrofono sesiją paruoštą, kad klaviatūra galėtų pradėti diktavimą iškart. Joks paslėptas įrašymas nevyksta — mikrofonas suaktyvinamas tik tada, kai paspaudžiate įrašymo mygtuką. Primename: Jūsų balsas apdorojamas vietoje, Jūsų įrenginyje, ir niekada jo nepalieka.\n\nPerjungimas į programėlę paspaudus įrašymo mygtuką yra būtinas. Sistema neleidžia klaviatūros plėtiniams tiesiogiai pasiekti mikrofono, todėl Sayboard trumpam atsidaro, kad jį suaktyvintų, ir nedelsdamas grąžina Jus atgal. Norėdami matyti šiuos perjungimus rečiau, padidinkite laiką nustatyme „Automatinis sustabdymas“.\n\nBaterijos sąnaudos, kol oranžinis indikatorius įjungtas, per visą aktyvios sesijos dieną yra minimalios. Vis dėlto laiką galite sumažinti nustatyme „Automatinis sustabdymas“, tačiau atminkite: kuo mažesnė reikšmė, tuo dažniau programa Jus perjungs pirmyn ir atgal, kad suaktyvintų mikrofoną."
+            "value": "— jei kampe pastebite šį oranžinį indikatorių, nėra dėl ko nerimauti. Tai tiesiog reiškia, kad Sayboard palaiko parengtą mikrofono seansą, todėl klaviatūra gali pradėti diktavimą vos tik to panorėsite. Fone niekas neįrašinėjama — mikrofonas įsijungia tik tada, kai paspaudžiate įrašymo mygtuką. Viskas, ką pasakote, lieka Jūsų įrenginyje ir niekada jo nepalieka. Sayboard kodas yra atviras — jei norite, galite patys jį peržiūrėti ir savo akimis įsitikinti, kad tai tiesa.\n\nKai bakstelėsite įrašymo mygtuką, akimirkai pamatysite, kaip atsidaro programa. Sistema neleidžia klaviatūroms tiesiogiai naudotis mikrofonu, todėl Sayboard trumpam atsidaro, kad jį įjungtų, ir iškart grąžina Jus atgal. Norite tai matyti rečiau? Pailginkite „Automatinis sustabdymas\" laiką — kuo jis trumpesnis, tuo dažniau Jus perjunginės pirmyn ir atgal.\n\nMomentinio diktavimo patogumas iš tiesų kainuoja šiek tiek baterijos — paprastai iki maždaug 15% Jūsų įkrovos per visą dieną."
           }
         },
         "sl": {
           "stringUnit": {
             "state": "translated",
-            "value": "— če v kotu zaslona vidite ta oranžni indikator, ne skrbite. Pomeni, da Sayboard ohranja sejo mikrofona pripravljeno, da lahko tipkovnica takoj začne narekovanje. Skritega snemanja ni — mikrofon se vklopi šele, ko pritisnete gumb za snemanje. Naj Vas spomnimo, da se Vaš glas obdela lokalno v napravi in je nikoli ne zapusti.\n\nPreklop na aplikacijo, ko se dotaknete gumba za snemanje, je nujen ukrep. Sistem razširitvam tipkovnice ne dovoli neposrednega dostopa do mikrofona, zato se Sayboard za kratek čas odpre, da ga aktivira, in Vas takoj vrne nazaj. Če želite te prehode videti redkeje, podaljšajte čas v nastavitvi „Samodejna zaustavitev“.\n\nPoraba baterije, ko je oranžni indikator vklopljen, je v celem dnevu aktivne seje minimalna. Lahko pa skrajšate čas v nastavitvi „Samodejna zaustavitev“, a upoštevajte: nižja kot je vrednost, pogosteje Vas bo aplikacija prepeljala tja in nazaj za aktivacijo mikrofona."
+            "value": "— če v kotu opazite ta oranžni indikator, ni razloga za skrb. To preprosto pomeni, da Sayboard ohranja sejo mikrofona pripravljeno, tako da lahko tipkovnica začne narekovati takoj, ko to želite. V ozadju se ne snema ničesar — mikrofon se vklopi šele, ko pritisnete gumb za snemanje. Karkoli poveste, ostane v vaši napravi in je nikoli ne zapusti. Koda aplikacije Sayboard je odprta — če želite, jo lahko sami pregledate in se na lastne oči prepričate, da je res tako.\n\nKo pritisnete snemanje, boste za trenutek videli, kako se aplikacija odpre. Sistem tipkovnicam ne dovoli neposredne uporabe mikrofona, zato se Sayboard za hip odpre, da ga vklopi, in vas takoj vrne nazaj. Bi to raje videli redkeje? Podaljšajte čas nastavitve „Samodejna zaustavitev“ — krajši ko je, pogosteje vas bo preklapljalo sem in tja.\n\nUdobje takojšnjega narekovanja res prinese majhno porabo baterije — običajno do približno 15 % napolnjenosti čez cel dan."
           }
         }
       }
@@ -46526,6 +46526,364 @@
           "stringUnit": {
             "state": "translated",
             "value": "⚠️ Potrebno je dejanje"
+          }
+        }
+      }
+    },
+    "Storage Is Getting Low": {
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Малко свободно място"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Málo volného místa"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lav lagerplads"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speicher wird knapp"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λίγος διαθέσιμος χώρος"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poco espacio disponible"
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaba ruumi jääb väheks"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tallennustila alkaa loppua"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peu d'espace disponible"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्टोरेज कम हो रही है"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponestaje prostora"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fogytán a tárhely"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poco spazio disponibile"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空き容量が少なくなっています"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 공간이 부족합니다"
+          }
+        },
+        "lt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mažėja laisvos vietos"
+          }
+        },
+        "lv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paliek maz vietas"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weinig opslagruimte"
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lite lagringsplass"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mało wolnego miejsca"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pouco espaço disponível"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puțin spațiu disponibil"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мало свободного места"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Málo voľného miesta"
+          }
+        },
+        "sl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zmanjkuje prostora"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lite lagringsutrymme"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depolama Alanı Azalıyor"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мало вільного місця"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "储存空间不足"
+          }
+        }
+      }
+    },
+    "When storage runs low, your device may clear the prepared speech model, forcing a slow rebuild before dictation. Free up space in Settings › General › Storage.": {
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Когато мястото свършва, устройството може да изтрие подготвения речев модел и преди диктовка той ще се преизгражда дълго. Освободете място в Настройки › Основни › Пространство за съхранение."
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Když dochází místo, může zařízení odstranit připravený řečový model a ten se před diktováním musí zdlouhavě znovu sestavit. Uvolněte místo v Nastavení › Obecné › Úložiště."
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Når der er lidt plads tilbage, sletter din enhed måske den forberedte talemodel, som derefter skal genopbygges langsomt før diktering. Frigør plads i Indstillinger › Generelt › Lagringsplads."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn der Speicher knapp wird, löscht das Gerät möglicherweise das vorbereitete Sprachmodell, sodass es vor dem Diktieren langsam neu erstellt werden muss. Geben Sie unter Einstellungen › Allgemein › Speicher Speicherplatz frei."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Όταν ο χώρος αποθήκευσης μειώνεται, η συσκευή σας ενδέχεται να διαγράψει το προετοιμασμένο μοντέλο ομιλίας, με αποτέλεσμα να απαιτείται αργή αναδημιουργία πριν από την υπαγόρευση. Ελευθερώστε χώρο στις Ρυθμίσεις › Γενικά › Χώρος αποθήκευσης."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando queda poco espacio, tu dispositivo puede eliminar el modelo de voz preparado, forzando una reconstrucción lenta antes del dictado. Libera espacio en Ajustes › General › Almacenamiento."
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kui ruumi jääb väheks, võib seade ettevalmistatud kõnemudeli kustutada ja seda tuleb enne dikteerimist aeglaselt uuesti üles ehitada. Vabastage ruumi jaotises Seaded › Üldine › Salvestusruum."
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kun tallennustila käy vähiin, laitteesi voi poistaa valmistellun puhemallin, jolloin se rakennetaan hitaasti uudelleen ennen sanelua. Vapauta tilaa kohdassa Asetukset › Yleiset › Tallennustila."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lorsque l'espace de stockage est faible, votre appareil peut supprimer le modèle vocal préparé, forçant une longue reconstruction avant la dictée. Libérez de l'espace dans Réglages › Général › Stockage."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "स्टोरेज कम हो जाने पर आपका डिवाइस तैयार किया गया स्पीच मॉडल हटा सकता है और डिक्टेशन से पहले उसे फिर से बनने में समय लगता है। जगह खाली करने के लिए सेटिंग्स › सामान्य › स्टोरेज में जाएँ।"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kad ponestane prostora, uređaj može izbrisati pripremljeni govorni model pa se prije diktiranja mora dugo ponovno graditi. Oslobodite prostor u Postavke › Općenito › Memorija."
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha kevés a tárhely, a készülék törölheti az előkészített beszédmodellt, amelyet diktálás előtt lassan újra kell építeni. Szabadítson fel helyet a Beállítások › Általános › Tárhely menüpontban."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando lo spazio è insufficiente, il dispositivo può eliminare il modello vocale preparato, forzando una lenta ricostruzione prima della dettatura. Libera spazio in Impostazioni › Generali › Spazio."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空き容量が少なくなると、お使いのデバイスは準備済みの音声モデルを削除することがあり、音声入力の前に時間のかかる再構築が必要になります。設定 › 一般 › ストレージで空き容量を確保してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 공간이 부족해지면 기기가 준비된 음성 모델을 삭제하여, 받아쓰기 전에 느린 재구축이 필요할 수 있습니다. 설정 › 일반 › 저장 공간에서 공간을 확보하세요."
+          }
+        },
+        "lt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kai lieka mažai vietos, įrenginys gali ištrinti paruoštą kalbos modelį, todėl prieš diktavimą jį teks lėtai perkurti. Atlaisvinkite vietos: Nustatymai › Bendrieji › Saugykla."
+          }
+        },
+        "lv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kad vietas paliek maz, ierīce var izdzēst sagatavoto runas modeli, tāpēc pirms diktēšanas tas ilgi jāpārbūvē. Atbrīvojiet vietu sadaļā Iestatījumi › Vispārīgi › Krātuve."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als de opslag opraakt, wist je apparaat mogelijk het voorbereide spraakmodel, waardoor het vóór het dicteren langzaam opnieuw wordt opgebouwd. Maak ruimte vrij in Instellingen › Algemeen › Opslag."
+          }
+        },
+        "no": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Når det er lite plass igjen, sletter enheten din kanskje den forberedte talemodellen, som deretter må gjenoppbygges langsomt før diktering. Frigjør plass i Innstillinger › Generelt › Lagring."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gdy brakuje miejsca, urządzenie może usunąć przygotowany model mowy, a jego ponowna odbudowa przed dyktowaniem potrwa długo. Zwolnij miejsce w Ustawienia › Ogólne › Pamięć."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando há pouco espaço, o dispositivo pode remover o modelo de voz preparado, forçando uma reconstrução lenta antes do ditado. Libere espaço em Ajustes › Geral › Armazenamento."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Când spațiul este redus, dispozitivul poate șterge modelul vocal pregătit, forțând o reconstruire lentă înainte de dictare. Eliberați spațiu în Configurări › General › Stocare."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "При нехватке места устройство может удалить подготовленную модель, и перед диктовкой она будет долго пересобираться. Освободите место в Настройки › Основные › Хранилище."
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keď dochádza miesto, môže zariadenie odstrániť pripravený rečový model a ten sa pred diktovaním musí zdĺhavo znova zostaviť. Uvoľnite miesto v Nastavenia › Všeobecné › Úložisko."
+          }
+        },
+        "sl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ko zmanjka prostora, lahko naprava izbriše pripravljeni govorni model, zato se mora pred narekovanjem počasi znova zgraditi. Sprostite prostor v Nastavitve › Splošno › Shramba."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "När lagringsutrymmet börjar ta slut kan enheten radera den förberedda talmodellen, som då måste byggas om långsamt innan diktering. Frigör utrymme i Inställningar › Allmänt › Lagring."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depolama alanı azaldığında, cihazınız hazırlanan konuşma modelini silebilir ve dikteden önce onu yeniden oluşturmak uzun sürer. Ayarlar › Genel › Depolama Alanı bölümünden yer açın."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Коли бракує місця, пристрій може видалити підготовлену мовленнєву модель, і перед диктуванням вона буде довго перезбиратися. Звільніть місце в Параметри › Загальні › Сховище."
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "储存空间不足时，您的设备可能会清除已准备好的语音模型，导致听写前需要缓慢重建。请在设置 › 通用 › 储存空间中腾出空间。"
           }
         }
       }

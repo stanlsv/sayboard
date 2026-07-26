@@ -500,6 +500,8 @@ struct SayboardApp: App {
       NotificationCenter.default.post(name: .dictationFailedNoModel, object: nil)
       return
     }
+
+    settings.hasPreparedModelOnce = true
   }
 
   private func returnToHostApp() {

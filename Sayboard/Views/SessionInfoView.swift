@@ -50,7 +50,7 @@ struct SessionInfoView: View {
       self.expandableText
         .listRowInsets(EdgeInsets())
     }
-    .listRowBackground(Color.orange.opacity(0.08))
+    .listRowBackground(Self.rowTint)
   }
 
   // MARK: Private
@@ -60,6 +60,13 @@ struct SessionInfoView: View {
   private static let toggleInterval: TimeInterval = 3
   private static let chevronSize: CGFloat = 12
   private static let pillTrailingPad: CGFloat = 10
+
+  /// Grouped Form page background. A translucent `.listRowBackground` lets this
+  /// show through, so it — not `systemBackground` — is what sits behind the row.
+  private static let pageBackground = Color(.systemGroupedBackground)
+  /// Row tint. Shared with `fadeOverlay` so the collapse fade dissolves into the
+  /// exact background the row shows and leaves no seam.
+  private static let rowTint = Color.orange.opacity(0.08)
 
   /// Baseline offset that vertically centers the pill on the body text line.
   /// Derived from font metrics: (ascender + descender - pillHeight) / 2.
@@ -71,7 +78,7 @@ struct SessionInfoView: View {
   }()
 
   // swiftlint:disable:next line_length
-  private static let infoText: LocalizedStringKey = "\u{2014} if you see this orange indicator in the corner of the screen, don\u{2019}t worry. It means Sayboard is keeping the microphone session ready so the keyboard can start dictation instantly. No hidden recording is happening \u{2014} the microphone only activates when you press the record button. As a reminder, your voice is processed locally on your device and never leaves it.\n\nSwitching to the app when you tap the record button is a necessary measure. The system does not allow keyboard extensions to access the microphone directly, so Sayboard briefly opens to activate it and immediately returns you back. To see these transitions less often, increase the time in the \u{201C}Auto-Stop\u{201D} setting.\n\nBattery usage while the orange indicator is on is minimal over a full day of an active session. However, you can reduce the time in the \u{201C}Auto-Stop\u{201D} setting, but keep in mind: the lower the value, the more often the app will switch you back and forth to activate the microphone."
+  private static let infoText: LocalizedStringKey = "\u{2014} if you spot this orange indicator in the corner, there\u{2019}s nothing to worry about. It simply means Sayboard is keeping the microphone session ready, so the keyboard can start dictation the instant you want it. Nothing is recorded in the background \u{2014} the microphone only turns on when you press the record button. Whatever you say stays on your device and never leaves it. Sayboard\u{2019}s code is open \u{2014} if you like, you can go through it yourself and see first-hand that this is true.\n\nWhen you tap record, you\u{2019}ll see the app open for a moment. The system doesn\u{2019}t allow keyboards to use the microphone directly, so Sayboard briefly opens to turn it on and brings you right back. Prefer to see that less often? Increase the \u{201C}Auto-Stop\u{201D} time \u{2014} the lower it is, the more often you\u{2019}ll be switched back and forth.\n\nThe convenience of instant dictation does come at a small battery cost \u{2014} usually up to about 15% of your charge over a full day."
 
   @Environment(\.displayScale) private var displayScale
 
@@ -104,18 +111,23 @@ struct SessionInfoView: View {
   @ViewBuilder
   private var fadeOverlay: some View {
     if !self.isExpanded {
-      Color(.systemBackground)
-        .mask(
-          LinearGradient(
-            stops: [
-              .init(color: .clear, location: 0.65),
-              .init(color: .black.opacity(0.85), location: 1.0),
-            ],
-            startPoint: .top,
-            endPoint: .bottom,
-          )
+      // Dissolve into the row's own background — the page color with the row
+      // tint over it — so the fade blends instead of banding to systemBackground.
+      ZStack {
+        Self.pageBackground
+        Self.rowTint
+      }
+      .mask(
+        LinearGradient(
+          stops: [
+            .init(color: .clear, location: 0.5),
+            .init(color: .black, location: 1.0),
+          ],
+          startPoint: .top,
+          endPoint: .bottom,
         )
-        .allowsHitTesting(false)
+      )
+      .allowsHitTesting(false)
     }
   }
 
