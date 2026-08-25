@@ -4,8 +4,6 @@ import Testing
 @Suite("LLMActionSelection")
 struct LLMActionSelectionTests {
 
-  // MARK: Internal
-
   @Test
   func `codable round trip none`() throws {
     let original = LLMActionSelection.none
@@ -187,8 +185,6 @@ struct LLMActionSelectionTests {
     #expect(result?.action == .formal)
     #expect(result?.customPromptId == nil)
   }
-
-  // MARK: Private
 
   private static let testPromptId = UUID()
   private static let missingPromptId = UUID()

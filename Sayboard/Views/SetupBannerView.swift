@@ -1,8 +1,6 @@
 import SwiftUI
 import UIKit
 
-// MARK: - SetupBannerAction
-
 struct SetupBannerAction {
   enum Style {
     case primary
@@ -14,11 +12,7 @@ struct SetupBannerAction {
   let action: () -> Void
 }
 
-// MARK: - SetupBannerView
-
 struct SetupBannerView: View {
-
-  // MARK: Internal
 
   let title: LocalizedStringKey
   let subtitle: LocalizedStringKey
@@ -53,14 +47,8 @@ struct SetupBannerView: View {
     }
   }
 
-  // MARK: Private
-
   @Environment(\.colorScheme) private var colorScheme
 
-  /// Resolved opaque background color.
-  /// Uses `systemGroupedBackground` for a subtle light-gray tint in light mode,
-  /// resolved to an opaque value to prevent translucency on iOS 26 (Liquid Glass).
-  /// Elevated level matches sheet presentation (dark mode: #1C1C1E instead of #000000).
   private var opaqueBackground: Color {
     let style: UIUserInterfaceStyle = self.colorScheme == .dark ? .dark : .light
     let traits = UITraitCollection { mutableTraits in

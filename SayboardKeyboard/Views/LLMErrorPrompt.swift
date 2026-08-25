@@ -1,13 +1,8 @@
-// LLMErrorPrompt -- Full-screen error prompt shown when an LLM action cannot proceed
 
 import SwiftUI
 
-// MARK: - LLMError
-
 enum LLMError {
   case noTextBeforeCursor
-
-  // MARK: Internal
 
   var icon: String {
     switch self {
@@ -28,8 +23,6 @@ enum LLMError {
     }
   }
 }
-
-// MARK: - LLMErrorPrompt
 
 struct LLMErrorPrompt: View {
 

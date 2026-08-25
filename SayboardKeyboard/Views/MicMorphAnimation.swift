@@ -1,12 +1,7 @@
-// MicMorphAnimation -- Plays the 16-frame mic-to-wave morph (or reverse)
 
 import SwiftUI
 
-// MARK: - MicMorphAnimation
-
 struct MicMorphAnimation: View {
-
-  // MARK: Internal
 
   enum Direction {
     case toWave
@@ -33,8 +28,6 @@ struct MicMorphAnimation: View {
       self.startTime = Date()
     }
   }
-
-  // MARK: Private
 
   private static let frameDuration: TimeInterval = 0.18 / 16
   private static let lastFrame = MicMorphFrames.frameCount - 1

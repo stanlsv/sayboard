@@ -1,11 +1,6 @@
 import SwiftUI
 
-// BlockerPrompt -- Full-screen prompt shown when the keyboard cannot operate
-// (Full Access missing, microphone denied, or no speech model downloaded).
-
 struct BlockerPrompt: View {
-
-  // MARK: Internal
 
   let blocker: SetupBlocker
 
@@ -34,8 +29,6 @@ struct BlockerPrompt: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
-
-  // MARK: Private
 
   private static var promptIconSize: CGFloat {
     40.kbScaled

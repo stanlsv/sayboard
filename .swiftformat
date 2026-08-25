@@ -1,8 +1,11 @@
 # SwiftFormat Configuration -- Airbnb Style Guide (1:1)
 # https://github.com/airbnb/swift/blob/master/airbnb.swiftformat
 
-# Exclude checkout directories for common package managers
---exclude Carthage,Pods,.build
+# Exclude checkout directories for common package managers.
+# `build` holds the SPM checkouts xcodebuild resolves with `-derivedDataPath build/...`; without it
+# `swiftformat .` rewrites every vendored source, and SPM then refuses to resolve the graph because
+# the checkouts have uncommitted changes.
+--exclude Carthage,Pods,.build,build
 
 # options
 --swift-version 6.2

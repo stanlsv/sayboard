@@ -1,10 +1,6 @@
 import SwiftUI
 
-// HistoryListView -- List of transcription history records
-
 struct HistoryListView: View {
-
-  // MARK: Internal
 
   var body: some View {
     self.recordsList
@@ -16,8 +12,6 @@ struct HistoryListView: View {
         self.loadRecords()
       }
   }
-
-  // MARK: Private
 
   @EnvironmentObject private var playerService: AudioPlayerService
   @EnvironmentObject private var speechService: SpeechRecognitionService
@@ -46,7 +40,7 @@ struct HistoryListView: View {
         .foregroundStyle(.green)
       Text(
         """
-        Your voice data never leaves your phone — \
+        Your voice data never leaves your device — \
         everything is processed locally by a model you download once. \
         No servers, no tracking, no internet needed, open-source code. \
         Made to keep 100% of your data on your device.

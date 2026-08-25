@@ -1,11 +1,7 @@
 import SwiftUI
 import UIKit
 
-// MARK: - RetentionPolicyListView
-
 private struct RetentionPolicyListView: View {
-
-  // MARK: Internal
 
   @Binding var selected: HistoryRetentionPolicy
 
@@ -18,8 +14,6 @@ private struct RetentionPolicyListView: View {
     .navigationTitle("Keep History")
     .navigationBarTitleDisplayMode(.inline)
   }
-
-  // MARK: Private
 
   @Environment(\.dismiss) private var dismiss
   @State private var pendingPolicy: HistoryRetentionPolicy?
@@ -73,11 +67,7 @@ private struct RetentionPolicyListView: View {
   }
 }
 
-// MARK: - SettingsView
-
 struct SettingsView: View {
-
-  // MARK: Lifecycle
 
   init() {
     let shared = SharedSettings()
@@ -86,11 +76,9 @@ struct SettingsView: View {
     _selectedKeyboardKind = State(initialValue: shared.keyboardKind)
   }
 
-  // MARK: Internal
-
   var body: some View {
     Form {
-      if self.needsSetup || self.isLowDiskSpace {
+      if self.needsSetup || self.showsLowStorageWarning {
         self.setupSection
       }
       if self.speechService.isSessionActive {
@@ -107,7 +95,7 @@ struct SettingsView: View {
     .navigationTitle("Settings")
     .onAppear {
       self.refreshHistoryInfo()
-      self.isLowDiskSpace = DiskSpace.isLow()
+      self.showsLowStorageWarning = DiskSpace.isLow() && !OperatingSystem.isBackgroundNeuralEngineBlocked
     }
     .onChange(of: self.selectedRetentionPolicy) { _, newValue in
       self.settings.retentionPolicy = newValue
@@ -124,8 +112,6 @@ struct SettingsView: View {
       self.settings.keyboardKind = newValue
     }
   }
-
-  // MARK: Private
 
   private static let defaultLanguage = AppLanguageConfig.fallback
 
@@ -150,19 +136,15 @@ struct SettingsView: View {
   @State private var historyInfoText = ""
   @State private var historyClearedTrigger = false
   @State private var cacheClearedTrigger = false
-  @State private var isLowDiskSpace = false
+  @State private var showsLowStorageWarning = false
   @SceneStorage("selectedTab") private var selectedTab = "history"
 
-  // swiftlint:disable:next line_length
   private let clearHistoryMessage: LocalizedStringKey = "All recordings from the History tab, including transcription text and audio files stored on this device, will be permanently deleted."
 
-  // swiftlint:disable:next line_length
   private let clearCacheMessage: LocalizedStringKey = "Compiled models will be removed from cache. Recompilation will be required on next use, which may take up to a minute."
 
-  // swiftlint:disable:next line_length
   private let sessionFooterMessage: LocalizedStringKey = "Allows the keyboard to start dictation instantly, without switching to the app. The orange dot in the status bar is normal \u{2014} it means the mic session is active."
 
-  // swiftlint:disable:next line_length
   private let lowStorageMessage: LocalizedStringKey = "When storage runs low, your device may clear the prepared speech model, forcing a slow rebuild before dictation. Free up space in Settings \u{203A} General \u{203A} Storage."
 
   private var sessionBinding: Binding<Bool> {
@@ -199,14 +181,14 @@ struct SettingsView: View {
       if !self.downloadService.hasUsableModel {
         self.modelSetupRow
       }
-      if self.isLowDiskSpace {
+      if self.showsLowStorageWarning {
         self.lowStorageRow
       }
     } header: {
       Text("\u{26A0}\u{FE0F} Action Required")
     } footer: {
       if self.needsSetup {
-        Text("Sayboard won't work until these settings are configured")
+        Text("Sayboard won’t work until these settings are configured")
       }
     }
   }
@@ -405,87 +387,4 @@ struct SettingsView: View {
     self.historyInfoText = "\(count) \u{00B7} \(bytes.formatted(.byteCount(style: .file).locale(self.locale)))"
   }
 
-}
-
-// MARK: - TextOutputSection
-
-private struct TextOutputSection: View {
-
-  // MARK: Internal
-
-  var body: some View {
-    Section {
-      NavigationLink {
-        WritingStyleListView()
-      } label: {
-        Text("Writing Style")
-      }
-
-      AITextProcessingRow(
-        llmEnabled: self.llmEnabled,
-        hasUsableModel: self.llmDownloadService.hasUsableModel,
-        selectedVariantName: self.llmDownloadService.selectedVariant.displayName,
-      )
-
-      NavigationLink {
-        SnippetsView()
-      } label: {
-        HStack {
-          Text("Snippets")
-          Spacer()
-          Text(verbatim: "\(self.snippetCount)")
-            .foregroundStyle(.secondary)
-        }
-      }
-
-      Toggle("Auto-Copy to Clipboard", isOn: self.$alsoCopyToClipboard)
-    } header: {
-      Text("Text")
-    } footer: {
-      Text(Self.clipboardFooterMessage)
-    }
-    .onAppear {
-      self.snippetCount = self.settings.snippets.count
-    }
-  }
-
-  // MARK: Private
-
-  // swiftlint:disable:next line_length
-  private static let clipboardFooterMessage: LocalizedStringKey = "After each dictation, the inserted text is also copied to the system clipboard. Replaces the previous clipboard contents."
-
-  @AppStorage(SharedKey.llmEnabled, store: UserDefaults(suiteName: AppGroup.identifier))
-  private var llmEnabled = false
-  @AppStorage(SharedKey.alsoCopyToClipboard, store: UserDefaults(suiteName: AppGroup.identifier))
-  private var alsoCopyToClipboard = false
-  @EnvironmentObject private var llmDownloadService: LLMDownloadService
-  @State private var settings = SharedSettings()
-  @State private var snippetCount = 0
-}
-
-// MARK: - AITextProcessingRow
-
-private struct AITextProcessingRow: View {
-
-  let llmEnabled: Bool
-  let hasUsableModel: Bool
-  let selectedVariantName: String
-
-  var body: some View {
-    NavigationLink {
-      LLMSettingsView()
-    } label: {
-      HStack {
-        Text("AI Text Processing")
-        Spacer()
-        if self.llmEnabled, self.hasUsableModel {
-          Text(verbatim: self.selectedVariantName)
-            .foregroundStyle(.secondary)
-        } else {
-          Text("Off")
-            .foregroundStyle(.secondary)
-        }
-      }
-    }
-  }
 }

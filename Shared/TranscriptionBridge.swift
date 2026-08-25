@@ -1,28 +1,32 @@
 import Foundation
 
-// MARK: - TranscriptionBridge
-
-// Main app writes transcribed text to a shared file in the App Group container.
-// Keyboard extension reads the file and inserts text into the active text field.
-// Darwin notifications signal when new transcription is available.
-
 struct TranscriptionBridge: Sendable {
 
-  // MARK: Internal
-
   static func writeTranscription(_ text: String) {
-    guard let url = transcriptionFileURL else { return }
+    guard let url = transcriptionFileURL else {
+      return
+    }
     do {
       try Data(text.utf8).write(to: url, options: [.atomic, .completeFileProtectionUnlessOpen])
+      DiagnosticLog.write("bridge: wrote \(text.count) chars")
     } catch {
-      // no-op
+      DiagnosticLog.write("bridge: WRITE FAILED: \(error.localizedDescription)")
     }
     self.postDarwinNotification(DarwinNotificationName.transcriptionReady)
   }
 
   static func readTranscription() -> String? {
-    guard let url = transcriptionFileURL else { return nil }
-    return try? String(contentsOf: url, encoding: .utf8)
+    guard let url = transcriptionFileURL else {
+      return nil
+    }
+    do {
+      let text = try String(contentsOf: url, encoding: .utf8)
+      DiagnosticLog.write("bridge: read \(text.count) chars")
+      return text
+    } catch {
+      DiagnosticLog.write("bridge: READ FAILED: \(error.localizedDescription)")
+      return nil
+    }
   }
 
   static func clearTranscription() {
@@ -39,8 +43,6 @@ struct TranscriptionBridge: Sendable {
     DarwinNotificationObserver(name: name, callback: callback)
   }
 
-  // MARK: Private
-
   private static let transcriptionFileName = "transcription.txt"
 
   private static var transcriptionFileURL: URL? {
@@ -48,24 +50,13 @@ struct TranscriptionBridge: Sendable {
   }
 }
 
-// MARK: - DarwinNotificationObserver
-
-// CFNotificationCenter holds an unretained pointer to the observer. We use
-// passRetained/release to ensure `self` stays alive while CF holds the pointer.
-// Callers MUST call `stopObserving()` before releasing the last strong reference.
-// If they forget, the object intentionally leaks (via the +1 retain) rather than
-// allowing a use-after-free in the CF callback.
-// swiftlint:disable:next no_unchecked_sendable
 final class DarwinNotificationObserver: @unchecked Sendable {
-
-  // MARK: Lifecycle
 
   init(name: String, callback: @escaping () -> Void) {
     self.name = name
     self.callback = callback
 
     let center = CFNotificationCenterGetDarwinNotifyCenter()
-    // +1 retain: CF now holds a strong reference via the opaque pointer
     let observer = Unmanaged.passRetained(self).toOpaque()
 
     CFNotificationCenterAddObserver(
@@ -84,17 +75,12 @@ final class DarwinNotificationObserver: @unchecked Sendable {
   }
 
   deinit {
-    // Safety net: remove observer if stopObserving() was never called.
-    // We intentionally do NOT release here — if we reach deinit without
-    // stopObserving(), the extra retain was already consumed elsewhere.
     if self.isObserving {
       let center = CFNotificationCenterGetDarwinNotifyCenter()
       let observer = Unmanaged.passUnretained(self).toOpaque()
       CFNotificationCenterRemoveObserver(center, observer, CFNotificationName(self.name as CFString), nil)
     }
   }
-
-  // MARK: Internal
 
   func stopObserving() {
     guard self.isObserving else { return }
@@ -104,11 +90,8 @@ final class DarwinNotificationObserver: @unchecked Sendable {
     let observer = Unmanaged.passUnretained(self).toOpaque()
     CFNotificationCenterRemoveObserver(center, observer, CFNotificationName(self.name as CFString), nil)
 
-    // Balance the +1 retain from init — CF no longer holds the pointer
     Unmanaged.passUnretained(self).release()
   }
-
-  // MARK: Private
 
   private let name: String
   private let callback: () -> Void

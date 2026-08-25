@@ -1,8 +1,5 @@
-// KeyboardAnimations -- WavyCircle, PulseRings, and MetaballSpinner used in keyboard view
 
 import SwiftUI
-
-// MARK: - WavyCircle
 
 struct WavyCircle: Shape {
   var phase: Double
@@ -42,13 +39,7 @@ struct WavyCircle: Shape {
   }
 }
 
-// MARK: - WavyRoundedRectangle
-
-/// A rounded rectangle whose outline carries the same organic wave as `WavyCircle`,
-/// so the extended (rounded-rect) mic's pulse rings wobble like the circular ones.
 struct WavyRoundedRectangle: Shape {
-
-  // MARK: Internal
 
   var phase: Double
   var cornerRadius: CGFloat
@@ -79,9 +70,6 @@ struct WavyRoundedRectangle: Shape {
     return path
   }
 
-  // MARK: Private
-
-  /// Derived rounded-rectangle dimensions used to walk the outline.
   private struct Metrics {
     init(rect: CGRect, cornerRadius: CGFloat) {
       let radius = max(0, min(cornerRadius, min(rect.width, rect.height) / 2))
@@ -109,7 +97,6 @@ struct WavyRoundedRectangle: Shape {
     return (CGPoint(x: center.x + normal.dx * radius, y: center.y + normal.dy * radius), normal)
   }
 
-  /// Base point + outward unit normal at `arcLength`, clockwise from the top edge.
   private func outline(at arcLength: CGFloat, rect: CGRect, metrics: Metrics) -> (CGPoint, CGVector) {
     let radius = metrics.radius
     let topRight = CGPoint(x: rect.maxX - radius, y: rect.minY + radius)
@@ -150,18 +137,13 @@ struct WavyRoundedRectangle: Shape {
 
 }
 
-// MARK: - PulseRings
-
 struct PulseRings: View {
-
-  // MARK: Internal
 
   let buttonWidth: CGFloat
   let buttonHeight: CGFloat
   let cornerRadius: CGFloat
   let ringSpacing: CGFloat
 
-  /// Max visual size including WavyCircle distortion (±4pt wave → +8).
   var maxWidth: CGFloat {
     let ringExtent = CGFloat(Self.ringCount) * self.ringSpacing
     let waveOverflow: CGFloat = 8.kbScaled
@@ -207,15 +189,12 @@ struct PulseRings: View {
     }
   }
 
-  // MARK: Private
-
   private static let ringCount = 2
   private static let minOpacity = 0.15
   private static let maxOpacity = 0.35
   private static let minScale = 0.9
   private static let pulseDuration = 1.0
   private static let waveDuration = 6.0
-  /// Reference button diameter (Standard layout) used as baseline for amplitude scaling.
   private static let referenceDiameter: CGFloat = 106
   private static let referenceWaveAmplitude: CGFloat = 2.5
   private static let referenceSecondaryAmplitude: CGFloat = 1.5
@@ -223,8 +202,6 @@ struct PulseRings: View {
   @State private var isAnimating = false
   @State private var wavePhase = 0.0
 
-  /// True when the button is effectively a circle (standard mic) — keeps the
-  /// wavy rings; otherwise (extended mic) rings are matching rounded rects.
   private var isCircle: Bool {
     abs(self.buttonWidth - self.buttonHeight) < 0.5 && self.cornerRadius >= self.buttonHeight / 2 - 0.5
   }
@@ -267,12 +244,7 @@ struct PulseRings: View {
 
 }
 
-// MARK: - MetaballSpinner
-
-/// Two circles orbiting each other — processing indicator.
 struct MetaballSpinner: View {
-
-  // MARK: Internal
 
   let color: Color
   let size: CGFloat
@@ -301,9 +273,6 @@ struct MetaballSpinner: View {
     }
   }
 
-  // MARK: Private
-
-  // Proportions derived from SVG: 24x24 viewBox, r=4 circles at cx=5/19
   private static let rotationPeriod = 0.88
   private static let oscillationPeriod = 1.8
 

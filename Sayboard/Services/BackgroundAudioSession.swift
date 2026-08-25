@@ -2,23 +2,12 @@ import Accelerate
 @preconcurrency import AVFoundation
 import os
 
-// BackgroundAudioSession -- Persistent audio engine that keeps the app alive in background.
-// The tap stays installed at all times; when recording, buffers are forwarded
-// to the audio buffer accumulator + audio recorder. When idle, buffers are discarded.
-
-// MARK: - TapState
-
-// Thread-safe: fields are immutable lets; AudioBufferAccumulator and AudioRecorder
-// are both Sendable and safe to call from the real-time audio thread.
-// swiftlint:disable:next no_unchecked_sendable
 private struct TapState: @unchecked Sendable {
   let accumulator: AudioBufferAccumulator
   let recorder: AudioRecorder
   let converter: AVAudioConverter?
   let targetFormat: AVAudioFormat
 }
-
-// MARK: - AudioSessionError
 
 enum AudioSessionError: LocalizedError {
   case noInputChannels
@@ -34,107 +23,21 @@ enum AudioSessionError: LocalizedError {
   }
 }
 
-// MARK: - Resampling
-
-private let whisperKitSampleRate: Double = 16_000
-
-private func resampleBuffer(
-  _ buffer: AVAudioPCMBuffer,
-  converter: AVAudioConverter,
-  targetFormat: AVAudioFormat,
-) -> [Float] {
-  let frameCount = AVAudioFrameCount(
-    Double(buffer.frameLength) * whisperKitSampleRate / buffer.format.sampleRate
-  )
-  guard
-    let convertedBuffer = AVAudioPCMBuffer(
-      pcmFormat: targetFormat,
-      frameCapacity: frameCount + 1,
-    )
-  else { return [] }
-
-  let gotData = OSAllocatedUnfairLock(initialState: false)
-  let inputBlock: AVAudioConverterInputBlock = { _, outStatus in
-    let alreadyProvided = gotData.withLock { current -> Bool in
-      if current { return true }
-      current = true
-      return false
-    }
-    if alreadyProvided {
-      outStatus.pointee = .noDataNow
-      return nil
-    }
-    outStatus.pointee = .haveData
-    return buffer
-  }
-
-  var error: NSError?
-  converter.convert(to: convertedBuffer, error: &error, withInputFrom: inputBlock)
-  guard error == nil, convertedBuffer.frameLength > 0 else { return [] }
-  guard let channelData = convertedBuffer.floatChannelData else { return [] }
-  return Array(UnsafeBufferPointer(start: channelData[0], count: Int(convertedBuffer.frameLength)))
-}
-
-private let rmsPreFilterWindowSize = 4
-
-/// Sliding mean over recent RMS samples: absorbs single-sample outliers before EMA.
-private func preFilterRMS(
-  _ rms: Float,
-  ringBuffer: OSAllocatedUnfairLock<(buffer: [Float], index: Int)>,
-) -> Float {
-  ringBuffer.withLock { state -> Float in
-    state.buffer[state.index % state.buffer.count] = rms
-    state.index += 1
-    var mean: Float = 0
-    vDSP_meanv(state.buffer, 1, &mean, vDSP_Length(state.buffer.count))
-    return mean
-  }
-}
-
-/// Asymmetric EMA: fast attack (alpha 0.7) for speech onset, slow decay (0.3) for pauses.
-private func smoothLevel(
-  _ scaled: Float,
-  previous: OSAllocatedUnfairLock<Float>,
-) -> Float {
-  previous.withLock { prev -> Float in
-    let alpha: Float = scaled > prev ? 0.7 : 0.5
-    let result = alpha * scaled + (1 - alpha) * prev
-    prev = result
-    return result
-  }
-}
-
-private func calculateRMS(from buffer: AVAudioPCMBuffer) -> Float {
-  guard let channelData = buffer.floatChannelData else { return 0 }
-  var rms: Float = 0
-  vDSP_rmsqv(channelData[0], 1, &rms, vDSP_Length(buffer.frameLength))
-  return rms
-}
-
-private func extractSamples(from buffer: AVAudioPCMBuffer) -> [Float] {
-  guard let channelData = buffer.floatChannelData else { return [] }
-  return Array(UnsafeBufferPointer(start: channelData[0], count: Int(buffer.frameLength)))
-}
-
-// MARK: - BackgroundAudioSession
-
 @MainActor
 final class BackgroundAudioSession: ObservableObject {
-
-  // MARK: Internal
 
   @Published private(set) var isSessionActive = false
   private(set) var hasRecordedThisSession = false
 
-  /// Called when audio is interrupted (e.g. phone call). Owner should stop recording.
   var onInterruptionBegan: (() -> Void)?
 
-  /// Called when session ends (timeout, non-resumable interruption). Owner should stop recording.
   var onSessionEnded: (() -> Void)?
 
   let audioEngine = AVAudioEngine()
 
   nonisolated let levelBridge = AudioLevelBridge(mode: .writer)
+
+  nonisolated let tapDiagnostics = OSAllocatedUnfairLock<TapDiagnostics>(initialState: TapDiagnostics())
 
   func startSession() throws {
     guard !self.isSessionActive else {
@@ -201,7 +104,7 @@ final class BackgroundAudioSession: ObservableObject {
     guard
       let targetFormat = AVAudioFormat(
         commonFormat: .pcmFormatFloat32,
-        sampleRate: whisperKitSampleRate,
+        sampleRate: AudioBufferMath.targetSampleRate,
         channels: 1,
         interleaved: false,
       )
@@ -209,10 +112,17 @@ final class BackgroundAudioSession: ObservableObject {
       return
     }
 
-    let needsConversion = hwFormat.sampleRate != whisperKitSampleRate || hwFormat.channelCount != 1
+    let needsConversion = hwFormat.sampleRate != AudioBufferMath.targetSampleRate || hwFormat.channelCount != 1
     let converter: AVAudioConverter? = needsConversion
       ? AVAudioConverter(from: hwFormat, to: targetFormat)
       : nil
+
+    if needsConversion, converter == nil { }
+    DiagnosticLog.write(
+      "activateTap: hw=\(hwFormat.sampleRate)Hz/\(hwFormat.channelCount)ch "
+        + "needsConversion=\(needsConversion) converter=\(converter != nil)"
+    )
+    self.tapDiagnostics.withLock { $0 = TapDiagnostics() }
 
     self.tapState.withLock {
       $0 = TapState(
@@ -229,17 +139,15 @@ final class BackgroundAudioSession: ObservableObject {
   func deactivateTap() {
     self.tapState.withLock { $0 = nil }
     self.resetLevelState()
+    self.logTapDiagnostics()
     self.resetInactivityTimer()
   }
 
-  /// Re-reads auto-stop policy from settings and reschedules the inactivity timer.
   func updateTimeout() {
     let isCapturing = self.tapState.withLock { $0 != nil }
     guard !isCapturing else { return }
     self.resetInactivityTimer()
   }
-
-  // MARK: Private
 
   private let settings = SharedSettings()
   private nonisolated let tapState = OSAllocatedUnfairLock<TapState?>(initialState: nil)
@@ -248,14 +156,14 @@ final class BackgroundAudioSession: ObservableObject {
   private nonisolated let lastHeartbeatTime = OSAllocatedUnfairLock<CFAbsoluteTime>(initialState: 0)
   private nonisolated let previousLevel = OSAllocatedUnfairLock<Float>(initialState: 0)
   private nonisolated let rmsRingBuffer = OSAllocatedUnfairLock<(buffer: [Float], index: Int)>(
-    initialState: (buffer: [Float](repeating: 0, count: rmsPreFilterWindowSize), index: 0)
+    initialState: (buffer: [Float](repeating: 0, count: AudioBufferMath.rmsPreFilterWindowSize), index: 0)
   )
   private var interruptionObserver: NSObjectProtocol?
 
   private func resetLevelState() {
     self.previousLevel.withLock { $0 = 0 }
     self.rmsRingBuffer.withLock { state in
-      state.buffer = [Float](repeating: 0, count: rmsPreFilterWindowSize)
+      state.buffer = [Float](repeating: 0, count: AudioBufferMath.rmsPreFilterWindowSize)
       state.index = 0
     }
     self.levelBridge.writeLevel(0)
@@ -267,7 +175,6 @@ final class BackgroundAudioSession: ObservableObject {
     self.inactivityTimer = nil
   }
 
-  // swiftlint:disable:next function_body_length
   private func installPersistentTap() throws {
     let inputNode = self.audioEngine.inputNode
     let hwFormat = inputNode.outputFormat(forBus: 0)
@@ -278,23 +185,15 @@ final class BackgroundAudioSession: ObservableObject {
 
     inputNode.removeTap(onBus: 0)
 
-    // installTap can throw an ObjC NSException (not a Swift Error) on format
-    // mismatch or audio graph issues. ObjCExceptionCatcher converts it to a
-    // Swift Error so the caller can handle it gracefully instead of crashing.
     let state = self.tapState
     let bridge = self.levelBridge
     let lastFlush = self.lastFlushTime
     let lastHeartbeat = self.lastHeartbeatTime
     let prevLevel = self.previousLevel
     let ringBuf = self.rmsRingBuffer
-    // swiftlint:disable:next closure_body_length
+    let diagnostics = self.tapDiagnostics
     try ObjCExceptionCatcher.catchException {
-      // swiftlint:disable:next closure_body_length
       inputNode.installTap(onBus: 0, bufferSize: 4096, format: nil) { @Sendable buffer, _ in
-        // Heartbeat (~2Hz) so the keyboard can detect a jetsammed main app
-        // before posting requestStartDictation. Written before the tap-state
-        // guard because the audio thread keeps firing even when no recording
-        // is active; main-thread Timers don't fire in audio-mode background.
         let now = CFAbsoluteTimeGetCurrent()
         let shouldHeartbeat = lastHeartbeat.withLock { last -> Bool in
           if now - last >= 0.5 {
@@ -310,12 +209,10 @@ final class BackgroundAudioSession: ObservableObject {
         let active = state.withLock { $0 }
         guard let active else { return }
 
-        let rms = calculateRMS(from: buffer)
-        let filtered = preFilterRMS(min(rms * 14, 1.0), ringBuffer: ringBuf)
-        bridge.writeLevel(smoothLevel(filtered, previous: prevLevel))
+        let rms = AudioBufferMath.rms(from: buffer)
+        let filtered = AudioBufferMath.preFilterRMS(min(rms * 14, 1.0), ringBuffer: ringBuf)
+        bridge.writeLevel(AudioBufferMath.smoothLevel(filtered, previous: prevLevel))
 
-        // Flush audio level to UserDefaults (~30Hz throttle). `now` is reused
-        // from the heartbeat block above.
         let shouldFlush = lastFlush.withLock { last -> Bool in
           if now - last >= 1.0 / 30.0 {
             last = now
@@ -331,12 +228,28 @@ final class BackgroundAudioSession: ObservableObject {
 
         let samples: [Float] =
           if let converter = active.converter {
-            resampleBuffer(buffer, converter: converter, targetFormat: active.targetFormat)
+            AudioBufferMath.resample(
+              buffer,
+              converter: converter,
+              targetFormat: active.targetFormat,
+              diagnostics: diagnostics,
+            )
           } else {
-            extractSamples(from: buffer)
+            AudioBufferMath.samples(from: buffer)
           }
 
         if !samples.isEmpty { active.accumulator.append(samples) }
+
+        diagnostics.withLock { diag in
+          diag.buffers += 1
+          diag.inputFrames += Int(buffer.frameLength)
+          diag.outputFrames += samples.count
+          if diag.inputSampleRate == 0 {
+            diag.inputSampleRate = buffer.format.sampleRate
+            diag.inputChannels = buffer.format.channelCount
+          }
+          if rms > diag.peakRMS { diag.peakRMS = rms }
+        }
       }
     }
   }
@@ -368,7 +281,6 @@ final class BackgroundAudioSession: ObservableObject {
       object: AVAudioSession.sharedInstance(),
       queue: .main,
     ) { [weak self] notification in
-      // Extract values before crossing isolation boundary
       let userInfo = notification.userInfo
       let typeValue = userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt
       let optionsValue = userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt
@@ -407,6 +319,7 @@ final class BackgroundAudioSession: ObservableObject {
       }
 
     @unknown default:
+      break
     }
   }
 }

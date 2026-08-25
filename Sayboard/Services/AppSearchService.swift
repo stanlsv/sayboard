@@ -1,10 +1,6 @@
 import Foundation
 
-// MARK: - AppSearchResult
-
 struct AppSearchResult: Decodable, Sendable, Identifiable {
-
-  // MARK: Internal
 
   let bundleId: String
   let trackName: String
@@ -19,8 +15,6 @@ struct AppSearchResult: Decodable, Sendable, Identifiable {
     (self.artworkUrl100 ?? self.artworkUrl60).flatMap { URL(string: $0) }
   }
 
-  // MARK: Private
-
   private enum CodingKeys: String, CodingKey {
     case bundleId
     case trackName
@@ -29,13 +23,9 @@ struct AppSearchResult: Decodable, Sendable, Identifiable {
   }
 }
 
-// MARK: - ITunesSearchResponse
-
 private struct ITunesSearchResponse: Decodable {
   let results: [AppSearchResult]
 }
-
-// MARK: - SearchPhase
 
 enum SearchPhase: Equatable {
   case idle
@@ -43,15 +33,9 @@ enum SearchPhase: Equatable {
   case done
 }
 
-// MARK: - AppSearchService
-
-// AppSearchService -- iTunes Search API client with debounced search
-
 @MainActor
 @Observable
 final class AppSearchService {
-
-  // MARK: Internal
 
   private(set) var results = [AppSearchResult]()
   private(set) var phase = SearchPhase.idle
@@ -73,8 +57,6 @@ final class AppSearchService {
       await self.performSearch(trimmed: trimmed)
     }
   }
-
-  // MARK: Private
 
   private static let baseURL = "https://itunes.apple.com/search"
   private static let debounceMilliseconds = 400

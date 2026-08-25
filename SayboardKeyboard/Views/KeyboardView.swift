@@ -1,26 +1,17 @@
 import SwiftUI
 import UIKit
 
-// MARK: - Keyboard Colors
-
 extension UIColor {
-  /// Letter-key background. Light: #FFFFFF, Dark: #3A3A3C (systemGray4).
   static let keyBackground = UIColor { traits in
     traits.userInterfaceStyle == .dark ? .systemGray4 : .white
   }
 
-  /// Pressed-state fill. Light: #D1D1D6 (systemGray4), Dark: #636366 (systemGray2).
-  /// Apple-faithful inversion: dark press jumps toward letter-key tone for stronger feedback.
   static let keyPressedBackground = UIColor { traits in
     traits.userInterfaceStyle == .dark ? .systemGray2 : .systemGray4
   }
 }
 
-// MARK: - Key Press Transition
-
 extension View {
-  /// Single source of truth for press-feedback timing on keyboard keys.
-  /// Instant on press, 20ms ease-out on release. Applied to background swap; scope per-style.
   func keyPressTransition(isPressed: Bool) -> some View {
     self.transaction(value: isPressed) { transaction in
       transaction.animation = isPressed ? nil : .easeOut(duration: 0.02)
@@ -28,15 +19,12 @@ extension View {
   }
 }
 
-// MARK: - KeyShape
-
 enum KeyShape {
   case pill
   case rounded
 }
 
 extension View {
-  /// Key chrome background with the standard press-feedback transition.
   @MainActor
   func keyBackground(shape: KeyShape, fill: Color, isPressed: Bool) -> some View {
     self.background {
@@ -52,8 +40,6 @@ extension View {
     }
   }
 }
-
-// MARK: - KeyboardProxy
 
 struct KeyboardProxy {
   let insertText: (String) -> Void
@@ -71,20 +57,17 @@ struct KeyboardProxy {
   let setStatusStripHeight: (CGFloat) -> Void
 }
 
-// MARK: - SetupBlocker
-
 enum SetupBlocker {
   case fullAccessMissing
   case micDenied
   case noModel
-
-  // MARK: Internal
+  case modelRemovedByUpdate
 
   var icon: String {
     switch self {
     case .fullAccessMissing: "lock.open"
     case .micDenied: "mic.slash"
-    case .noModel: "arrow.down.circle"
+    case .noModel, .modelRemovedByUpdate: "arrow.down.circle"
     }
   }
 
@@ -93,6 +76,7 @@ enum SetupBlocker {
     case .fullAccessMissing: "Full Access is disabled. Open the Sayboard app for setup instructions"
     case .micDenied: "Microphone is disabled. Allow Sayboard microphone access to recognize your speech"
     case .noModel: "No speech model yet. Download a speech model to start using voice input"
+    case .modelRemovedByUpdate: "Parakeet v3 was updated. Open Sayboard to download it again"
     }
   }
 
@@ -100,22 +84,18 @@ enum SetupBlocker {
     switch self {
     case .fullAccessMissing: "Open Settings"
     case .micDenied: "Open Settings"
-    case .noModel: "Open Models"
+    case .noModel, .modelRemovedByUpdate: "Open Models"
     }
   }
 
-  /// Links work only when Full Access is granted.
-  /// `.fullAccessMissing` returns `nil` — no tappable button.
   var linkURL: URL? {
     switch self {
     case .fullAccessMissing: nil
     case .micDenied: DeepLink.setupMicURL
-    case .noModel: DeepLink.modelsURL
+    case .noModel, .modelRemovedByUpdate: DeepLink.modelsURL
     }
   }
 }
-
-// MARK: - RectKeyStyle
 
 struct RectKeyStyle: ButtonStyle {
   var fixedWidth: CGFloat?
@@ -141,11 +121,7 @@ struct RectKeyStyle: ButtonStyle {
   }
 }
 
-// MARK: - KeyboardView
-
 struct KeyboardView: View {
-
-  // MARK: Internal
 
   let proxy: KeyboardProxy
 
@@ -199,8 +175,6 @@ struct KeyboardView: View {
     }
   }
 
-  // MARK: Private
-
   @Environment(\.openURL) private var openURL
 
   private var activeBlocker: SetupBlocker? {
@@ -209,7 +183,7 @@ struct KeyboardView: View {
     } else if !self.keyboardState.isMicrophoneAuthorized {
       .micDenied
     } else if !self.keyboardState.hasUsableModel {
-      .noModel
+      self.keyboardState.parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
     } else {
       nil
     }

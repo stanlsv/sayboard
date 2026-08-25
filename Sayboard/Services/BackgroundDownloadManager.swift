@@ -1,4 +1,3 @@
-// BackgroundDownloadManager -- Background URLSession for model downloads (STT + LLM)
 
 import Combine
 import CryptoKit
@@ -6,14 +5,11 @@ import Foundation
 
 import ZIPFoundation
 
-// MARK: - DownloadType
-
 enum DownloadType: String, Codable, Sendable {
   case stt
   case llm
+  case llmUpgrade
 }
-
-// MARK: - DownloadMetadata
 
 struct DownloadMetadata: Codable, Sendable {
   let downloadType: DownloadType
@@ -23,9 +19,8 @@ struct DownloadMetadata: Codable, Sendable {
   let destinationDirectory: URL
   let sizeBytes: Int64
   var taskIdentifier: Int?
+  var sessionIdentifier: String?
 }
-
-// MARK: - DownloadEvent
 
 enum DownloadEvent: Sendable {
   case progress(downloadType: DownloadType, variantRawValue: String, fraction: Double)
@@ -33,31 +28,26 @@ enum DownloadEvent: Sendable {
   case failed(downloadType: DownloadType, variantRawValue: String, error: Error)
 }
 
-// MARK: - BackgroundDownloadManager
-
-// swiftlint:disable:next no_unchecked_sendable
 final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
-
-  // MARK: Lifecycle
 
   override private init() {
     super.init()
     self.loadPersistedMetadata()
   }
 
-  // MARK: Internal
-
   static let shared = BackgroundDownloadManager()
   static let sessionIdentifier = "app.sayboard.background-downloads"
+  static let upgradeSessionIdentifier = "app.sayboard.background-upgrades"
 
   let eventSubject = PassthroughSubject<DownloadEvent, Never>()
-
-  /// Stored by AppDelegate when the system relaunches the app for background session events.
-  var systemCompletionHandler: (() -> Void)?
 
   let lock = NSLock()
   var activeMetadata = [String: DownloadMetadata]()
   var activeTasks = [String: URLSessionDownloadTask]()
+
+  static func ownsSession(identifier: String) -> Bool {
+    identifier == Self.sessionIdentifier || identifier == Self.upgradeSessionIdentifier
+  }
 
   static func computeSHA256(of fileURL: URL) throws -> String {
     let handle = try FileHandle(forReadingFrom: fileURL)
@@ -76,20 +66,27 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     return digest.map { String(format: "%02x", $0) }.joined()
   }
 
+  func storeSystemCompletionHandler(_ handler: @escaping () -> Void, forSession identifier: String) {
+    self.lock.lock()
+    defer { self.lock.unlock() }
+    self.systemCompletionHandlers[identifier] = handler
+  }
+
   func enqueueDownload(metadata: DownloadMetadata) {
     self.lock.lock()
     defer { self.lock.unlock() }
 
-    // Cancel any existing download for the same variant+type (synchronous, no async getAllTasks)
     let existingKey = self.metadataKey(for: metadata)
     self.activeTasks[existingKey]?.cancel()
 
     var request = URLRequest(url: metadata.sourceURL)
     request.cachePolicy = .reloadIgnoringLocalCacheData
-    let task = self.session.downloadTask(with: request)
+    let session = self.session(for: metadata.downloadType)
+    let task = session.downloadTask(with: request)
 
     var updatedMetadata = metadata
     updatedMetadata.taskIdentifier = task.taskIdentifier
+    updatedMetadata.sessionIdentifier = session.configuration.identifier
     self.activeMetadata[existingKey] = updatedMetadata
     self.activeTasks[existingKey] = task
 
@@ -109,7 +106,6 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     task?.cancel()
   }
 
-  /// Called at app launch to reconcile persisted metadata with live session tasks.
   func restoreSession() {
     self.lock.lock()
     self.loadPersistedMetadata()
@@ -120,16 +116,13 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
       return
     }
 
-    // Access the session to trigger reconnection with the background daemon.
-    // The delegate callbacks will fire for any completed/in-progress tasks.
-    _ = self.session
-
-    self.session.getAllTasks { [weak self] tasks in
-      self?.reconcileMetadataWithTasks(tasks)
+    for session in [self.session, self.upgradeSession] {
+      session.getAllTasks { [weak self] tasks in
+        self?.reconcileMetadataWithTasks(tasks, sessionIdentifier: session.configuration.identifier)
+      }
     }
   }
 
-  /// Check if there is an active download for the given variant and type.
   func hasActiveDownload(variantRawValue: String, downloadType: DownloadType) -> Bool {
     self.lock.lock()
     defer { self.lock.unlock() }
@@ -137,19 +130,21 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     return self.activeMetadata[key] != nil
   }
 
-  func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+  func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
     let taskId = downloadTask.taskIdentifier
 
     self.lock.lock()
-    guard let (key, metadata) = self.findMetadata(for: taskId) else {
+    guard
+      let (key, metadata) = self.findMetadata(
+        sessionIdentifier: session.configuration.identifier,
+        taskIdentifier: taskId,
+      )
+    else {
       self.lock.unlock()
       return
     }
     self.lock.unlock()
 
-    // Apple requires the file to be moved before this delegate method returns.
-    // Move synchronously here, then dispatch heavy work (SHA256 + unzip) to the
-    // processing queue so we don't block progress callbacks for other downloads.
     let fm = FileManager.default
     let tempURL = fm.temporaryDirectory
       .appendingPathComponent(UUID().uuidString)
@@ -167,16 +162,16 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     }
   }
 
-  func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+  func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
     guard let error else { return }
 
     let taskId = task.taskIdentifier
+    let sessionID = session.configuration.identifier
     let nsError = error as NSError
 
-    // Ignore cancellations from the user calling cancelDownload
     if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
       self.lock.lock()
-      if let (key, _) = self.findMetadata(for: taskId) {
+      if let (key, _) = self.findMetadata(sessionIdentifier: sessionID, taskIdentifier: taskId) {
         self.activeMetadata.removeValue(forKey: key)
         self.activeTasks.removeValue(forKey: key)
         self.persistMetadata()
@@ -186,7 +181,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     }
 
     self.lock.lock()
-    guard let (key, metadata) = self.findMetadata(for: taskId) else {
+    guard let (key, metadata) = self.findMetadata(sessionIdentifier: sessionID, taskIdentifier: taskId) else {
       self.lock.unlock()
       return
     }
@@ -196,7 +191,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
   }
 
   func urlSession(
-    _: URLSession,
+    _ session: URLSession,
     downloadTask: URLSessionDownloadTask,
     didWriteData _: Int64,
     totalBytesWritten: Int64,
@@ -206,7 +201,12 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     let fraction = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
 
     self.lock.lock()
-    guard let (_, metadata) = self.findMetadata(for: downloadTask.taskIdentifier) else {
+    guard
+      let (_, metadata) = self.findMetadata(
+        sessionIdentifier: session.configuration.identifier,
+        taskIdentifier: downloadTask.taskIdentifier,
+      )
+    else {
       self.lock.unlock()
       return
     }
@@ -220,17 +220,23 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     DispatchQueue.main.async { self.eventSubject.send(event) }
   }
 
-  func urlSessionDidFinishEvents(forBackgroundURLSession _: URLSession) {
-    DispatchQueue.main.async { [weak self] in
-      self?.systemCompletionHandler?()
-      self?.systemCompletionHandler = nil
-    }
+  func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+    let identifier = session.configuration.identifier ?? Self.sessionIdentifier
+
+    self.lock.lock()
+    let handler = self.systemCompletionHandlers.removeValue(forKey: identifier)
+    self.lock.unlock()
+
+    guard let handler else { return }
+    DispatchQueue.main.async { handler() }
   }
 
-  /// Finds metadata for a given task identifier. Must be called with lock held.
-  func findMetadata(for taskIdentifier: Int) -> (key: String, metadata: DownloadMetadata)? {
+  func findMetadata(sessionIdentifier: String?, taskIdentifier: Int) -> (key: String, metadata: DownloadMetadata)? {
     for (key, meta) in self.activeMetadata where meta.taskIdentifier == taskIdentifier {
-      return (key, meta)
+      let owner = meta.sessionIdentifier ?? Self.sessionIdentifier
+      if owner == (sessionIdentifier ?? Self.sessionIdentifier) {
+        return (key, meta)
+      }
     }
     return nil
   }
@@ -255,27 +261,38 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     do {
       let data = try JSONEncoder().encode(self.activeMetadata)
       try data.write(to: fileURL, options: [.atomic, .completeFileProtectionUnlessOpen])
-    } catch {
-      // no-op
-    }
+    } catch { }
   }
 
-  // MARK: Private
+  private static let hashBufferSize = 1_048_576
+  private static let resourceTimeout: TimeInterval = 3600
 
-  private static let hashBufferSize = 1_048_576 // 1 MB
-  private static let resourceTimeout: TimeInterval = 3600 // 1 hour
-
-  /// Serial queue for SHA-256 verification and zip extraction after download completes.
-  /// Keeps the URLSession delegate queue free so progress callbacks for other downloads
-  /// are not blocked by CPU-heavy processing (SHA-256 ~400ms, unzip ~4-8s for 500MB).
   private let processingQueue = DispatchQueue(label: "app.sayboard.download-processing")
 
-  private lazy var session: URLSession = {
-    let config = URLSessionConfiguration.background(withIdentifier: Self.sessionIdentifier)
+  private var systemCompletionHandlers = [String: () -> Void]()
+
+  private lazy var session: URLSession = self.makeSession(
+    identifier: Self.sessionIdentifier,
+    allowsExpensiveNetwork: true,
+  )
+
+  private lazy var upgradeSession: URLSession = self.makeSession(
+    identifier: Self.upgradeSessionIdentifier,
+    allowsExpensiveNetwork: false,
+  )
+
+  private var metadataFileURL: URL? {
+    AppGroup.containerURL?.appendingPathComponent("active-downloads.json")
+  }
+
+  private func makeSession(identifier: String, allowsExpensiveNetwork: Bool) -> URLSession {
+    let config = URLSessionConfiguration.background(withIdentifier: identifier)
     config.isDiscretionary = false
     config.sessionSendsLaunchEvents = true
     config.timeoutIntervalForResource = Self.resourceTimeout
-    if let containerID = AppGroup.containerURL?.path {
+    config.allowsExpensiveNetworkAccess = allowsExpensiveNetwork
+    config.allowsConstrainedNetworkAccess = allowsExpensiveNetwork
+    if AppGroup.containerURL != nil {
       config.sharedContainerIdentifier = AppGroup.identifier
     }
 
@@ -284,10 +301,13 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     queue.name = "BackgroundDownloadDelegateQueue"
 
     return URLSession(configuration: config, delegate: self, delegateQueue: queue)
-  }()
+  }
 
-  private var metadataFileURL: URL? {
-    AppGroup.containerURL?.appendingPathComponent("active-downloads.json")
+  private func session(for downloadType: DownloadType) -> URLSession {
+    switch downloadType {
+    case .stt, .llm: self.session
+    case .llmUpgrade: self.upgradeSession
+    }
   }
 
   private func metadataKey(for metadata: DownloadMetadata) -> String {

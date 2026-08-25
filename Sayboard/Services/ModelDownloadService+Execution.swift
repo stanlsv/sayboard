@@ -1,15 +1,10 @@
-// ModelDownloadService+Execution -- Download event handling, model loading, and error helpers
 
 import Combine
 import Foundation
 
 import UIKit
 
-// MARK: - Event Subscription
-
 extension ModelDownloadService {
-
-  // MARK: Internal
 
   func subscribeToDownloadEvents() {
     self.eventCancellable = BackgroundDownloadManager.shared.eventSubject
@@ -26,7 +21,6 @@ extension ModelDownloadService {
       }
   }
 
-  /// Fetches manifest and enqueues the download via BackgroundDownloadManager.
   func enqueueDownload(variant: ModelVariant) async {
     do {
       let manifest = try await self.fetchManifestCached()
@@ -53,7 +47,6 @@ extension ModelDownloadService {
     }
   }
 
-  /// Runs model loading phase (95%-100%) with animated progress. Returns `true` on success.
   func loadModelAfterDownload(variant: ModelVariant) async -> Bool {
     guard let modelLoader else {
       return false
@@ -95,8 +88,6 @@ extension ModelDownloadService {
     return true
   }
 
-  // MARK: Private
-
   private func handleDownloadEvent(_ event: DownloadEvent) {
     switch event {
     case .progress(_, let variantRawValue, let fraction):
@@ -123,7 +114,6 @@ extension ModelDownloadService {
     }
   }
 
-  /// Fetches the manifest from R2, caching in memory for the duration of the session.
   private func fetchManifestCached() async throws -> ModelManifest {
     if let cached = self.cachedManifest {
       return cached
@@ -134,9 +124,13 @@ extension ModelDownloadService {
   }
 }
 
-// MARK: - Helpers
-
 func localizedDownloadError(_ error: Error) -> LocalizedStringResource {
+  if case R2DownloadError.appTooOldForModel = error {
+    return "Update Sayboard to use this model."
+  }
+  if isOutOfSpaceError(error) {
+    return "Not enough storage space. Free up space and try again."
+  }
   if error is R2DownloadError {
     return "Download failed. Tap Retry to try again."
   }
@@ -154,12 +148,32 @@ func localizedDownloadError(_ error: Error) -> LocalizedStringResource {
       return "Network error. Check your connection and try again."
     }
   }
-  let posixStorageFull: Int32 = 28 // ENOSPC
-  if nsError.domain == NSPOSIXErrorDomain, nsError.code == Int(posixStorageFull) {
-    return "Not enough storage space. Free up space and try again."
-  }
-  if nsError.domain == NSCocoaErrorDomain, nsError.code == NSFileWriteOutOfSpaceError {
-    return "Not enough storage space. Free up space and try again."
-  }
   return "Download failed. Tap Retry to try again."
+}
+
+private func isOutOfSpaceError(_ error: Error) -> Bool {
+  let posixStorageFull = 28
+
+  func matches(_ error: Error, depth: Int) -> Bool {
+    guard depth <= 4 else { return false }
+
+    switch error {
+    case R2DownloadError.extractionRanOutOfSpace:
+      return true
+    case R2DownloadError.extractionFailed(let underlying), R2DownloadError.downloadFailed(let underlying):
+      if matches(underlying, depth: depth + 1) { return true }
+    default:
+      break
+    }
+
+    let nsError = error as NSError
+    if nsError.domain == NSPOSIXErrorDomain, nsError.code == posixStorageFull { return true }
+    if nsError.domain == NSCocoaErrorDomain, nsError.code == NSFileWriteOutOfSpaceError { return true }
+    if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? Error {
+      return matches(underlying, depth: depth + 1)
+    }
+    return false
+  }
+
+  return matches(error, depth: 0)
 }

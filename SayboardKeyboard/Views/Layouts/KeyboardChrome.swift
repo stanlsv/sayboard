@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - KeyboardState + Chrome Visibility
-
 extension KeyboardState {
   var showsAIButton: Bool {
     self.llmEnabled && self.hasUsableLLMModel
@@ -12,11 +10,7 @@ extension KeyboardState {
   }
 }
 
-// MARK: - KeyboardChromeMetrics
-
 struct KeyboardChromeMetrics {
-
-  // MARK: Lifecycle
 
   @MainActor
   init(keyboardState: KeyboardState) {
@@ -31,15 +25,11 @@ struct KeyboardChromeMetrics {
     self.returnWidth = showsGlobe ? (side + Self.buttonSpacing + side) : wide
   }
 
-  // MARK: Internal
-
   @MainActor
   static var buttonSpacing: CGFloat {
     6.kbScaled
   }
 
-  /// Shared key metrics — the single source of truth for a key's height and
-  /// corner radius, reused by the key styles and the extended mic button.
   @MainActor
   static var keyHeight: CGFloat {
     45.kbScaled
@@ -57,19 +47,10 @@ struct KeyboardChromeMetrics {
 
 }
 
-// MARK: - KeyboardStatusStrip
-
-/// Thin status row above the keys: model (re)build progress while a load is in
-/// flight, with a low-storage note when space is critically low. Shared verbatim
-/// by both keyboard layouts.
 struct KeyboardStatusStrip: View {
-
-  // MARK: Internal
 
   @ObservedObject var keyboardState: KeyboardState
 
-  /// Reports the measured content height so the keyboard can grow to fit
-  /// multi-line status text instead of letting it overflow the keys.
   let onContentHeightChange: (CGFloat) -> Void
 
   var body: some View {
@@ -83,10 +64,16 @@ struct KeyboardStatusStrip: View {
               isFirstUse: !self.keyboardState.hasPreparedModelOnce,
             )
             .transition(.opacity)
+          } else if let outcome = self.keyboardState.dictationOutcome {
+            DictationOutcomeLabel(outcome: outcome) {
+              self.keyboardState.dictationOutcome = nil
+            }
+            .transition(.opacity)
           }
         }
         .animation(.easeOut(duration: 0.3), value: self.keyboardState.isModelLoading)
         .animation(.easeOut(duration: 0.3), value: self.keyboardState.isLowDiskSpace)
+        .animation(.easeOut(duration: 0.3), value: self.keyboardState.dictationOutcome)
         .background {
           GeometryReader { geo in
             Color.clear
@@ -99,14 +86,10 @@ struct KeyboardStatusStrip: View {
       }
   }
 
-  // MARK: Private
-
   private var showModelLoading: Bool {
     self.keyboardState.isModelLoading && self.keyboardState.isProcessing
   }
 }
-
-// MARK: - KeyboardBottomRow
 
 struct KeyboardBottomRow: View {
 
@@ -145,11 +128,8 @@ struct KeyboardBottomRow: View {
   }
 }
 
-// MARK: - KeyboardActions
-
 @MainActor
 enum KeyboardActions {
-  /// Invokes the configured long-press AI action; falls back to opening the LLM actions menu.
   static func longPressLLM(state: KeyboardState, proxy: KeyboardProxy) {
     let resolved = state.longPressLLMAction.resolve(
       defaultAction: .rewrite,

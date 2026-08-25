@@ -2,11 +2,7 @@ import Accelerate
 @preconcurrency import AVFoundation
 import os
 
-// AudioRecorder -- Writes PCM audio buffers to a CAF file
-
 final class AudioRecorder: Sendable {
-
-  // MARK: Internal
 
   struct RecordingResult: Sendable {
     let url: URL
@@ -57,8 +53,6 @@ final class AudioRecorder: Sendable {
     return RecordingResult(url: url, duration: duration, waveformSamples: samples)
   }
 
-  // MARK: Private
-
   private struct MutableState {
     let audioFile: AVAudioFile
     let startTime: Date
@@ -69,8 +63,6 @@ final class AudioRecorder: Sendable {
 
   private let state = OSAllocatedUnfairLock<MutableState?>(initialState: nil)
 
-  /// Downsamples raw per-buffer peaks to a fixed number of bins via max-pooling,
-  /// then converts to DSWaveformImage convention (0 = loud, 1 = silent).
   private static func downsamplePeaks(
     _ peaks: ContiguousArray<Float>,
     to targetCount: Int,

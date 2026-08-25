@@ -1,29 +1,33 @@
-// LLMDownloadService -- Downloads LLM GGUF models on demand via background URLSession
 
 import Combine
 import Foundation
 
 import UIKit
 
-// MARK: - LLMDownloadService
-
 @MainActor
 final class LLMDownloadService: ObservableObject {
 
-  // MARK: Lifecycle
-
   init() {
+    LLMModelStorageManager.removeOrphanedDirectories()
     self.verifyExistingModels()
     self.subscribeToDownloadEvents()
+    self.startUpgradeIfNeeded()
   }
-
-  // MARK: Internal
 
   @Published var variantStates = [LLMModelVariant: ModelDownloadState]()
   @Published var selectedVariant: LLMModelVariant = SharedSettings().selectedLLMVariant
 
   var hasUsableModel: Bool {
     self.isDownloaded(SharedSettings().selectedLLMVariant)
+  }
+
+  var replacedByUpgrade: LLMModelVariant? {
+    guard let replaced = SharedSettings().completedLLMUpgradeFrom else { return nil }
+    guard self.isDownloaded(replaced) else {
+      SharedSettings().completedLLMUpgradeFrom = nil
+      return nil
+    }
+    return replaced
   }
 
   func state(for variant: LLMModelVariant) -> ModelDownloadState {
@@ -54,6 +58,8 @@ final class LLMDownloadService: ObservableObject {
       }
       if LLMModelStorageManager.isDownloaded(variant) {
         self.variantStates[variant] = .downloaded
+      } else if self.isDownloadInFlight(variant) {
+        self.variantStates[variant] = .downloading(progress: 0)
       } else {
         self.variantStates[variant] = .notDownloaded
       }
@@ -63,12 +69,7 @@ final class LLMDownloadService: ObservableObject {
   }
 
   func startDownload(variant: LLMModelVariant) {
-    guard
-      !BackgroundDownloadManager.shared.hasActiveDownload(
-        variantRawValue: variant.rawValue,
-        downloadType: .llm,
-      )
-    else { return }
+    guard !self.isDownloadInFlight(variant) else { return }
 
     guard self.hasEnoughDiskSpace(for: variant) else {
       self.variantStates[variant] = .error(
@@ -90,10 +91,12 @@ final class LLMDownloadService: ObservableObject {
     self.enqueueTasks[variant]?.cancel()
     self.enqueueTasks[variant] = nil
 
-    BackgroundDownloadManager.shared.cancelDownload(
-      variantRawValue: variant.rawValue,
-      downloadType: .llm,
-    )
+    for type in Self.llmDownloadTypes {
+      BackgroundDownloadManager.shared.cancelDownload(
+        variantRawValue: variant.rawValue,
+        downloadType: type,
+      )
+    }
 
     try? LLMModelStorageManager.delete(variant)
     self.variantStates[variant] = .notDownloaded
@@ -103,9 +106,7 @@ final class LLMDownloadService: ObservableObject {
   func deleteModel(variant: LLMModelVariant) {
     do {
       try LLMModelStorageManager.delete(variant)
-    } catch {
-      // no-op
-    }
+    } catch { }
 
     self.variantStates[variant] = .notDownloaded
 
@@ -126,12 +127,28 @@ final class LLMDownloadService: ObservableObject {
     self.variantStates[variant] = .notDownloaded
   }
 
+  func dismissUpgradeNotice() {
+    SharedSettings().completedLLMUpgradeFrom = nil
+    self.objectWillChange.send()
+  }
+
+  func revertUpgrade() {
+    guard let replaced = self.replacedByUpgrade else { return }
+    self.selectVariant(replaced)
+    self.dismissUpgradeNotice()
+  }
+
+  func deleteReplacedModel() {
+    guard let replaced = self.replacedByUpgrade else { return }
+    self.deleteModel(variant: replaced)
+    self.dismissUpgradeNotice()
+  }
+
   func syncHasUsableModel() {
     let usable = self.hasUsableModel
     SharedSettings().hasUsableLLMModel = usable
   }
 
-  /// Called on cold launch -- shows error for downloads interrupted by app termination.
   func checkForInterruptedDownloadOnLaunch() {
     let settings = SharedSettings()
     let interrupted = settings.llmDownloadInProgressVariants
@@ -143,13 +160,7 @@ final class LLMDownloadService: ObservableObject {
         self.removeVariantFromPersistence(variant)
         continue
       }
-      // Skip if BackgroundDownloadManager still has an active task
-      if
-        BackgroundDownloadManager.shared.hasActiveDownload(
-          variantRawValue: variant.rawValue,
-          downloadType: .llm,
-        )
-      {
+      if self.isDownloadInFlight(variant) {
         continue
       }
       try? LLMModelStorageManager.delete(variant)
@@ -158,19 +169,13 @@ final class LLMDownloadService: ObservableObject {
     }
   }
 
-  /// Called on `ScenePhase.active` -- checks if background downloads are still active.
   func resumeInterruptedDownloadIfNeeded() {
     let settings = SharedSettings()
     let interrupted = settings.llmDownloadInProgressVariants
     guard !interrupted.isEmpty else { return }
 
     for variant in interrupted {
-      if
-        BackgroundDownloadManager.shared.hasActiveDownload(
-          variantRawValue: variant.rawValue,
-          downloadType: .llm,
-        )
-      {
+      if self.isDownloadInFlight(variant) {
         continue
       }
       self.removeVariantFromPersistence(variant)
@@ -178,9 +183,9 @@ final class LLMDownloadService: ObservableObject {
     }
   }
 
-  // MARK: Private
+  private static let llmDownloadTypes: [DownloadType] = [.llm, .llmUpgrade]
 
-  private static let diskSpaceSafetyMultiplier = 1.5
+  private static let diskSpaceSafetyMultiplier = 2.1
 
   private var cachedManifest: ModelManifest?
   private var eventCancellable: AnyCancellable?
@@ -190,9 +195,8 @@ final class LLMDownloadService: ObservableObject {
     self.eventCancellable = BackgroundDownloadManager.shared.eventSubject
       .filter { event in
         switch event {
-        case .progress(let type, _, _): type == .llm
-        case .completed(let type, _, _): type == .llm
-        case .failed(let type, _, _): type == .llm
+        case .progress(let type, _, _), .completed(let type, _, _), .failed(let type, _, _):
+          type == .llm || type == .llmUpgrade
         }
       }
       .receive(on: DispatchQueue.main)
@@ -208,12 +212,16 @@ final class LLMDownloadService: ObservableObject {
       let capped = min(fraction, ModelDownloadService.downloadProgressCeiling)
       self.variantStates[variant] = .downloading(progress: capped)
 
-    case .completed(_, let variantRawValue, _):
+    case .completed(let type, let variantRawValue, _):
       guard let variant = LLMModelVariant(rawValue: variantRawValue) else { return }
       self.enqueueTasks[variant] = nil
       self.variantStates[variant] = .downloaded
       self.removeVariantFromPersistence(variant)
-      self.autoSelectIfNeeded(variant: variant)
+      if type == .llmUpgrade {
+        self.completeUpgrade(to: variant)
+      } else {
+        self.autoSelectIfNeeded(variant: variant)
+      }
       UIApplication.shared.isIdleTimerDisabled = false
 
     case .failed(_, let variantRawValue, let error):
@@ -225,19 +233,22 @@ final class LLMDownloadService: ObservableObject {
     }
   }
 
-  /// Fetches manifest and enqueues the download via BackgroundDownloadManager.
-  private func enqueueDownload(variant: LLMModelVariant) async {
+  private func enqueueDownload(variant: LLMModelVariant, downloadType: DownloadType = .llm) async {
     do {
       let manifest = try await self.fetchManifest()
       guard let entry = manifest.llmEntry(for: variant) else {
         throw R2DownloadError.manifestMissingVariant(variant.rawValue)
+      }
+      guard entry.isLoadableByThisBuild else {
+        DiagnosticLog.write("llm: \(variant.rawValue) needs llama.cpp > \(LlamaRuntime.buildNumber)")
+        throw R2DownloadError.appTooOldForModel
       }
 
       try LLMModelStorageManager.ensureRootExists()
       let destDir = LLMModelStorageManager.directory(for: variant)
 
       let metadata = DownloadMetadata(
-        downloadType: .llm,
+        downloadType: downloadType,
         variantRawValue: variant.rawValue,
         expectedSHA256: entry.sha256,
         sourceURL: entry.url,
@@ -250,6 +261,43 @@ final class LLMDownloadService: ObservableObject {
       self.variantStates[variant] = .error(message: localizedDownloadError(error))
       self.removeVariantFromPersistence(variant)
     }
+  }
+
+  private func startUpgradeIfNeeded() {
+    let settings = SharedSettings()
+    let current = settings.selectedLLMVariant
+
+    guard self.isDownloaded(current), let successor = current.successor else { return }
+    guard !self.isDownloaded(successor) else { return }
+    guard successor.isSupportedOnCurrentDevice else {
+      return
+    }
+    guard !self.isDownloadInFlight(successor) else { return }
+    if case .downloading = self.state(for: successor) { return }
+    guard self.hasEnoughDiskSpace(for: successor) else {
+      return
+    }
+
+    self.variantStates[successor] = .downloading(progress: 0)
+    self.enqueueTasks[successor] = Task {
+      await self.enqueueDownload(variant: successor, downloadType: .llmUpgrade)
+    }
+  }
+
+  private func completeUpgrade(to successor: LLMModelVariant) {
+    let settings = SharedSettings()
+    guard
+      let replaced = LLMModelVariant.allCases.first(where: { $0.successor == successor }),
+      settings.selectedLLMVariant == replaced
+    else {
+      self.syncHasUsableModel()
+      return
+    }
+
+    settings.selectedLLMVariant = successor
+    self.selectedVariant = successor
+    settings.completedLLMUpgradeFrom = replaced
+    self.syncHasUsableModel()
   }
 
   private func ensureValidSelection() {
@@ -283,8 +331,17 @@ final class LLMDownloadService: ObservableObject {
     self.syncHasUsableModel()
   }
 
+  private func isDownloadInFlight(_ variant: LLMModelVariant) -> Bool {
+    Self.llmDownloadTypes.contains { type in
+      BackgroundDownloadManager.shared.hasActiveDownload(
+        variantRawValue: variant.rawValue,
+        downloadType: type,
+      )
+    }
+  }
+
   private func hasEnoughDiskSpace(for variant: LLMModelVariant) -> Bool {
-    let requiredBytes = Int64(Double(variant.downloadSizeMB) * Self.diskSpaceSafetyMultiplier * 1_000_000)
+    let requiredBytes = Int64(Double(variant.downloadSizeMB.megabytesInBytes) * Self.diskSpaceSafetyMultiplier)
     do {
       let appSupportURL = try FileManager.default.url(
         for: .applicationSupportDirectory,

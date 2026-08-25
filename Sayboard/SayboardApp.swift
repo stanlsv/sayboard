@@ -4,27 +4,14 @@ import SwiftUI
 import TipKit
 import UIKit
 
-// MARK: - AppDelegate
-
-// AppDelegate -- Captures sourceApplication from URL opens via scene delegate.
-
-// swiftlint:disable:next no_unchecked_sendable
 final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
 
-  /// Bundle ID of the app that opened us via URL scheme.
   @MainActor static var lastSourceApplication: String?
 
-  /// Set by `SceneDelegate.sceneWillEnterForeground` when a recent keyboard
-  /// dictate request is pending. Read by SwiftUI's `.onReceive` handler so
-  /// the host-return overlay is visible in the very first painted frame
-  /// after warm activation, before iOS swaps in the live UI.
   @MainActor static var pendingPreShowHint = false
 
-  /// URL received in scene delegate, forwarded via notification.
   static let deepLinkNotification = Notification.Name("app.sayboard.sceneDeepLink")
 
-  /// Posted from `sceneWillEnterForeground` when conditions for pre-showing
-  /// the host-return overlay are met during a warm scene activation.
   static let preShowHintNotification = Notification.Name("app.sayboard.preShowHostReturnHint")
 
   func application(
@@ -32,8 +19,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
     handleEventsForBackgroundURLSession identifier: String,
     completionHandler: @escaping () -> Void,
   ) {
-    if identifier == BackgroundDownloadManager.sessionIdentifier {
-      BackgroundDownloadManager.shared.systemCompletionHandler = completionHandler
+    if BackgroundDownloadManager.ownsSession(identifier: identifier) {
+      BackgroundDownloadManager.shared.storeSystemCompletionHandler(
+        completionHandler,
+        forSession: identifier,
+      )
     }
   }
 
@@ -42,7 +32,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
     configurationForConnecting connectingSceneSession: UISceneSession,
     options: UIScene.ConnectionOptions,
   ) -> UISceneConfiguration {
-    // Capture sourceApplication from cold-launch URL contexts.
+    DiagnosticLog.write(
+      "app: launched on \(ProcessInfo.processInfo.operatingSystemVersionString), "
+        + "backgroundANEBlocked=\(OperatingSystem.isBackgroundNeuralEngineBlocked)"
+    )
     for ctx in options.urlContexts {
       let source = ctx.options.sourceApplication
       if let source, !source.isEmpty {
@@ -55,11 +48,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
   }
 }
 
-// MARK: - SceneDelegate
-
-// SceneDelegate -- Intercepts URL opens to capture sourceApplication,
-// then forwards the URL to the SwiftUI app via notification.
-
 @MainActor
 final class SceneDelegate: NSObject, UIWindowSceneDelegate {
 
@@ -69,7 +57,6 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
       if let source, !source.isEmpty {
         AppDelegate.lastSourceApplication = source
       }
-      // Delay to let SwiftUI view hierarchy set up before delivering the deep link.
       let url = ctx.url
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
         NotificationCenter.default.post(name: AppDelegate.deepLinkNotification, object: url)
@@ -88,10 +75,6 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
     }
   }
 
-  /// Fires on warm activation BEFORE iOS swaps the snapshot for the live UI.
-  /// Pre-arms the host-return overlay so it lands in the first painted frame.
-  /// Does NOT consume the keyboard request — `DeepLinkValidator.isFromKeyboard()`
-  /// consumes when the deep link arrives shortly after.
   func sceneWillEnterForeground(_: UIScene) {
     guard
       OperatingSystem.isHostBundleIdBroken,
@@ -102,15 +85,11 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
   }
 }
 
-// MARK: - DeepLinkValidator
-
 private enum DeepLinkValidator {
   @MainActor
   static func isFromKeyboard() -> Bool {
     let settings = SharedSettings()
     if let source = AppDelegate.lastSourceApplication, source == "app.sayboard.keyboard" {
-      // Clear residual flag/timestamp so a stale orphan can't false-trigger
-      // the next launch.
       _ = settings.consumeKeyboardRequestIfRecent()
       return true
     }
@@ -118,17 +97,12 @@ private enum DeepLinkValidator {
   }
 }
 
-// MARK: - SayboardApp
-
-// Splitting would require exposing private @State across files. Disabled
-// deliberately; honoured everywhere else.
-// swiftlint:disable type_body_length file_length
 @main
 struct SayboardApp: App {
 
-  // MARK: Lifecycle
-
   init() {
+    ModelHub.offlineMode = true
+    ParakeetV3JointMigration.runIfNeeded()
     Self.configureDefaultLanguageIfNeeded()
     let settings = SharedSettings()
     settings.synchronize()
@@ -136,24 +110,15 @@ struct SayboardApp: App {
     settings.isRecording = false
     settings.isModelLoading = false
     settings.dictationSessionToken = nil
-    // Stamp heartbeat immediately so any keyboard-side staleness check during
-    // a cold-launch deep-link sees a fresh process before the audio session
-    // (and its periodic heartbeat write) has had a chance to come up.
     settings.mainAppHeartbeat = CFAbsoluteTimeGetCurrent()
     HistoryStore.shared.applyRetentionPolicy()
     ModelStorageManager.ensurePersistentCoreMLCache()
     try? Tips.resetDatastore()
     try? Tips.configure()
 
-    // Pre-show the swipe-back hint on cold launches triggered by the
-    // keyboard (iOS 26.4+ only) so the user doesn't see the main UI flash
-    // before the overlay arrives. The TTL-gated check rejects orphan flags
-    // from prior partial-write crashes so manual launches don't false-trigger.
     let preShowHint = OperatingSystem.isHostBundleIdBroken && settings.isKeyboardRequestRecent()
     self._showsHostReturnHint = State(initialValue: preShowHint)
   }
-
-  // MARK: Internal
 
   @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
@@ -165,8 +130,6 @@ struct SayboardApp: App {
         }
     }
   }
-
-  // MARK: Private
 
   private static let defaultLanguage = AppLanguageConfig.fallback
   private static let overlayFadeDuration = 0.15
@@ -223,8 +186,6 @@ struct SayboardApp: App {
         if !isRecording { self.showsHostReturnHint = false }
       }
       .onReceive(NotificationCenter.default.publisher(for: AppDelegate.preShowHintNotification)) { _ in
-        // Synchronously sets state from the SceneDelegate hook, before iOS
-        // replaces the snapshot with the live UI on warm activation.
         MainActor.assumeIsolated {
           let pending = AppDelegate.pendingPreShowHint
           AppDelegate.pendingPreShowHint = false
@@ -240,9 +201,6 @@ struct SayboardApp: App {
     if self.showsHostReturnHint {
       HostReturnHintOverlay { self.showsHostReturnHint = false }
         .environment(\.locale, Locale(identifier: self.appLanguage))
-        // Insertion is `.identity` so the overlay lands instantly on first
-        // paint after warm activation. Removal keeps the default fade so
-        // user-driven dismissals still read smoothly.
         .transition(.asymmetric(insertion: .identity, removal: .opacity))
     }
   }
@@ -281,7 +239,6 @@ struct SayboardApp: App {
     self.llmCoordinator.downloadService = self.llmDownloadService
     self.llmCoordinator.setupObservers()
 
-    // Reset stale LLM processing flag (e.g. from a previous crash during inference)
     let settings = SharedSettings()
     if settings.isLLMProcessing {
       settings.isLLMProcessing = false
@@ -290,15 +247,10 @@ struct SayboardApp: App {
 
   private func handleScenePhaseChange(_ phase: ScenePhase) {
     if phase == .background {
-      // Drop only on real backgrounding so a later manual launch doesn't show
-      // it. Transient `.inactive` (cold-launch transitions, control center,
-      // app switcher peek) must NOT clear the pre-shown overlay.
       self.showsHostReturnHint = false
     }
     if phase == .active {
       if let tutorial = self.pendingPiPTutorial {
-        // Deep link requested a PiP tutorial before the app became active.
-        // Play it now instead of stopping — the app is fully in foreground.
         self.pendingPiPTutorial = nil
         self.pipTutorialService.playTutorial(tutorial, language: self.appLanguage, thenOpenSettings: true)
       } else {
@@ -308,7 +260,6 @@ struct SayboardApp: App {
       self.downloadService.resumeInterruptedDownloadIfNeeded()
       self.llmDownloadService.resumeInterruptedDownloadIfNeeded()
 
-      // If mic was denied while recording, stop
       if self.permissionService.microphoneState == .denied, self.speechService.isRecording {
         Task { await self.speechService.stopRecording() }
       }
@@ -380,7 +331,7 @@ struct SayboardApp: App {
       Task { await self.speechService.stopRecording() }
 
     case DeepLink.settingsHost, DeepLink.llmModelsHost:
-      break // Handled by MainTabView navigation
+      break
 
     case DeepLink.modelsHost:
       self.activateSessionIfNeeded()
@@ -393,10 +344,10 @@ struct SayboardApp: App {
       }
 
     default:
+      break
     }
   }
 
-  /// Starts a background audio session if not already active. Returns false on failure.
   private func startSessionIfNeeded() -> Bool {
     guard !self.speechService.session.isSessionActive else { return true }
     do {
@@ -413,17 +364,12 @@ struct SayboardApp: App {
     guard self.downloadService.hasUsableModel else { return }
     do {
       try self.speechService.session.startSession()
-    } catch {
-      // no-op
-    }
+    } catch { }
   }
 
   private func handleDictateDeepLink() {
-    // Set a session token so subsequent Darwin notifications (requestStop) are accepted
     SharedSettings().dictationSessionToken = UUID().uuidString
 
-    // Show the swipe-back hint as early as possible on iOS 26.4+ so the user
-    // doesn't see a flash of the main UI before the overlay appears.
     if OperatingSystem.isHostBundleIdBroken {
       self.showsHostReturnHint = true
     }
@@ -465,16 +411,13 @@ struct SayboardApp: App {
     return true
   }
 
-  /// Loads the model at low priority if not already loaded. Posts Darwin notifications
-  /// so the keyboard can track loading state.
   private func loadModelInBackgroundIfNeeded() async {
-    let isRec = self.speechService.isRecording
+    let _ = self.speechService.isRecording
 
     guard self.speechService.activeLoadState != .loaded else {
       return
     }
 
-    // Prevent iOS from killing the process during long CoreML compilation.
     var bgTaskID = UIBackgroundTaskIdentifier.invalid
     bgTaskID = UIApplication.shared.beginBackgroundTask(withName: "ModelLoad") {
       UIApplication.shared.endBackgroundTask(bgTaskID)
@@ -510,9 +453,7 @@ struct SayboardApp: App {
     guard let hostId else {
       return
     }
-    let opened = HostAppOpener.open(bundleId: hostId)
+    let _ = HostAppOpener.open(bundleId: hostId)
   }
 
 }
-
-// swiftlint:enable type_body_length file_length

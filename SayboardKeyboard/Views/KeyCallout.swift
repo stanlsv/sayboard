@@ -1,31 +1,13 @@
 import SwiftUI
 import UIKit
 
-// KeyCallout -- Apple-style input callout (popup balloon) over a pressed key.
-// Single Path that combines balloon top, tapered neck, and key-shaped bottom
-// so the whole figure reads as one extruded shape.
-//
-// Three alignment variants:
-//   .center -- balloon centered above the key (default).
-//   .left   -- balloon's LEFT edge aligned with key's left edge; extends right.
-//              Used for the leftmost key in a row to avoid overflowing the keyboard.
-//   .right  -- balloon's RIGHT edge aligned with key's right edge; extends left.
-//              Used for the rightmost key in a row.
-
-// MARK: - KeyCalloutMetrics
-
-/// Layout ratios for the callout balloon. Scaled at use site.
 enum KeyCalloutMetrics {
   static let topWidthMultiplier: CGFloat = 1.5
   static let cornerRadius: CGFloat = 8.5
   static let keyCornerRadius: CGFloat = 8.5
-  /// Empirical: balances readability against breathing room around large symbols.
   static let labelFontFraction: CGFloat = 0.7
-  /// Optical centering nudge — neck + key portion below pull the perceived center downward.
   static let labelOpticalOffsetFraction: CGFloat = 0.1
 }
-
-// MARK: - KeyCalloutAlignment
 
 enum KeyCalloutAlignment {
   case center
@@ -33,11 +15,7 @@ enum KeyCalloutAlignment {
   case right
 }
 
-// MARK: - KeyCalloutShape
-
 struct KeyCalloutShape: Shape {
-
-  // MARK: Internal
 
   let keyWidth: CGFloat
   let keyHeight: CGFloat
@@ -46,9 +24,6 @@ struct KeyCalloutShape: Shape {
   let neckHeight: CGFloat
   let cornerRadius: CGFloat
   let keyCornerRadius: CGFloat
-  /// Horizontal offset of the key portion within the top width.
-  /// 0 => key flush left, (topWidth - keyWidth) => key flush right,
-  /// (topWidth - keyWidth)/2 => key centered.
   let keyLeftOffset: CGFloat
 
   func path(in _: CGRect) -> Path {
@@ -76,8 +51,6 @@ struct KeyCalloutShape: Shape {
     path.closeSubpath()
     return path
   }
-
-  // MARK: Private
 
   private func addBalloonTop(to path: inout Path) {
     path.move(to: CGPoint(x: 0, y: self.cornerRadius))
@@ -118,14 +91,10 @@ struct KeyCalloutShape: Shape {
   }
 }
 
-// MARK: - KeyCallout
-
 struct KeyCallout<Label: View>: View {
 
   let keyWidth: CGFloat
   let keyHeight: CGFloat
-  /// Vertical gap between symbol rows (already kb-scaled). Drives neck height
-  /// so the tapered connector matches the visual rhythm of the row spacing.
   let rowSpacing: CGFloat
   var alignment = KeyCalloutAlignment.center
   @ViewBuilder let label: (CGFloat) -> Label
@@ -134,7 +103,6 @@ struct KeyCallout<Label: View>: View {
     self.keyWidth * KeyCalloutMetrics.topWidthMultiplier
   }
 
-  /// One key height — fully derived from the originating key.
   var topHeight: CGFloat {
     self.keyHeight
   }
@@ -155,7 +123,6 @@ struct KeyCallout<Label: View>: View {
     self.topHeight * KeyCalloutMetrics.labelFontFraction
   }
 
-  /// Where the key portion sits horizontally within `topWidth` for current alignment.
   var keyLeftOffset: CGFloat {
     switch self.alignment {
     case .center: (self.topWidth - self.keyWidth) / 2

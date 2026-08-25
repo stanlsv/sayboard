@@ -1,42 +1,50 @@
-// ParakeetTranscriptionService -- Loads FluidAudio Parakeet models and transcribes audio samples
 
+import CoreML
 @preconcurrency import FluidAudio
 import Foundation
-
-// MARK: - ParakeetTranscriptionService
 
 @MainActor
 final class ParakeetTranscriptionService: ObservableObject {
 
-  // MARK: Internal
-
   @Published private(set) var loadState = ModelLoadState.unloaded
 
-  func transcribe(audioSamples: [Float]) async -> TranscriptionOutput? {
+  func transcribe(audioSamples: [Float]) async -> TranscriptionResult {
     guard let asrManager, loadState == .loaded else {
-      return nil
+      let state = String(describing: loadState)
+      DiagnosticLog.write("parakeet: ABORT — loadState=\(state)")
+      return .failed("model not loaded (\(state))")
     }
-    guard !audioSamples.isEmpty else { return nil }
+    guard !audioSamples.isEmpty else { return .failed("no audio samples") }
 
     do {
-      nonisolated(unsafe) let manager = asrManager
-      let result = try await manager.transcribe(audioSamples, source: .microphone)
+      var decoderState = try TdtDecoderState()
+      let result = try await asrManager.transcribe(
+        audioSamples,
+        decoderState: &decoderState,
+        language: Self.scriptHint(),
+      )
       let text = result.text.trimmingCharacters(in: .whitespacesAndNewlines)
 
-      guard !text.isEmpty else { return nil }
+      guard !text.isEmpty else {
+        DiagnosticLog.write("parakeet: NO SPEECH — model produced empty text")
+        return .noSpeech
+      }
 
       let timings = result.tokenTimings
-      return TranscriptionOutput(
+      return .text(TranscriptionOutput(
         text: text,
         firstWordStart: timings?.first.map { Float($0.startTime) },
         lastWordEnd: timings?.last.map { Float($0.endTime) },
-      )
+      ))
+    } catch ASRError.invalidAudioData {
+      DiagnosticLog.write("parakeet: NO SPEECH — shorter than the 0.3s minimum")
+      return .noSpeech
     } catch {
-      return nil
+      DiagnosticLog.write("parakeet: THREW \(type(of: error)): \(error)")
+      return .failed(error.localizedDescription)
     }
   }
 
-  /// Loads a Parakeet model from a local directory (downloaded via R2).
   func loadModel(from directory: URL, version: AsrModelVersion) async {
     if let existing = self.loadTask {
       await existing.value
@@ -46,27 +54,38 @@ final class ParakeetTranscriptionService: ObservableObject {
     self.loadGeneration += 1
     let expectedGen = self.loadGeneration
     self.loadState = .loading
+    let computeMode = OperatingSystem.isBackgroundNeuralEngineBlocked ? "cpuOnly (iOS 27 ANE gate)" : "default (ANE)"
+    DiagnosticLog.write("parakeet: model load start, compute=\(computeMode)")
+
+    let loadDirectory = Self.normalizedModelDirectory(directory)
 
     let task = Task<Void, Never>.detached(priority: .userInitiated) { [weak self] in
       do {
-        let models = try await AsrModels.load(from: directory, version: version)
+        let models = try await AsrModels.load(
+          from: loadDirectory,
+          configuration: Self.modelConfiguration(),
+          version: version,
+        )
         let manager = AsrManager(config: .default)
-        try await manager.initialize(models: models)
+        try await manager.loadModels(models)
 
         await MainActor.run { [weak self] in
           guard let self, expectedGen == self.loadGeneration else {
-            manager.cleanup()
+            Task { await manager.cleanup() }
             return
           }
           self.asrManager = manager
           self.currentVersion = version
           self.loadState = .loaded
+          DiagnosticLog.write("parakeet: model loaded")
         }
       } catch {
         let errorMessage = error.localizedDescription
+        let detail = "\(type(of: error)): \(error)"
         await MainActor.run { [weak self] in
           guard let self, expectedGen == self.loadGeneration else { return }
           self.loadState = .error(errorMessage)
+          DiagnosticLog.write("parakeet: MODEL LOAD FAILED \(detail)")
         }
       }
     }
@@ -75,26 +94,61 @@ final class ParakeetTranscriptionService: ObservableObject {
     self.loadTask = nil
   }
 
-  /// Awaits a pending model load (if any). Returns immediately if not loading.
   func waitForLoad() async {
     guard let task = self.loadTask else { return }
     await task.value
   }
 
-  func unloadModel() {
+  func unloadModel() async {
     self.loadGeneration += 1
     self.loadTask?.cancel()
     self.loadTask = nil
-    self.asrManager?.cleanup()
+    if let asrManager {
+      await asrManager.cleanup()
+    }
     self.asrManager = nil
     self.currentVersion = nil
     self.loadState = .unloaded
   }
 
-  // MARK: Private
-
   private var asrManager: AsrManager?
   private var currentVersion: AsrModelVersion?
   private var loadTask: Task<Void, Never>?
   private var loadGeneration = 0
+
+  private static nonisolated func normalizedModelDirectory(_ directory: URL) -> URL {
+    let current = directory.lastPathComponent
+    let expected = current.replacingOccurrences(of: "-coreml", with: "")
+    guard current != expected else { return directory }
+
+    let target = directory.deletingLastPathComponent().appendingPathComponent(expected)
+    let fm = FileManager.default
+    if fm.fileExists(atPath: target.path) {
+      return target
+    }
+    do {
+      try fm.moveItem(at: directory, to: target)
+      DiagnosticLog.write("parakeet: renamed model folder -> \(expected)")
+      return target
+    } catch {
+      DiagnosticLog.write("parakeet: RENAME FAILED \(error)")
+      return directory
+    }
+  }
+
+  private static func scriptHint() -> Language? {
+    let settings = SharedSettings()
+    settings.synchronize()
+    let preferred = settings.preferredLanguages(for: settings.selectedVariant)
+    guard preferred.count == 1, let code = preferred.first else { return nil }
+    return Language(rawValue: code)
+  }
+
+  private static nonisolated func modelConfiguration() -> MLModelConfiguration? {
+    guard OperatingSystem.isBackgroundNeuralEngineBlocked else { return nil }
+    let configuration = MLModelConfiguration()
+    configuration.computeUnits = .cpuOnly
+    configuration.allowLowPrecisionAccumulationOnGPU = true
+    return configuration
+  }
 }

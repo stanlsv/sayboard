@@ -1,10 +1,7 @@
-// AIButton -- AI action button with tap (action sheet) and long press (direct action + haptic)
 
 import SwiftUI
 
 struct AIButton: View {
-
-  // MARK: Internal
 
   let fixedWidth: CGFloat
   let onTap: () -> Void
@@ -49,8 +46,6 @@ struct AIButton: View {
     }
   }
 
-  // MARK: Private
-
   private static let longPressDuration = 0.4
   private static let pressedScale: CGFloat = 1.15
 
@@ -66,8 +61,6 @@ struct AIButton: View {
       .animation(.easeOut(duration: 0.15), value: self.isActive)
   }
 
-  /// Long-press branch can't use RectKeyStyle (the gesture pipeline lives on the bare label),
-  /// so this carries the chrome itself, driven by the local `isPressed` state.
   private var label: some View {
     let fill = Color(self.isPressed ? .keyPressedBackground : .keyBackground)
     return self.iconView

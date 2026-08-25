@@ -1,21 +1,13 @@
 @preconcurrency import AVFoundation
 import SwiftUI
 
-// MARK: - AudioPlayerService
-
-// AudioPlayerService -- Plays audio files with progress tracking
-
 @MainActor
 final class AudioPlayerService: ObservableObject {
-
-  // MARK: Internal
 
   @Published var isPlaying = false
   @Published var duration: TimeInterval = 0
   @Published var currentFileURL: URL?
 
-  /// Live playback position read directly from AVAudioPlayer each frame.
-  /// Avoids @Published churn that causes SwiftUI to batch/skip redraws.
   var playbackTime: TimeInterval {
     self.player?.currentTime ?? 0
   }
@@ -70,8 +62,6 @@ final class AudioPlayerService: ObservableObject {
     }
   }
 
-  // MARK: Private
-
   private var player: AVAudioPlayer?
   private lazy var delegateAdapter = PlayerDelegateAdapter { [weak self] in
     self?.handlePlaybackFinished()
@@ -90,17 +80,11 @@ final class AudioPlayerService: ObservableObject {
   }
 }
 
-// MARK: - PlayerDelegateAdapter
-
 private final class PlayerDelegateAdapter: NSObject, AVAudioPlayerDelegate {
-
-  // MARK: Lifecycle
 
   init(onFinish: @escaping @MainActor () -> Void) {
     self.onFinish = onFinish
   }
-
-  // MARK: Internal
 
   func audioPlayerDidFinishPlaying(_: AVAudioPlayer, successfully _: Bool) {
     let callback = self.onFinish
@@ -108,8 +92,6 @@ private final class PlayerDelegateAdapter: NSObject, AVAudioPlayerDelegate {
       callback()
     }
   }
-
-  // MARK: Private
 
   private let onFinish: @MainActor () -> Void
 }

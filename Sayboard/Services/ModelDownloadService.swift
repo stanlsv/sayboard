@@ -1,24 +1,17 @@
-// ModelDownloadService -- Downloads STT model variants on demand via background URLSession
 
 import Combine
 import Foundation
 
 import UIKit
 
-// MARK: - ModelDownloadService
-
 @MainActor
 final class ModelDownloadService: ObservableObject {
-
-  // MARK: Lifecycle
 
   init() {
     self.migrateFromHuggingFaceIfNeeded()
     self.verifyExistingModels()
     self.subscribeToDownloadEvents()
   }
-
-  // MARK: Internal
 
   static let downloadProgressCeiling = 0.95
 
@@ -28,11 +21,8 @@ final class ModelDownloadService: ObservableObject {
   @Published var variantStates = [ModelVariant: ModelDownloadState]()
   @Published var selectedVariant: ModelVariant = SharedSettings().selectedVariant
 
-  /// Delegate that loads the model into memory after download.
-  /// Set by SayboardApp so that performDownload can load the model before setting `.downloaded`.
   weak var modelLoader: (any ModelLoading)?
 
-  /// Cached manifest to avoid re-fetching during a single session.
   var cachedManifest: ModelManifest?
 
   var eventCancellable: AnyCancellable?
@@ -65,9 +55,6 @@ final class ModelDownloadService: ObservableObject {
     self.syncHasUsableModel()
   }
 
-  /// Returns the on-disk model folder URL for a downloaded variant.
-  /// For WhisperKit/Parakeet: the inner folder containing .mlmodelc files.
-  /// For Moonshine: the folder containing .ort files.
   func modelFolderURL(for variant: ModelVariant) -> URL? {
     let dir = ModelStorageManager.directory(for: variant)
     guard ModelStorageManager.isDownloaded(variant) else { return nil }
@@ -75,7 +62,6 @@ final class ModelDownloadService: ObservableObject {
     let fm = FileManager.default
     let targetExtension = variant.engine == .moonshine ? "ort" : "mlmodelc"
 
-    // Check if model files are directly in the variant directory (flat extraction).
     if
       let directContents = try? fm.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil),
       directContents.contains(where: { $0.pathExtension == targetExtension })
@@ -83,8 +69,6 @@ final class ModelDownloadService: ObservableObject {
       return dir
     }
 
-    // The zip extracts a top-level folder inside the variant directory.
-    // Find the first subdirectory that contains the expected model files.
     guard
       let contents = try? fm.contentsOfDirectory(
         at: dir,
@@ -135,6 +119,10 @@ final class ModelDownloadService: ObservableObject {
       self.selectedVariant = current
       return
     }
+    if current == .parakeetV3, settings.parakeetV3NeedsRedownload {
+      self.selectedVariant = current
+      return
+    }
     if let downloaded = ModelVariant.allCases.first(where: { isDownloaded($0) }) {
       settings.selectedVariant = downloaded
       self.selectedVariant = downloaded
@@ -180,7 +168,6 @@ final class ModelDownloadService: ObservableObject {
       downloadType: .stt,
     )
 
-    // Clean up partially downloaded files
     try? ModelStorageManager.delete(variant)
 
     self.variantStates[variant] = .notDownloaded
@@ -190,9 +177,7 @@ final class ModelDownloadService: ObservableObject {
   func deleteModel(variant: ModelVariant) {
     do {
       try ModelStorageManager.delete(variant)
-    } catch {
-      // no-op
-    }
+    } catch { }
 
     self.variantStates[variant] = .notDownloaded
 
@@ -213,14 +198,12 @@ final class ModelDownloadService: ObservableObject {
     self.variantStates[variant] = .notDownloaded
   }
 
-  /// Called on `ScenePhase.active` -- checks if background downloads are still active.
   func resumeInterruptedDownloadIfNeeded() {
     let settings = SharedSettings()
     let interrupted = settings.downloadInProgressVariants
     guard !interrupted.isEmpty else { return }
 
     for variant in interrupted {
-      // If BackgroundDownloadManager still has the task, just keep waiting
       if
         BackgroundDownloadManager.shared.hasActiveDownload(
           variantRawValue: variant.rawValue,
@@ -229,13 +212,11 @@ final class ModelDownloadService: ObservableObject {
       {
         continue
       }
-      // Task vanished -- restart
       self.removeVariantFromPersistence(variant)
       self.startDownload(variant: variant)
     }
   }
 
-  /// Called on cold launch -- shows error for downloads interrupted by app termination.
   func checkForInterruptedDownloadOnLaunch() {
     let settings = SharedSettings()
     let interrupted = settings.downloadInProgressVariants
@@ -243,11 +224,9 @@ final class ModelDownloadService: ObservableObject {
 
     let message: LocalizedStringResource = "Download was interrupted. Tap Retry to continue."
     for variant in interrupted {
-      // Skip variants already verified as downloaded on disk.
       guard self.state(for: variant) != .downloaded else {
         continue
       }
-      // Skip if BackgroundDownloadManager still has an active task (download in progress)
       if
         BackgroundDownloadManager.shared.hasActiveDownload(
           variantRawValue: variant.rawValue,
@@ -274,7 +253,7 @@ final class ModelDownloadService: ObservableObject {
   func syncHasUsableModel() {
     let usable = self.hasUsableModel
     SharedSettings().hasUsableModel = usable
-    let selected = SharedSettings().selectedVariant
+    let _ = SharedSettings().selectedVariant
   }
 
   func resetToNotDownloaded(variant: ModelVariant) {
@@ -292,8 +271,6 @@ final class ModelDownloadService: ObservableObject {
     }
   }
 
-  // MARK: Private
-
   private func clearDownloadPersistence() {
     let settings = SharedSettings()
     settings.downloadInProgressVariants = []
@@ -306,12 +283,10 @@ final class ModelDownloadService: ObservableObject {
   }
 }
 
-// MARK: - Helpers
-
-private let diskSpaceSafetyMultiplier = 1.5
+private let diskSpaceSafetyMultiplier = 2.6
 
 private func hasEnoughDiskSpace(for variant: ModelVariant) -> Bool {
-  let requiredBytes = Int64(Double(variant.downloadSizeMB) * diskSpaceSafetyMultiplier * 1_000_000)
+  let requiredBytes = Int64(Double(variant.downloadSizeMB.megabytesInBytes) * diskSpaceSafetyMultiplier)
   do {
     let appSupportURL = try FileManager.default.url(
       for: .applicationSupportDirectory,

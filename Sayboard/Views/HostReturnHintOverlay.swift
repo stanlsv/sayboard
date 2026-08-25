@@ -1,14 +1,7 @@
 import SwiftUI
 import UIKit
 
-// MARK: - HostReturnHintOverlay
-
-// Shown when iOS 26.4+ blocks the keyboard from auto-returning to the host
-// app. Recording keeps running underneath; the user dismisses by swiping back.
-
 struct HostReturnHintOverlay: View {
-
-  // MARK: Internal
 
   let onClose: () -> Void
 
@@ -23,8 +16,6 @@ struct HostReturnHintOverlay: View {
     }
   }
 
-  // MARK: Private
-
   private static let cardInnerSpacing: CGFloat = 8
   private static let horizontalPadding: CGFloat = 32
   private static let maxContentWidth: CGFloat = 420
@@ -35,8 +26,6 @@ struct HostReturnHintOverlay: View {
 
   @Environment(\.colorScheme) private var colorScheme
 
-  /// Resolved against current trait collection so iOS 26 Liquid Glass keeps
-  /// it opaque. Same trick as `SetupBannerView`.
   private var opaqueBackground: Color {
     let style: UIUserInterfaceStyle = self.colorScheme == .dark ? .dark : .light
     let traits = UITraitCollection { mutableTraits in
@@ -52,8 +41,7 @@ struct HostReturnHintOverlay: View {
         .font(.title2.bold())
         .multilineTextAlignment(.center)
       Text(
-        // swiftlint:disable:next line_length
-        "Since iOS 26.4, Apple requires you to swipe back to your previous app yourself. This looks like a side-effect bug — hopefully fixed in a future iOS update. Until then, voice-to-text keeps working there as usual, but now you need to return manually."
+        "The app opened to turn on the microphone: no mic session was active. Recording is already running — just head back."
       )
       .font(.subheadline)
       .foregroundStyle(.secondary)
@@ -101,18 +89,10 @@ struct HostReturnHintOverlay: View {
 
 }
 
-// MARK: - SwipeRightAnimation
-
-// Cursor style matches `MicrophoneTutorialView` so both demos read as the
-// same tutorial language. Fades in/out at cycle edges so the reset is hidden.
-
 private struct SwipeRightAnimation: View {
-
-  // MARK: Internal
 
   var body: some View {
     TimelineView(.animation) { context in
-      // Absolute time keeps the phase stable across struct recreations.
       let absoluteSeconds = context.date.timeIntervalSinceReferenceDate
       let progress = absoluteSeconds.truncatingRemainder(dividingBy: Self.cycleDuration) / Self.cycleDuration
       let eased = Self.easeInOut(progress)
@@ -135,8 +115,6 @@ private struct SwipeRightAnimation: View {
       )
     }
   }
-
-  // MARK: Private
 
   private static let barWidth: CGFloat = 120
   private static let barHeight: CGFloat = 5

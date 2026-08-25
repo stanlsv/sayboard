@@ -3,14 +3,8 @@ import Foundation
 import QuartzCore
 import SwiftUI
 
-// MARK: - KeyboardState
-
-// KeyboardState -- Observable state synced from shared UserDefaults
-
 @MainActor
 final class KeyboardState: ObservableObject {
-
-  // MARK: Internal
 
   @Published var isRecording = false
   @Published var isProcessing = false
@@ -18,6 +12,7 @@ final class KeyboardState: ObservableObject {
   @Published var isModelLoading = false
   @Published var hasPreparedModelOnce = false
   @Published var hasUsableModel = false
+  @Published var parakeetV3NeedsRedownload = false
   @Published var isMicrophoneAuthorized = false
   @Published var hasFullAccess = false
   @Published var useCustomSpaceBar = false
@@ -36,17 +31,14 @@ final class KeyboardState: ObservableObject {
   @Published var llmHistoryIndex = -1
   @Published var showLLMActions = false
   @Published var llmError: LLMError?
+  @Published var dictationOutcome: DictationOutcome?
   @Published var needsInputModeSwitchKey = false
   @Published var showGlobeKey = true
   @Published var keyboardHapticsEnabled = true
   @Published var keyboardKind = KeyboardKind.standard
 
-  /// Called when audio level has been stale (unchanged) for too long during recording.
-  /// Indicates the main app was likely killed.
   var onStaleLevelDetected: (() -> Void)?
 
-  /// Bridged from SwiftUI `@Environment(\.openURL)` — works on iOS 18
-  /// where the UIResponder chain `openURL:` is broken.
   var openURLAction: ((URL) -> Void)?
 
   var canUndoLLM: Bool {
@@ -66,22 +58,12 @@ final class KeyboardState: ObservableObject {
     self.llmHistoryIndex = -1
   }
 
-  /// Minimal read of layout-affecting settings, called BEFORE `updateViewConstraints`
-  /// so the initial keyboard height is correct from the very first measurement.
-  /// iOS fixes keyboard height at first layout pass; later grow attempts are ignored.
   func bootstrapLayoutSettings() {
     self.settings.synchronize()
     self.keyboardKind = self.settings.keyboardKind
     self.keyboardHapticsEnabled = self.settings.keyboardHapticsEnabled
   }
 
-  /// Reloads state from shared UserDefaults.
-  /// Session/recording state is read from SharedSettings (last known value
-  /// written by the main app) and then validated via a Darwin ping
-  /// (`requestSessionStatus`) — the main app responds with
-  /// `sessionStarted`/`dictationStarted` if it is still alive.
-  /// If the main app was killed, the ping gets no response and the stale
-  /// audio level detector will reset the state.
   func refresh() {
     self.settings.synchronize()
     let prevRec = self.isRecording
@@ -96,6 +78,7 @@ final class KeyboardState: ObservableObject {
     self.isModelLoading = self.settings.isModelLoading
     self.hasPreparedModelOnce = self.settings.hasPreparedModelOnce
     self.hasUsableModel = self.settings.hasUsableModel
+    self.parakeetV3NeedsRedownload = self.settings.parakeetV3NeedsRedownload
     self.isMicrophoneAuthorized = self.settings.isMicrophoneAuthorized
     self.useCustomSpaceBar = self.settings.useCustomSpaceBar
     self.keyboardKind = self.settings.keyboardKind
@@ -116,11 +99,9 @@ final class KeyboardState: ObservableObject {
     self.showGlobeKey = self.settings.showGlobeKey
     self.keyboardHapticsEnabled = self.settings.keyboardHapticsEnabled
     self.checkDiskSpace()
-    let polling = self.displayLink != nil
+    let _ = self.displayLink != nil
   }
 
-  /// Re-reads only isModelLoading from SharedSettings.
-  /// Used by dictationStopped to preserve loading state if the model is still loading.
   func syncModelLoading() {
     self.settings.synchronize()
     self.isModelLoading = self.settings.isModelLoading
@@ -157,8 +138,6 @@ final class KeyboardState: ObservableObject {
     self.audioLevel = 0
   }
 
-  // MARK: Private
-
   private static let staleLevelThreshold: TimeInterval = 2
 
   private let settings = SharedSettings()
@@ -189,12 +168,9 @@ final class KeyboardState: ObservableObject {
       }
     }
 
-    // Diagnostic: log level once per second (every 20 polls at 20Hz)
     self.pollCount += 1
     if self.pollCount % 20 == 0 { }
 
-    // If level hasn't changed during recording, app may be dead.
-    // staleLevelDetected ensures this fires at most once per polling session.
     if
       !self.staleLevelDetected,
       self.isRecording,
@@ -208,24 +184,12 @@ final class KeyboardState: ObservableObject {
   }
 }
 
-// MARK: - DisplayLinkTarget
-
-/// CADisplayLink retains its target and requires an @objc selector.
-/// This wrapper avoids forcing NSObject conformance on KeyboardState.
-/// The callback returns `true` to keep running, `false` to self-invalidate.
-/// When KeyboardState is deallocated, [weak self] becomes nil → returns false
-/// → the display link invalidates itself (no zombie display links).
 private final class DisplayLinkTarget: NSObject {
-
-  // MARK: Lifecycle
 
   init(callback: @escaping () -> Bool) {
     self.callback = callback
   }
 
-  // MARK: Internal
-
-  /// Set after creating the CADisplayLink so the target can self-invalidate.
   weak var link: CADisplayLink?
 
   @objc
@@ -234,8 +198,6 @@ private final class DisplayLinkTarget: NSObject {
       self.link?.invalidate()
     }
   }
-
-  // MARK: Private
 
   private let callback: () -> Bool
 }

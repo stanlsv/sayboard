@@ -1,14 +1,9 @@
 import SwiftUI
 import UIKit
 
-// HorizontalPanGestureView -- UIKit overlay that recognizes only horizontal pans,
-// letting vertical swipes pass through to the parent ScrollView/List.
-
 struct HorizontalPanGestureView: UIViewRepresentable {
 
   final class Coordinator: NSObject, UIGestureRecognizerDelegate {
-
-    // MARK: Lifecycle
 
     init(
       onPanBegan: (() -> Void)?,
@@ -21,8 +16,6 @@ struct HorizontalPanGestureView: UIViewRepresentable {
       self.onEnded = onEnded
       self.onTap = onTap
     }
-
-    // MARK: Internal
 
     var onPanBegan: (() -> Void)?
     var onChanged: (CGFloat) -> Void

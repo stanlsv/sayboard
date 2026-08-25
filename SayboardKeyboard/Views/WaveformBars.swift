@@ -1,15 +1,6 @@
 import SwiftUI
 
-// WaveformBars -- Animated vertical bars driven by audio level (0...1).
-// Single shared sine with progressive phase offset per bar — peak visibly
-// travels across the bars (rope-flick effect). TimelineView at 60 fps; pauses
-// automatically when level drops to zero (idle).
-
-// MARK: - WaveformBars
-
 struct WaveformBars: View {
-
-  // MARK: Internal
 
   var level: Float
   var scale: CGFloat = 1.0
@@ -32,8 +23,6 @@ struct WaveformBars: View {
       .frame(height: self.maxBarHeight)
     }
   }
-
-  // MARK: Private
 
   private let barCount = 5
   private let heightMultipliers: [CGFloat] = [0.6, 0.8, 1.0, 0.8, 0.6]
@@ -60,7 +49,7 @@ struct WaveformBars: View {
     guard boosted > 0.01 else { return self.minBarHeight }
 
     let phase = time * self.omega - Double(index) * self.phaseOffset
-    let wave = CGFloat(0.5 + 0.5 * sin(phase)) // 0...1
+    let wave = CGFloat(0.5 + 0.5 * sin(phase))
 
     let amplitude = boosted * self.heightMultipliers[index] * wave
     let height = self.minBarHeight + amplitude * (self.maxBarHeight - self.minBarHeight)

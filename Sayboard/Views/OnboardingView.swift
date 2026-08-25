@@ -3,8 +3,6 @@ import UIKit
 
 struct OnboardingView: View {
 
-  // MARK: Internal
-
   var body: some View {
     NavigationStack {
       Group {
@@ -39,8 +37,6 @@ struct OnboardingView: View {
     }
     .interactiveDismissDisabled()
   }
-
-  // MARK: Private
 
   @EnvironmentObject private var permissionService: PermissionService
   @Environment(\.dismiss) private var dismiss

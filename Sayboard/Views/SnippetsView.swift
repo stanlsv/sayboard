@@ -1,12 +1,7 @@
-// SnippetsView -- List, add, edit, delete text expansion snippets
 
 import SwiftUI
 
-// MARK: - SnippetsView
-
 struct SnippetsView: View {
-
-  // MARK: Internal
 
   var body: some View {
     Form {
@@ -35,8 +30,6 @@ struct SnippetsView: View {
     }
   }
 
-  // MARK: Private
-
   @State private var snippets = [Snippet]()
   @State private var activeSheet: ActiveSheet?
 
@@ -44,11 +37,9 @@ struct SnippetsView: View {
     ContentUnavailableView {
       Label("No Snippets", systemImage: "text.badge.plus")
     } description: {
-      // swiftlint:disable line_length
       Text(
         "Create snippets to auto-replace phrases when you dictate. Say the trigger phrase, and the replacement text is inserted instead."
       )
-      // swiftlint:enable line_length
     } actions: {
       Button("Add Snippet") {
         self.activeSheet = .add
@@ -118,8 +109,6 @@ struct SnippetsView: View {
   }
 }
 
-// MARK: SnippetsView.ActiveSheet
-
 extension SnippetsView {
   fileprivate enum ActiveSheet: Identifiable {
     case add
@@ -136,11 +125,7 @@ extension SnippetsView {
   }
 }
 
-// MARK: - EditSnippetView
-
 private struct EditSnippetView: View {
-
-  // MARK: Internal
 
   let title: LocalizedStringKey
   @State var trigger: String
@@ -155,8 +140,6 @@ private struct EditSnippetView: View {
     .presentationDetents([.medium, .large])
     .presentationDragIndicator(.visible)
   }
-
-  // MARK: Private
 
   @Environment(\.dismiss) private var dismiss
 

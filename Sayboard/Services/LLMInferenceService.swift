@@ -1,9 +1,6 @@
-// LLMInferenceService -- On-device LLM inference via llama.cpp C API
 
 import Foundation
 import llama
-
-// MARK: - LLMLoadState
 
 enum LLMLoadState: Sendable, Equatable {
   case unloaded
@@ -12,35 +9,30 @@ enum LLMLoadState: Sendable, Equatable {
   case error(String)
 }
 
-// MARK: - SendablePointer
-
-// llama.cpp C pointers are thread-safe; wraps OpaquePointer for cross-actor transfer
-// swiftlint:disable:next no_unchecked_sendable
 private struct SendablePointer: @unchecked Sendable {
   let pointer: OpaquePointer
 }
 
-// MARK: - LLMBackend
-
 private enum LLMBackend {
+
   static func ensureInitialized() {
     _ = self._initialized
   }
 
-  /// One-time llama.cpp backend initialization. Swift guarantees `static let` is
-  /// initialized exactly once via dispatch_once, making this thread-safe.
   private static let _initialized: Void = {
+    llama_log_set({ level, text, _ in
+      guard level.rawValue >= GGML_LOG_LEVEL_WARN.rawValue, let text else { return }
+      let message = String(cString: text).trimmingCharacters(in: .whitespacesAndNewlines)
+      guard !message.isEmpty else { return }
+      DiagnosticLog.write("llama.cpp: \(message)")
+    }, nil)
     llama_backend_init()
   }()
 
 }
 
-// MARK: - LLMInferenceService
-
 @MainActor
 final class LLMInferenceService: ObservableObject {
-
-  // MARK: Internal
 
   @Published private(set) var loadState = LLMLoadState.unloaded
 
@@ -50,12 +42,16 @@ final class LLMInferenceService: ObservableObject {
     self.currentVariant = variant
 
     let availableMemory = os_proc_available_memory()
-    let requiredMemory = UInt64(Double(variant.ramRequirementMB) * Self.memoryCheckSafetyMultiplier * 1_000_000)
+    let requiredMemory = UInt64(Double(variant.ramRequirementMB.megabytesInBytes) * Self.memoryCheckSafetyMultiplier)
     if availableMemory < requiredMemory {
-      let model = variant.rawValue
+      let availableMB = availableMemory / 1_000_000
+      let requiredMB = requiredMemory / 1_000_000
+      let _ = variant.rawValue
+      DiagnosticLog.write("llm: load refused, \(availableMB)MB free < \(requiredMB)MB needed")
       self.loadState = .error("Not enough free memory to load this model. Close other apps and try again.")
       return
     }
+    DiagnosticLog.write("llm: loading \(variant.rawValue), \(os_proc_available_memory() / 1_000_000)MB free")
 
     let contextSize = variant.contextSize
     let threadCount = Self.inferenceThreadCount
@@ -64,7 +60,7 @@ final class LLMInferenceService: ObservableObject {
         LLMBackend.ensureInitialized()
 
         var modelParams = llama_model_default_params()
-        modelParams.n_gpu_layers = 0 // CPU-only: Metal GPU blocked when app is backgrounded
+        modelParams.n_gpu_layers = 0
 
         guard let model = llama_model_load_from_file(path, modelParams) else {
           return nil
@@ -91,8 +87,10 @@ final class LLMInferenceService: ObservableObject {
       self.model = result.model.pointer
       self.context = result.context.pointer
       self.loadState = .loaded
+      DiagnosticLog.write("llm: loaded ok, \(os_proc_available_memory() / 1_000_000)MB free after")
     } else {
       self.loadState = .error("Failed to load LLM model")
+      DiagnosticLog.write("llm: llama.cpp refused \(variant.rawValue) — unsupported arch or bad file?")
     }
   }
 
@@ -113,7 +111,6 @@ final class LLMInferenceService: ObservableObject {
     self.loadState = .unloaded
   }
 
-  /// Runs inference with the given prompts. Returns the generated text, or nil on failure.
   func process(systemPrompt: String, userText: String) async -> String? {
     guard
       let model = self.model,
@@ -126,48 +123,25 @@ final class LLMInferenceService: ObservableObject {
     self.isProcessing = true
     defer { self.isProcessing = false }
 
-    let chatTemplate = variant.chatTemplate
-    let maxTokens = Self.maxOutputTokens
     let sendableModel = SendablePointer(pointer: model)
     let sendableCtx = SendablePointer(pointer: context)
 
     return await Task.detached(priority: .userInitiated) {
-      let mdl = sendableModel.pointer
-      let ctx = sendableCtx.pointer
-
-      let promptString = Self.buildFormattedPrompt(
-        model: mdl,
-        system: systemPrompt,
-        user: userText,
-        chatTemplate: chatTemplate,
-      )
-
-      let vocab = llama_model_get_vocab(mdl)
-      let tokens = Self.tokenize(vocab: vocab, prompt: promptString)
-      guard !tokens.isEmpty else { return nil as String? }
-
-      llama_memory_clear(llama_get_memory(ctx), true)
-
-      var batch = llama_batch_init(Int32(tokens.count), 0, 1)
-      defer { llama_batch_free(batch) }
-
-      guard Self.decodePrompt(context: ctx, batch: &batch, tokens: tokens) else {
-        return nil as String?
-      }
-
-      return Self.generateTokens(
-        context: ctx,
-        vocab: vocab,
-        batch: &batch,
-        startPos: Int32(tokens.count),
-        maxTokens: maxTokens,
+      Self.runInference(
+        model: sendableModel.pointer,
+        context: sendableCtx.pointer,
+        variant: variant,
+        systemPrompt: systemPrompt,
+        userText: userText,
       )
     }.value
   }
 
-  // MARK: Private
+  private nonisolated static let contextReserveTokens = 16
 
-  private static let maxOutputTokens = 512
+  private nonisolated static let pieceBufferSize = 64
+
+  private nonisolated static let generationDeadlineSeconds: TimeInterval = 15
   private nonisolated static let memoryCheckSafetyMultiplier = 1.2
   private nonisolated static let temperature: Float = 0.3
   private nonisolated static let topP: Float = 0.9
@@ -178,7 +152,64 @@ final class LLMInferenceService: ObservableObject {
   private var currentVariant: LLMModelVariant?
   private var isProcessing = false
 
-  /// Returns tokenized prompt, or empty array on failure.
+  private nonisolated static func runInference(
+    model: OpaquePointer,
+    context: OpaquePointer,
+    variant: LLMModelVariant,
+    systemPrompt: String,
+    userText: String,
+  ) -> String? {
+    let template = variant.chatTemplate
+    let promptString = self.buildFormattedPrompt(
+      model: model,
+      system: systemPrompt,
+      user: userText,
+      chatTemplate: template,
+    )
+
+    let vocab = llama_model_get_vocab(model)
+    let tokens = self.tokenize(vocab: vocab, prompt: promptString)
+    guard !tokens.isEmpty else { return nil }
+
+    llama_memory_clear(llama_get_memory(context), true)
+
+    var batch = llama_batch_init(Int32(tokens.count), 0, 1)
+    defer { llama_batch_free(batch) }
+
+    guard self.decodePrompt(context: context, batch: &batch, tokens: tokens) else { return nil }
+
+    let maxTokens = variant.contextSize - tokens.count - self.contextReserveTokens
+    guard maxTokens > 0 else {
+      DiagnosticLog.write("llm: prompt \(tokens.count) tok exceeds ctx \(variant.contextSize)")
+      return nil
+    }
+    DiagnosticLog.write("llm: prompt=\(tokens.count) tok, budget=\(maxTokens) tok, ctx=\(variant.contextSize)")
+
+    guard
+      let generated = self.generateTokens(
+        context: context,
+        vocab: vocab,
+        batch: &batch,
+        startPos: Int32(tokens.count),
+        maxTokens: maxTokens,
+      )
+    else {
+      DiagnosticLog.write("llm: generation failed")
+      return nil
+    }
+    DiagnosticLog.write(
+      "llm: raw=\(generated.text.count) chars, eos=\(generated.stoppedAtEOS), "
+        + "closingTag=\(generated.text.contains("</think>"))"
+    )
+
+    guard let answer = template.answer(from: generated.text), !answer.isEmpty else {
+      DiagnosticLog.write("llm: FAILED, no answer extracted from reply")
+      return nil
+    }
+    DiagnosticLog.write("llm: answer=\(answer.count) chars")
+    return answer
+  }
+
   private nonisolated static func tokenize(
     vocab: OpaquePointer?,
     prompt: String,
@@ -221,35 +252,42 @@ final class LLMInferenceService: ObservableObject {
     batch: inout llama_batch,
     startPos: Int32,
     maxTokens: Int,
-  ) -> String? {
-    let samplerParams = llama_sampler_chain_default_params()
-    guard let sampler = llama_sampler_chain_init(samplerParams) else {
+  ) -> (text: String, stoppedAtEOS: Bool)? {
+    guard let sampler = self.makeSampler() else {
       return nil
     }
     defer { llama_sampler_free(sampler) }
 
-    llama_sampler_chain_add(sampler, llama_sampler_init_temp(self.temperature))
-    llama_sampler_chain_add(sampler, llama_sampler_init_top_p(self.topP, 1))
-    llama_sampler_chain_add(sampler, llama_sampler_init_dist(UInt32.random(in: 0 ... UInt32.max)))
-
     var outputPieces = [String]()
     var currentPos = startPos
+    var stoppedAtEOS = false
+    var hitDeadline = false
     let eosToken = llama_vocab_eos(vocab)
     let eotToken = llama_vocab_eot(vocab)
+    let startedAt = Date()
 
-    for _ in 0 ..< maxTokens {
-      guard !Task.isCancelled else { break }
+    for index in 0 ..< maxTokens {
+      guard !Task.isCancelled else {
+        DiagnosticLog.write("llm: cancelled after \(index) tok in \(Self.elapsed(since: startedAt))s")
+        break
+      }
+      if index > 0, index.isMultiple(of: 32) {
+        DiagnosticLog.write("llm: \(index) tok in \(Self.elapsed(since: startedAt))s")
+      }
+      if Date().timeIntervalSince(startedAt) > Self.generationDeadlineSeconds {
+        DiagnosticLog.write("llm: DEADLINE after \(index) tok in \(Self.elapsed(since: startedAt))s")
+        hitDeadline = true
+        break
+      }
 
       let newToken = llama_sampler_sample(sampler, context, -1)
-      if newToken == eosToken || newToken == eotToken || llama_vocab_is_eog(vocab, newToken) { break }
+      if newToken == eosToken || newToken == eotToken || llama_vocab_is_eog(vocab, newToken) {
+        stoppedAtEOS = true
+        break
+      }
 
-      var buf = [CChar](repeating: 0, count: 64)
-      let written = llama_token_to_piece(vocab, newToken, &buf, 64, 0, true)
-      if written > 0 {
-        let bytes = buf.prefix(Int(written)).map { UInt8(bitPattern: $0) }
-        if let piece = String(bytes: bytes, encoding: .utf8) {
-          outputPieces.append(piece)
-        }
+      if let piece = self.piece(vocab: vocab, token: newToken) {
+        outputPieces.append(piece)
       }
 
       batch.n_tokens = 0
@@ -261,22 +299,43 @@ final class LLMInferenceService: ObservableObject {
       }
     }
 
-    var output = outputPieces.joined().trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !hitDeadline else { return nil }
 
-    // Strip Qwen3 <think>...</think> reasoning blocks
-    output = Self.stripThinkingBlocks(output)
-
-    return output.isEmpty ? nil : output
+    let raw = outputPieces.joined().trimmingCharacters(in: .whitespacesAndNewlines)
+    DiagnosticLog.write(
+      "llm: generation done, \(outputPieces.count) tok in \(Self.elapsed(since: startedAt))s, eos=\(stoppedAtEOS)"
+    )
+    return (text: raw, stoppedAtEOS: stoppedAtEOS)
   }
 
-  /// Builds formatted prompt string. Tries llama_chat_apply_template() first, falls back to manual formatting.
+  private nonisolated static func piece(vocab: OpaquePointer?, token: llama_token) -> String? {
+    var buffer = [CChar](repeating: 0, count: self.pieceBufferSize)
+    let written = llama_token_to_piece(vocab, token, &buffer, Int32(self.pieceBufferSize), 0, true)
+    guard written > 0 else { return nil }
+    let bytes = buffer.prefix(Int(written)).map { UInt8(bitPattern: $0) }
+    return String(bytes: bytes, encoding: .utf8)
+  }
+
+  private nonisolated static func makeSampler() -> UnsafeMutablePointer<llama_sampler>? {
+    guard let sampler = llama_sampler_chain_init(llama_sampler_chain_default_params()) else {
+      return nil
+    }
+    llama_sampler_chain_add(sampler, llama_sampler_init_temp(self.temperature))
+    llama_sampler_chain_add(sampler, llama_sampler_init_top_p(self.topP, 1))
+    llama_sampler_chain_add(sampler, llama_sampler_init_dist(UInt32.random(in: 0 ... UInt32.max)))
+    return sampler
+  }
+
+  private nonisolated static func elapsed(since start: Date) -> String {
+    String(format: "%.1f", Date().timeIntervalSince(start))
+  }
+
   private nonisolated static func buildFormattedPrompt(
     model: OpaquePointer,
     system: String,
     user: String,
     chatTemplate: ChatTemplate,
   ) -> String {
-    // Try llama_chat_apply_template from GGUF metadata
     var messages = [
       llama_chat_message(role: strdup("system"), content: strdup(system)),
       llama_chat_message(role: strdup("user"), content: strdup(user)),
@@ -288,12 +347,11 @@ final class LLMInferenceService: ObservableObject {
       }
     }
 
-    // First call to get required buffer size
     let requiredSize = llama_chat_apply_template(
       llama_model_chat_template(model, nil),
       &messages,
       messages.count,
-      true, // add_assistant
+      true,
       nil,
       0,
     )
@@ -311,30 +369,13 @@ final class LLMInferenceService: ObservableObject {
       if written > 0 {
         let bytes = buffer.prefix(Int(written)).map { UInt8(bitPattern: $0) }
         if let result = String(bytes: bytes, encoding: .utf8) {
-          return result
+          return chatTemplate.applyingAssistantPrefix(to: result)
         }
       }
     }
 
-    // Fallback to manual template
-    return LLMPromptTemplates.buildPrompt(system: system, user: user, template: chatTemplate)
-  }
-
-  /// Strips `<think>...</think>` blocks that Qwen3 emits in thinking mode.
-  private nonisolated static func stripThinkingBlocks(_ text: String) -> String {
-    guard text.contains("<think>") else { return text }
-
-    var result = text
-    while let startRange = result.range(of: "<think>") {
-      if let endRange = result.range(of: "</think>", range: startRange.upperBound ..< result.endIndex) {
-        result.removeSubrange(startRange.lowerBound ..< endRange.upperBound)
-      } else {
-        // Unclosed <think> — remove everything from <think> to end
-        result.removeSubrange(startRange.lowerBound ..< result.endIndex)
-      }
-    }
-
-    return result.trimmingCharacters(in: .whitespacesAndNewlines)
+    let manual = LLMPromptTemplates.buildPrompt(system: system, user: user, template: chatTemplate)
+    return chatTemplate.applyingAssistantPrefix(to: manual)
   }
 
   private nonisolated static func batchAdd(

@@ -1,10 +1,6 @@
 import SwiftUI
 
-// MARK: - WritingStyleListView
-
 struct WritingStyleListView: View {
-
-  // MARK: Internal
 
   var body: some View {
     List {
@@ -42,8 +38,6 @@ struct WritingStyleListView: View {
       self.defaultStyle = self.settings.defaultWritingStyle
     }
   }
-
-  // MARK: Private
 
   private static let iconSize: CGFloat = 32
   private static let iconCornerRadius: CGFloat = 7.2
@@ -141,7 +135,7 @@ struct WritingStyleListView: View {
       }
       .frame(minHeight: Self.searchRowMinHeight)
     } footer: {
-      Text("Sayboard can't see your installed apps. Search is performed in the App Store, so make sure you select the right app.")
+      Text("Sayboard can’t see your installed apps. Search is performed in the App Store, so make sure you select the right app.")
     }
   }
 

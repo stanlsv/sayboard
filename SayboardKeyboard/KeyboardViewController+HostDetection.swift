@@ -2,45 +2,27 @@ import ObjectiveC
 
 import UIKit
 
-// MARK: - Host Detection & URL Opening
-
 extension KeyboardViewController {
 
-  // MARK: Internal
-
-  /// Detect and persist the host app's bundle ID for the main app to use
-  /// after dictation. Detection relies on private APIs that iOS 26.4 broke
-  /// (see `OperatingSystem.isHostBundleIdBroken`); on failure we clear the
-  /// cache rather than keep a stale value and risk opening the wrong app.
   func saveHostBundleId() {
     let settings = SharedSettings()
     let detected = self.detectHostBundleId()
-    let previous = settings.hostBundleId
+    let _ = settings.hostBundleId
     settings.hostBundleId = detected
     settings.synchronize()
-
-    if let detected {
-    } else if let previous {
-    } else { }
   }
 
   func openURL(_ url: URL) {
-    // Strategy 1: Responder chain
     if self.openURLViaResponderChain(url) { return }
 
-    // Strategy 2: KVC fallback
     if self.openURLViaKVC(url) { return }
   }
 
-  // MARK: Private
-
   private func detectHostBundleId() -> String? {
     guard let parent else { return nil }
-    // Strategy 1: KVC on _hostBundleID (pre-iOS 16)
     if let hostId = readIvarString(from: parent, key: "_hostBundleID") {
       return hostId
     }
-    // Strategy 2: PKService/XPC (iOS 16+, from KeyboardKit)
     if let hostId = detectViaPKService(parent: parent) {
       return hostId
     }
@@ -48,7 +30,6 @@ extension KeyboardViewController {
   }
 
   private func detectViaPKService(parent: NSObject) -> String? {
-    // Read raw _hostPID for dictionary lookup
     let parentCls: AnyClass = type(of: parent)
     guard
       class_getInstanceVariable(parentCls, "_hostPID") != nil,
@@ -56,7 +37,6 @@ extension KeyboardViewController {
     else {
       return nil
     }
-    // Get PKService.defaultService
     let defSel = NSSelectorFromString("defaultService")
     guard
       let pkCls = NSClassFromString("PKService") as? NSObject.Type,
@@ -66,7 +46,6 @@ extension KeyboardViewController {
     else {
       return nil
     }
-    // Access personalities dictionary
     let pSel = NSSelectorFromString("personalities")
     guard
       svc.responds(to: pSel),
@@ -85,7 +64,6 @@ extension KeyboardViewController {
     return self.bundleIdFromXPCConnection(of: pidInfo)
   }
 
-  /// Extracts host bundle ID from an XPC connection on a PKService personality entry.
   private func bundleIdFromXPCConnection(of pidInfo: NSObjectProtocol) -> String? {
     let connSel = NSSelectorFromString("connection")
     let xpcSel = NSSelectorFromString("_xpcConnection")
@@ -130,10 +108,6 @@ extension KeyboardViewController {
     return val
   }
 
-  /// Open a URL from the keyboard extension.
-  /// Strategy 1: Walk responder chain for openURL:options:completionHandler:
-  ///             (KeyboardKit 8.8.7 approach for iOS 18+).
-  /// Strategy 2: Access UIApplication.shared via KVC as fallback.
   private func openURLViaResponderChain(_ url: URL) -> Bool {
     let selector = NSSelectorFromString("openURL:options:completionHandler:")
     var responder: UIResponder? = self

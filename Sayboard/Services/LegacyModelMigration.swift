@@ -1,4 +1,3 @@
-// LegacyModelMigration -- One-time migration from HuggingFace-era storage to R2 layout
 
 import Foundation
 
@@ -6,13 +5,8 @@ private let migrationKey = "hasCompletedR2Migration"
 private let legacyWhisperKitPathPrefix = "whisperKitModelPath_"
 private let legacyParakeetDownloadedPrefix = "parakeetModelDownloaded_"
 
-// MARK: - LegacyModelMigration
-
 enum LegacyModelMigration {
 
-  // MARK: Internal
-
-  /// Migrates existing models from HuggingFace-era storage to `<Application Support>/Models/`.
   static func runIfNeeded() {
     let defaults = UserDefaults.standard
     guard !defaults.bool(forKey: migrationKey) else { return }
@@ -24,8 +18,6 @@ enum LegacyModelMigration {
 
     defaults.set(true, forKey: migrationKey)
   }
-
-  // MARK: Private
 
   private static func migrateWhisperKitModels(defaults: UserDefaults) {
     let fm = FileManager.default
@@ -49,7 +41,7 @@ enum LegacyModelMigration {
         let destination = newDir.appendingPathComponent(oldURL.lastPathComponent)
         try fm.moveItem(at: oldURL, to: destination)
       } catch {
-        let desc = error.localizedDescription
+        let _ = error.localizedDescription
       }
       defaults.removeObject(forKey: key)
     }
@@ -85,7 +77,7 @@ enum LegacyModelMigration {
       let destination = newDir.appendingPathComponent(repoFolder)
       try fm.moveItem(at: oldDir, to: destination)
     } catch {
-      let desc = error.localizedDescription
+      let _ = error.localizedDescription
     }
   }
 

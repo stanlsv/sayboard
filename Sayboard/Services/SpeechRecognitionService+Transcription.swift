@@ -1,17 +1,42 @@
-// SpeechRecognitionService+Transcription -- Final transcription and history saving
 
+import Accelerate
 import Foundation
 
 extension SpeechRecognitionService {
 
+  func reportSignalStats(samples: [Float], engine: String, loadState: String) {
+    var peak: Float = 0
+    var mean: Float = 0
+    vDSP_maxmgv(samples, 1, &peak, vDSP_Length(samples.count))
+    vDSP_rmsqv(samples, 1, &mean, vDSP_Length(samples.count))
+    let assumedDuration = Double(samples.count) / 16_000
+    DiagnosticLog.write(
+      "transcribe: engine=\(engine) load=\(loadState) samples=\(samples.count) "
+        + "peak=\(peak) rms=\(mean) assumedDuration=\(String(format: "%.2f", assumedDuration))s"
+    )
+  }
+
+  func styled(_ text: String) -> String {
+    let store = AppStyleStore()
+    let resolvedStyle = self.settings.hostBundleId.flatMap { store.style(for: $0) }
+      ?? self.settings.defaultWritingStyle
+    let formatted = TextStyleFormatter.format(text, style: resolvedStyle)
+    return SnippetExpander.expand(formatted, snippets: self.settings.snippets)
+  }
+
   func runFinalTranscription(samples: [Float]) async {
     let engine = self.settings.selectedVariant.engine
+    let loadState = String(describing: self.activeLoadState)
 
     guard !samples.isEmpty else {
+      DiagnosticLog.write("transcribe: ABORT — 0 samples reached the model")
+      self.settings.lastDictationOutcome = .engineFailed
       return
     }
 
-    let output: TranscriptionOutput? =
+    self.reportSignalStats(samples: samples, engine: String(describing: engine), loadState: loadState)
+
+    let result: TranscriptionResult =
       switch engine {
       case .whisperKit:
         await self.whisperService.transcribe(audioSamples: samples)
@@ -21,17 +46,18 @@ extension SpeechRecognitionService {
         await self.moonshineService.transcribe(audioSamples: samples)
       }
 
-    if let output {
+    switch result {
+    case .text: self.settings.lastDictationOutcome = nil
+    case .noSpeech: self.settings.lastDictationOutcome = .noSpeech
+    case .failed: self.settings.lastDictationOutcome = .engineFailed
+    }
+
+    if case .text(let output) = result {
       let sanitizedText = TextSanitizer.sanitize(output.text)
       self.currentTranscription = sanitizedText
 
-      let store = AppStyleStore()
-      let hostId = self.settings.hostBundleId
-      let resolvedStyle = hostId.flatMap { store.style(for: $0) } ?? self.settings.defaultWritingStyle
-      let formattedText = TextStyleFormatter.format(sanitizedText, style: resolvedStyle)
-      let expandedText = SnippetExpander.expand(formattedText, snippets: self.settings.snippets)
-
-      TranscriptionBridge.writeTranscription(expandedText)
+      let bridgeText = self.styled(sanitizedText)
+      TranscriptionBridge.writeTranscription(bridgeText)
 
       if let start = output.firstWordStart, let end = output.lastWordEnd {
         self.currentWordBoundaries = (start: start, end: end)
@@ -39,8 +65,11 @@ extension SpeechRecognitionService {
         self.currentWordBoundaries = nil
       }
 
+      DiagnosticLog.write("transcribe: SUCCESS \(bridgeText.count) chars -> bridge")
     } else {
       self.currentWordBoundaries = nil
+      let reason = if case .failed(let message) = result { message } else { "no speech detected" }
+      DiagnosticLog.write("transcribe: NO TEXT — \(reason)")
     }
   }
 

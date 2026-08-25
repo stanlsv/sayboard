@@ -1,6 +1,5 @@
 import TipKit
 
-/// TipKit-based alternative to SessionInfoView, explaining the orange mic indicator.
 struct ActiveSessionTip: Tip {
 
   var title: Text {

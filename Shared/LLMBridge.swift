@@ -1,8 +1,5 @@
-// LLMBridge -- File-based IPC for LLM text processing between main app and keyboard extension
 
 import Foundation
-
-// MARK: - LLMRequest
 
 struct LLMRequest: Codable, Sendable {
   let text: String
@@ -11,20 +8,14 @@ struct LLMRequest: Codable, Sendable {
   let language: String?
 }
 
-// MARK: - LLMBridge
-
 struct LLMBridge: Sendable {
-
-  // MARK: Internal
 
   static func writeRequest(_ request: LLMRequest) {
     guard let url = requestFileURL else { return }
     do {
       let data = try JSONEncoder().encode(request)
       try data.write(to: url, options: [.atomic, .completeFileProtectionUnlessOpen])
-    } catch {
-      // no-op
-    }
+    } catch { }
   }
 
   static func readRequest() -> LLMRequest? {
@@ -39,9 +30,7 @@ struct LLMBridge: Sendable {
     guard let url = resultFileURL else { return }
     do {
       try Data(text.utf8).write(to: url, options: [.atomic, .completeFileProtectionUnlessOpen])
-    } catch {
-      // no-op
-    }
+    } catch { }
   }
 
   static func readResult() -> String? {
@@ -58,8 +47,6 @@ struct LLMBridge: Sendable {
     guard let url = resultFileURL else { return }
     try? FileManager.default.removeItem(at: url)
   }
-
-  // MARK: Private
 
   private static let requestFileName = "llm_request.json"
   private static let resultFileName = "llm_result.txt"

@@ -1,12 +1,25 @@
-// ModelCardComponents -- Reusable stat bar and download status views for model cards
 
 import SwiftUI
 
-// MARK: - ModelStatBar
+struct ModelNoticeRow: View {
+  let text: Text
+
+  var body: some View {
+    HStack(alignment: .top, spacing: 8) {
+      Image(systemName: "exclamationmark.triangle.fill")
+        .font(.caption)
+        .foregroundStyle(.orange)
+      self.text
+        .font(.caption)
+        .foregroundStyle(.orange)
+        .fixedSize(horizontal: false, vertical: true)
+      Spacer(minLength: 0)
+    }
+    .padding(.bottom, 4)
+  }
+}
 
 struct ModelStatBar: View {
-
-  // MARK: Internal
 
   let label: String
   let value: Double
@@ -31,14 +44,10 @@ struct ModelStatBar: View {
     }
   }
 
-  // MARK: Private
-
   private let barHeight: CGFloat = 6
   private let barWidth: CGFloat = 50
   private let labelWidth: CGFloat = 52
 }
-
-// MARK: - UnsupportedModelOverlay
 
 struct UnsupportedModelOverlay: View {
 
@@ -66,11 +75,7 @@ struct UnsupportedModelOverlay: View {
   }
 }
 
-// MARK: - DownloadStatusView
-
 struct DownloadStatusView: View {
-
-  // MARK: Internal
 
   let formattedSize: String
   let downloadState: ModelDownloadState
@@ -91,16 +96,14 @@ struct DownloadStatusView: View {
       case .downloaded:
         self.downloadedBadge
 
-      case .error(let message):
-        self.errorView(message: message)
+      case .error:
+        self.errorView()
       }
     }
     .transition(.identity)
     .frame(height: self.statusRowHeight)
     .animation(nil, value: self.downloadState)
   }
-
-  // MARK: Private
 
   @State private var showDeleteConfirmation = false
 
@@ -178,15 +181,8 @@ struct DownloadStatusView: View {
     .animation(.easeInOut(duration: 0.25), value: isLoadingPhase)
   }
 
-  private func errorView(message: LocalizedStringResource) -> some View {
+  private func errorView() -> some View {
     HStack(spacing: 8) {
-      Image(systemName: "exclamationmark.triangle.fill")
-        .font(.caption)
-        .foregroundStyle(.orange)
-      Text(message)
-        .font(.caption)
-        .foregroundStyle(.secondary)
-        .lineLimit(1)
       Spacer()
       Button(action: self.onRetry) {
         Text("Retry")

@@ -17,8 +17,10 @@ xcuserdata/
 Package.resolved
 .swiftpm/
 
-# Local packages -- track Package.swift, ignore binary artifacts
-Packages/LlamaCpp/llama.xcframework/
+# Local packages -- track Package.swift, ignore binary artifacts.
+# No trailing slash: a worktree that links the framework instead of copying it leaves a symlink,
+# which git does not treat as a directory and a `dir/` pattern therefore misses.
+Packages/LlamaCpp/llama.xcframework
 Packages/LlamaCpp/.build/
 
 # CocoaPods
@@ -53,3 +55,4 @@ scripts/tutorials/output/
 
 # Claude Code
 .claude/
+.vscode/

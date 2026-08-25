@@ -1,38 +1,38 @@
-// MoonshineTranscriptionService -- Loads Moonshine ONNX models and transcribes audio samples
 
 import Foundation
 @preconcurrency import MoonshineVoice
 
 private let defaultSampleRate: Int32 = 16_000
 
-// MARK: - MoonshineTranscriptionService
-
 @MainActor
 final class MoonshineTranscriptionService: ObservableObject {
 
-  // MARK: Internal
-
   @Published private(set) var loadState = ModelLoadState.unloaded
 
-  func transcribe(audioSamples: [Float]) async -> TranscriptionOutput? {
+  func transcribe(audioSamples: [Float]) async -> TranscriptionResult {
     guard let transcriber, loadState == .loaded else {
-      return nil
+      let state = String(describing: loadState)
+      DiagnosticLog.write("moonshine: ABORT — loadState=\(state)")
+      return .failed("model not loaded (\(state))")
     }
-    guard !audioSamples.isEmpty else { return nil }
+    guard !audioSamples.isEmpty else { return .failed("no audio samples") }
 
-    // Run CPU-intensive transcription off the main actor.
     nonisolated(unsafe) let runner = transcriber
-    let output = await Self.transcribeOffMain(runner: runner, audioSamples: audioSamples)
+    let result = await Self.transcribeOffMain(runner: runner, audioSamples: audioSamples)
 
-    if let output {
-    } else { }
-    return output
+    switch result {
+    case .text(_):
+      break
+
+    case .noSpeech:
+      DiagnosticLog.write("moonshine: NO SPEECH — empty transcript")
+
+    case .failed(let reason):
+      DiagnosticLog.write("moonshine: FAILED \(reason)")
+    }
+    return result
   }
 
-  /// Loads a Moonshine model from a local directory.
-  /// - Parameters:
-  ///   - directoryPath: Path to the directory containing .ort model files.
-  ///   - archName: Architecture name from `ModelVariant.moonshineModelArch` (e.g. "tiny", "base").
   func loadModel(from directoryPath: String, archName: String) async {
     guard let modelArch = Self.resolveArch(archName) else {
       self.loadState = .error("Unknown model architecture: \(archName)")
@@ -41,7 +41,6 @@ final class MoonshineTranscriptionService: ObservableObject {
     await self.loadModelInternal(from: directoryPath, archRawValue: modelArch.rawValue)
   }
 
-  /// Awaits a pending model load (if any). Returns immediately if not loading.
   func waitForLoad() async {
     guard let task = self.loadTask else { return }
     await task.value
@@ -56,8 +55,6 @@ final class MoonshineTranscriptionService: ObservableObject {
     self.loadState = .unloaded
   }
 
-  // MARK: Private
-
   private var transcriber: Transcriber?
   private var loadTask: Task<Void, Never>?
   private var loadGeneration = 0
@@ -65,7 +62,7 @@ final class MoonshineTranscriptionService: ObservableObject {
   private static nonisolated func transcribeOffMain(
     runner: Transcriber,
     audioSamples: [Float],
-  ) async -> TranscriptionOutput? {
+  ) async -> TranscriptionResult {
     do {
       let transcript = try runner.transcribeWithoutStreaming(
         audioData: audioSamples,
@@ -73,13 +70,14 @@ final class MoonshineTranscriptionService: ObservableObject {
       )
       let lines = transcript.lines
       let text = lines.map(\.text).joined(separator: " ")
-      guard !text.isEmpty else { return nil }
+      guard !text.isEmpty else { return .noSpeech }
       let firstStart = lines.first?.startTime ?? 0
       let lastLine = lines.last
       let lastEnd = (lastLine?.startTime ?? 0) + (lastLine?.duration ?? 0)
-      return TranscriptionOutput(text: text, firstWordStart: firstStart, lastWordEnd: lastEnd)
+      return .text(TranscriptionOutput(text: text, firstWordStart: firstStart, lastWordEnd: lastEnd))
     } catch {
-      return nil
+      DiagnosticLog.write("moonshine: THREW \(type(of: error)): \(error)")
+      return .failed(error.localizedDescription)
     }
   }
 
@@ -134,8 +132,6 @@ final class MoonshineTranscriptionService: ObservableObject {
   }
 
 }
-
-// MARK: - MoonshineLoadError
 
 private enum MoonshineLoadError: LocalizedError {
   case invalidArch

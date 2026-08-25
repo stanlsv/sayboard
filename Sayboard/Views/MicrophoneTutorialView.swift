@@ -1,12 +1,7 @@
-// MicrophoneTutorialView -- Animated mock of iOS Settings guiding the user to enable Microphone access.
 
 import SwiftUI
 
-// MARK: - MicrophoneTutorialView
-
 struct MicrophoneTutorialView: View {
-
-  // MARK: Internal
 
   var body: some View {
     VStack(spacing: 0) {
@@ -28,8 +23,6 @@ struct MicrophoneTutorialView: View {
       await self.runAnimationLoop()
     }
   }
-
-  // MARK: Private
 
   private static let coordinateSpace = "micTutorial"
   private static let rowID = "microphone"
@@ -92,7 +85,6 @@ struct MicrophoneTutorialView: View {
     while !Task.isCancelled {
       try? await Task.sleep(nanoseconds: Self.initialDelay)
 
-      // Show cursor, move to toggle
       self.cursorVisible = true
       if let target = self.rowCenters[Self.rowID] {
         withAnimation(.easeInOut(duration: Self.cursorTravelDuration)) {
@@ -101,7 +93,6 @@ struct MicrophoneTutorialView: View {
         try? await Task.sleep(nanoseconds: UInt64(Self.cursorTravelDuration * 1_000_000_000))
       }
 
-      // Press and flip
       try? await Task.sleep(nanoseconds: Self.prePressPause)
       self.cursorPressed = true
       try? await Task.sleep(nanoseconds: Self.pressDuration)
@@ -110,10 +101,8 @@ struct MicrophoneTutorialView: View {
         self.microphoneOn = true
       }
 
-      // Hold
       try? await Task.sleep(nanoseconds: Self.holdDelay)
 
-      // Fade out cursor, reset
       withAnimation(.easeIn(duration: 0.2)) {
         self.cursorVisible = false
       }
@@ -126,8 +115,6 @@ struct MicrophoneTutorialView: View {
     }
   }
 }
-
-// MARK: - CenterPreferenceKey
 
 private struct CenterPreferenceKey: PreferenceKey {
   static let defaultValue = [String: CGPoint]()

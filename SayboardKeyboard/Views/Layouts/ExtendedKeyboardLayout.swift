@@ -1,10 +1,6 @@
 import SwiftUI
 
-// MARK: - ExtendedKeyboardLayout
-
 struct ExtendedKeyboardLayout: View {
-
-  // MARK: Internal
 
   let proxy: KeyboardProxy
 
@@ -26,8 +22,6 @@ struct ExtendedKeyboardLayout: View {
     }
   }
 
-  // MARK: Private
-
   private static let numbersRow1: [String] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
   private static let numbersRow2: [String] = ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""]
   private static let symbolsRow1: [String] = ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]
@@ -40,7 +34,6 @@ struct ExtendedKeyboardLayout: View {
 
   private static let symbolsRow3WideKeyWeight: CGFloat = 1.1
   private static let symbolsRow3NarrowKeyWeight: CGFloat = 0.9
-  /// Wide keys are the page toggler and delete; narrow keys are `punctRow`.
   private static let symbolsRow3WideKeyCount = 2
 
   private static var symbolsRow3TotalWeight: CGFloat {
@@ -70,11 +63,7 @@ struct ExtendedKeyboardLayout: View {
 
 }
 
-// MARK: - ExtendedKeyboardLayout Helpers
-
 extension ExtendedKeyboardLayout {
-  /// Width budget on iPhone SE 2/3 (375pt) with all features enabled is ~359pt,
-  /// leaving ~16pt for the Spacer. Verify SE 2 portrait + landscape after edits.
   private var chromeRow: some View {
     HStack(alignment: .center, spacing: KeyboardChromeMetrics.buttonSpacing) {
       KeyButton(
@@ -105,16 +94,12 @@ extension ExtendedKeyboardLayout {
       Spacer()
       self.micButton
     }
-    // Leading padding matches the mic button's own horizontal padding, so the settings pill
-    // and the mic capsule sit the same distance from their respective keyboard edges.
     .padding(.leading, 12.kbScaled)
     .animation(.easeInOut(duration: 0.35), value: self.keyboardState.selectedVariantSupportsTranslation)
     .animation(.easeInOut(duration: 0.35), value: self.keyboardState.showsAIButton)
     .animation(.easeInOut(duration: 0.25), value: self.keyboardState.hasLLMHistory)
   }
 
-  /// Mic compartment: an Enter-key-shaped mic (reuses the key's width, height,
-  /// and corner radius) pushed to the trailing edge of the chrome row.
   private var micButton: some View {
     MicButtonWithPulse(
       sizing: .extended(width: self.chrome.returnWidth),
@@ -214,7 +199,6 @@ extension ExtendedKeyboardLayout {
       KeyButton(
         content: .symbol(self.symbolsPage.togglerLabel, fontSize: 18),
         fixedWidth: wideKeyWidth,
-        // Avoid a press flash during the animation-suppressed page swap below.
         pressEffect: false,
       ) {
         withTransaction(Transaction(animation: nil)) {

@@ -1,13 +1,9 @@
 import Foundation
 
-// MARK: - STTEngine
-
 enum STTEngine: String, Codable, Sendable {
   case whisperKit
   case parakeet
   case moonshine
-
-  // MARK: Internal
 
   var sectionTitle: String {
     switch self {
@@ -18,24 +14,17 @@ enum STTEngine: String, Codable, Sendable {
   }
 }
 
-// MARK: - ModelVariant
-
 enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
-  // WhisperKit
   case whisperTiny = "openai_whisper-tiny"
   case whisperBase = "openai_whisper-base"
   case whisperSmall = "openai_whisper-small"
-  // Parakeet (FluidAudio)
   case parakeetV2 = "parakeet-tdt-0.6b-v2"
   case parakeetV3 = "parakeet-tdt-0.6b-v3"
-  // Moonshine (ONNX Runtime)
   case moonshineTiny = "moonshine-tiny-en"
   case moonshineBase = "moonshine-base-en"
   case moonshineTinyStreaming = "moonshine-tiny-streaming-en"
   case moonshineSmallStreaming = "moonshine-small-streaming-en"
   case moonshineMediumStreaming = "moonshine-medium-streaming-en"
-
-  // MARK: Internal
 
   var id: String {
     rawValue
@@ -88,7 +77,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     case .whisperBase: 132
     case .whisperSmall: 445
     case .parakeetV2: 450
-    case .parakeetV3: 466
+    case .parakeetV3: 477
     case .moonshineTiny: 29
     case .moonshineBase: 107
     case .moonshineTinyStreaming: 33
@@ -146,9 +135,8 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     self == .parakeetV3
   }
 
-  /// Whether the current device has enough RAM for this model.
   var isSupportedOnCurrentDevice: Bool {
-    ProcessInfo.processInfo.physicalMemory >= UInt64(self.ramRequirementMB) * 1024 * 1024
+    ProcessInfo.processInfo.physicalMemory >= self.ramRequirementMB.megabytesInBytes
   }
 
   var supportedLanguages: Set<String> {
@@ -177,7 +165,6 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     }
   }
 
-  /// The folder name inside the extracted zip for Parakeet models (matches HuggingFace repo structure).
   var parakeetRepoFolderName: String? {
     switch self {
     case .parakeetV2: "parakeet-tdt-0.6b-v2-coreml"
@@ -193,12 +180,13 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     }
   }
 
-  /// Engine accepts a language hint at decode time (WhisperKit only today).
   var supportsLanguageSelection: Bool {
-    self.engine == .whisperKit && self.supportedLanguages.count > 1
+    switch self.engine {
+    case .whisperKit, .parakeet: self.supportedLanguages.count > 1
+    case .moonshine: false
+    }
   }
 
-  /// The Moonshine model architecture for this variant, or nil if not a Moonshine model.
   var moonshineModelArch: String? {
     switch self {
     case .moonshineTiny: "tiny"
@@ -220,16 +208,16 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
 
 }
 
-// MARK: - Int + Byte Formatting
-
 extension Int {
+
+  var megabytesInBytes: UInt64 {
+    UInt64(self) * 1_000_000
+  }
+
   func formattedAsBytes(locale: Locale = .current) -> String {
-    let bytes = Int64(self) * 1_000_000
-    return bytes.formatted(.byteCount(style: .file).locale(locale))
+    Int64(self.megabytesInBytes).formatted(.byteCount(style: .file).locale(locale))
   }
 }
-
-// MARK: - ModelServer
 
 enum ModelServer {
   static let baseURL = "https://models.sayboard.app"
@@ -237,11 +225,14 @@ enum ModelServer {
   static let manifestURL = "\(baseURL)\(manifestPath)"
 }
 
-// MARK: - ModelDownloadState
-
 enum ModelDownloadState: Equatable, Sendable {
   case notDownloaded
   case downloading(progress: Double)
   case downloaded
   case error(message: LocalizedStringResource)
+
+  var errorMessage: LocalizedStringResource? {
+    guard case .error(let message) = self else { return nil }
+    return message
+  }
 }

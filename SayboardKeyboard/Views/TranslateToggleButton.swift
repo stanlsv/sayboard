@@ -1,11 +1,7 @@
 import SwiftUI
 import UIKit
 
-// MARK: - TranslateKeyStyle
-
 private struct TranslateKeyStyle: ButtonStyle {
-
-  // MARK: Internal
 
   let fixedWidth: CGFloat
   let isActive: Bool
@@ -19,8 +15,6 @@ private struct TranslateKeyStyle: ButtonStyle {
       .animation(.easeOut(duration: 0.12), value: self.isActive)
   }
 
-  // MARK: Private
-
   private func backgroundColor(isPressed: Bool) -> Color {
     if self.isActive {
       return isPressed ? Color.accentColor.opacity(0.2) : Color.accentColor.opacity(0.12)
@@ -28,8 +22,6 @@ private struct TranslateKeyStyle: ButtonStyle {
     return Color(isPressed ? .keyPressedBackground : .keyBackground)
   }
 }
-
-// MARK: - TranslateToggleButton
 
 struct TranslateToggleButton: View {
 

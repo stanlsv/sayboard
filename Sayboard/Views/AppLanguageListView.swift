@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - InterfaceLanguage
-
 struct InterfaceLanguage: Identifiable {
   let code: String
   let englishName: String
@@ -12,11 +10,7 @@ struct InterfaceLanguage: Identifiable {
   }
 }
 
-// MARK: - AppLanguageListView
-
 struct AppLanguageListView: View {
-
-  // MARK: Internal
 
   var body: some View {
     List {
@@ -49,8 +43,6 @@ struct AppLanguageListView: View {
     .navigationTitle("App Language")
     .navigationBarTitleDisplayMode(.inline)
   }
-
-  // MARK: Private
 
   private static let interfaceLanguages: [InterfaceLanguage] = [
     InterfaceLanguage(code: "en", englishName: "English", nativeName: "English"),
@@ -90,8 +82,6 @@ struct AppLanguageListView: View {
   @AppStorage(SharedKey.appLanguage) private var selectedAppLanguage = defaultLanguage
   @Environment(\.dismiss) private var dismiss
 }
-
-// MARK: - Native Language Names
 
 let nativeLanguageNames: [String: String] = [
   "en": "English",

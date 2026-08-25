@@ -1,13 +1,8 @@
-// LLMSettingsView -- Settings for AI text processing: enable/disable, default action, custom prompts
 
 import SwiftUI
 import UIKit
 
-// MARK: - LLMSettingsView
-
 struct LLMSettingsView: View {
-
-  // MARK: Internal
 
   var body: some View {
     Form {
@@ -38,8 +33,6 @@ struct LLMSettingsView: View {
       self.showNoModelBanner = false
     }
   }
-
-  // MARK: Private
 
   private static let toggleRevertDelay: UInt64 = 200_000_000
 
@@ -180,11 +173,7 @@ struct LLMSettingsView: View {
 
 }
 
-// MARK: - LLMPromptsView
-
 private struct LLMPromptsView: View {
-
-  // MARK: Internal
 
   var body: some View {
     Form {
@@ -202,8 +191,6 @@ private struct LLMPromptsView: View {
       self.customPrompts = shared.llmCustomPrompts
     }
   }
-
-  // MARK: Private
 
   private enum ActiveSheet: Identifiable {
     case addPrompt
@@ -354,11 +341,7 @@ private struct LLMPromptsView: View {
   }
 }
 
-// MARK: - EditPromptView
-
 private struct EditPromptView: View {
-
-  // MARK: Internal
 
   let title: LocalizedStringKey
   @State var name: String
@@ -373,8 +356,6 @@ private struct EditPromptView: View {
     .presentationDetents([.medium, .large])
     .presentationDragIndicator(.visible)
   }
-
-  // MARK: Private
 
   @Environment(\.dismiss) private var dismiss
 

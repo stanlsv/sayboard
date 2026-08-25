@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - MicSizing
-
 struct MicSizing {
   let buttonWidth: CGFloat
   let buttonHeight: CGFloat
@@ -14,7 +12,6 @@ struct MicSizing {
 }
 
 extension MicSizing {
-  /// Standard layout: a large circular mic (corner radius = half the size).
   @MainActor
   static var standard: MicSizing {
     MicSizing(
@@ -29,14 +26,9 @@ extension MicSizing {
     )
   }
 
-  /// Extended layout: a capsule-shaped mic — the Enter key's `width` (passed in)
-  /// and height (`keyHeight`), but fully rounded ends (corner radius = height / 2)
-  /// so it reads as a pill while the chrome row stays short.
   @MainActor
   static func extended(width: CGFloat) -> MicSizing {
     let micScale: CGFloat = 74.0 / 106.0
-    // Inner content (icon, waveform, spinner) trimmed a further 18% so it doesn't
-    // crowd the capsule; the pulse rings keep the original scale.
     let contentScale = micScale * 0.82
     return MicSizing(
       buttonWidth: width,
@@ -51,12 +43,7 @@ extension MicSizing {
   }
 }
 
-// MARK: - MicAnimatedButton
-
-/// Mic button with the idle ↔ wave ↔ spinner morph state machine and dictation IPC handshake.
 struct MicAnimatedButton: View {
-
-  // MARK: Internal
 
   let sizing: MicSizing
   let proxy: KeyboardProxy
@@ -78,8 +65,6 @@ struct MicAnimatedButton: View {
     .gatedSensoryFeedback(.impact(weight: .medium), trigger: self.recordingStartCount)
     .gatedSensoryFeedback(.impact(weight: .light), trigger: self.recordingStopCount)
   }
-
-  // MARK: Private
 
   private static let spinnerDelay = Duration.milliseconds(600)
 
@@ -138,8 +123,6 @@ struct MicAnimatedButton: View {
       self.proxy.startDictation()
     } else if let url = DeepLink.dictateURL {
       let settings = SharedSettings()
-      // Stamp timestamp BEFORE the bool: a reader observing flag=true with
-      // timestamp=0 (mid-write crash) treats the request as stale, not recent.
       settings.keyboardRequestedDictationAt = CFAbsoluteTimeGetCurrent()
       settings.keyboardRequestedDictation = true
       settings.dictationSessionToken = UUID().uuidString
@@ -213,19 +196,10 @@ struct MicAnimatedButton: View {
   }
 }
 
-// MARK: - MicButtonWithPulse
-
 struct MicButtonWithPulse: View {
-
-  // MARK: Internal
 
   let sizing: MicSizing
   let proxy: KeyboardProxy
-  /// Set once at construction; flipping at runtime resets the wrapped `MicAnimatedButton`'s
-  /// `@State` due to changed structural identity across the two body branches.
-  ///
-  /// `true`: rings rendered in full (`ZStack` + `frame(minHeight:)`).
-  /// `false`: rings overflow the parent and clip via `view.clipsToBounds`.
   var reservesPulseSpace = true
 
   @ObservedObject var keyboardState: KeyboardState
@@ -251,8 +225,6 @@ struct MicButtonWithPulse: View {
     }
   }
 
-  // MARK: Private
-
   private var micButton: some View {
     MicAnimatedButton(sizing: self.sizing, proxy: self.proxy, keyboardState: self.keyboardState)
   }
@@ -266,10 +238,6 @@ struct MicButtonWithPulse: View {
   }
 }
 
-// MARK: - MicButtonStyle
-
-/// Rounded-rectangle mic background — a circle when cornerRadius is half the size
-/// (standard layout), a wide rounded rect when it isn't (extended layout).
 struct MicButtonStyle: ButtonStyle {
   let width: CGFloat
   let height: CGFloat

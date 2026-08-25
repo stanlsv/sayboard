@@ -1,19 +1,13 @@
 import SwiftUI
 import UIKit
 
-// MARK: - KeyContent
-
 enum KeyContent {
   case text(LocalizedStringKey)
   case systemImage(String)
   case symbol(String, fontSize: CGFloat? = nil)
 }
 
-// MARK: - KeyButton
-
 struct KeyButton: View {
-
-  // MARK: Internal
 
   let content: KeyContent
   var fixedWidth: CGFloat?
@@ -21,13 +15,8 @@ struct KeyButton: View {
   var pressEffect = true
   var fillOnPress = false
   var showsCallout = false
-  /// Used as the callout's neck height (vertical gap between rows of keys).
   var calloutRowSpacing: CGFloat = 0
-  /// Callout alignment — `.left`/`.right` for edge keys to keep the balloon inside the keyboard.
   var calloutAlignment = KeyCalloutAlignment.center
-  /// `true` for input keys (letters, digits, symbols, punct, return, delete, page-swap).
-  /// `false` for chrome action buttons (settings, undo/redo, delete-all) — those don't
-  /// participate in the global keyboard-haptics toggle, mirroring stock-keyboard behavior.
   var firesHaptic = true
   let action: () -> Void
 
@@ -53,8 +42,6 @@ struct KeyButton: View {
     .zIndex(self.showsCallout && self.isPressed ? 100 : 0)
     .gatedSensoryFeedback(.selection, trigger: self.tapCount)
   }
-
-  // MARK: Private
 
   @State private var isPressed = false
   @State private var tapCount = 0

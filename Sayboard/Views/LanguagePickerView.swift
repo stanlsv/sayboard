@@ -1,17 +1,11 @@
 import SwiftUI
 
-// MARK: - LanguagePickerMode
-
 enum LanguagePickerMode {
   case single(Binding<String?>)
   case multi(Binding<Set<String>>)
 }
 
-// MARK: - LanguagePickerView
-
 struct LanguagePickerView: View {
-
-  // MARK: Internal
 
   let mode: LanguagePickerMode
   var availableLanguages: Set<String> = SpeechLanguages.all
@@ -50,8 +44,6 @@ struct LanguagePickerView: View {
     }
     .presentationDetents([.medium, .large])
   }
-
-  // MARK: Private
 
   @Environment(\.dismiss) private var dismiss
   @Environment(\.locale) private var locale

@@ -1,10 +1,6 @@
 import SwiftUI
 
-// MARK: - StyleSelectionView
-
 struct StyleSelectionView: View {
-
-  // MARK: Lifecycle
 
   init(
     appName: String,
@@ -19,8 +15,6 @@ struct StyleSelectionView: View {
     self.onStyleChanged = onStyleChanged
     _selectedStyle = State(initialValue: currentStyle)
   }
-
-  // MARK: Internal
 
   var body: some View {
     VStack(spacing: 16) {
@@ -44,8 +38,6 @@ struct StyleSelectionView: View {
     .presentationBackground(Color(.systemGroupedBackground))
     .presentationDetents([.height(self.sheetHeight)])
   }
-
-  // MARK: Private
 
   @State private var selectedStyle: WritingStyle?
   @State private var sheetHeight: CGFloat = 0

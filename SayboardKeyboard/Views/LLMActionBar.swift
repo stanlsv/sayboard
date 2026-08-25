@@ -1,12 +1,7 @@
-// LLMActionBar -- Horizontal scrolling row of LLM action chips shown at top of keyboard
 
 import SwiftUI
 
-// MARK: - LLMActionBar
-
 struct LLMActionBar: View {
-
-  // MARK: Internal
 
   let onSelectAction: (LLMAction, UUID?) -> Void
 
@@ -39,8 +34,6 @@ struct LLMActionBar: View {
     .onAppear { UIScrollView.appearance().delaysContentTouches = false }
   }
 
-  // MARK: Private
-
   @ViewBuilder
   private var customPromptChips: some View {
     let prompts = self.keyboardState.llmCustomPrompts
@@ -57,8 +50,6 @@ struct LLMActionBar: View {
   }
 
 }
-
-// MARK: - LLMActionChip
 
 private struct LLMActionChip: View {
 
@@ -83,8 +74,6 @@ private struct LLMActionChip: View {
   }
 
 }
-
-// MARK: - ActionChipStyle
 
 private struct ActionChipStyle: ButtonStyle {
 

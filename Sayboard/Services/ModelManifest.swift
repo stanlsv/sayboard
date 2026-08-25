@@ -1,15 +1,10 @@
-// ModelManifest -- Fetches and decodes the R2 model manifest
 
 import Foundation
-
-// MARK: - ManifestError
 
 enum ManifestError: LocalizedError {
   case invalidURL
   case networkError(Error)
   case decodingError(Error)
-
-  // MARK: Internal
 
   var errorDescription: String? {
     switch self {
@@ -23,8 +18,6 @@ enum ManifestError: LocalizedError {
   }
 }
 
-// MARK: - ModelEntry
-
 struct ModelEntry: Decodable, Sendable {
   let url: URL
   let sha256: String
@@ -32,19 +25,19 @@ struct ModelEntry: Decodable, Sendable {
   let engine: STTEngine
 }
 
-// MARK: - LLMModelEntry
-
 struct LLMModelEntry: Decodable, Sendable {
   let url: URL
   let sha256: String
   let sizeBytes: Int64
+  let minLlamaBuild: Int?
+
+  var isLoadableByThisBuild: Bool {
+    guard let minLlamaBuild else { return true }
+    return LlamaRuntime.buildNumber >= minLlamaBuild
+  }
 }
 
-// MARK: - ModelManifest
-
 struct ModelManifest: Decodable, Sendable {
-
-  // MARK: Lifecycle
 
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -52,8 +45,6 @@ struct ModelManifest: Decodable, Sendable {
     self.models = try container.decode([String: ModelEntry].self, forKey: .models)
     self.llmModels = try container.decodeIfPresent([String: LLMModelEntry].self, forKey: .llmModels) ?? [:]
   }
-
-  // MARK: Internal
 
   let version: Int
   let models: [String: ModelEntry]
@@ -67,16 +58,12 @@ struct ModelManifest: Decodable, Sendable {
     self.llmModels[variant.rawValue]
   }
 
-  // MARK: Private
-
   private enum CodingKeys: String, CodingKey {
     case version
     case models
     case llmModels
   }
 }
-
-// MARK: - ManifestFetcher
 
 enum ManifestFetcher {
 

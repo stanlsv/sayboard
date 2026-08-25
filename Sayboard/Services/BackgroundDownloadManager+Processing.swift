@@ -1,4 +1,3 @@
-// BackgroundDownloadManager+Processing -- Download verification, extraction, and session restoration
 
 import Foundation
 
@@ -6,9 +5,7 @@ import ZIPFoundation
 
 extension BackgroundDownloadManager {
 
-  // MARK: Internal
-
-  func reconcileMetadataWithTasks(_ tasks: [URLSessionTask]) {
+  func reconcileMetadataWithTasks(_ tasks: [URLSessionTask], sessionIdentifier: String?) {
     self.lock.lock()
     defer {
       self.lock.unlock()
@@ -16,15 +13,16 @@ extension BackgroundDownloadManager {
     }
 
     let activeTaskIds = Set(tasks.map(\.taskIdentifier))
+    let reportingSession = sessionIdentifier ?? Self.sessionIdentifier
 
     for (key, meta) in self.activeMetadata {
+      guard (meta.sessionIdentifier ?? Self.sessionIdentifier) == reportingSession else { continue }
       guard let taskId = meta.taskIdentifier else {
         self.activeMetadata.removeValue(forKey: key)
         continue
       }
       guard !activeTaskIds.contains(taskId) else { continue }
 
-      // Task completed or was cancelled while app was terminated.
       let fm = FileManager.default
       if fm.fileExists(atPath: meta.destinationDirectory.path) {
         let completedEvent = DownloadEvent.completed(
@@ -46,12 +44,9 @@ extension BackgroundDownloadManager {
     }
   }
 
-  /// Verifies SHA-256 and extracts the zip to the destination.
-  /// Called on `processingQueue`, NOT on the delegate queue.
   func processDownloadedFile(tempURL: URL, key: String, metadata: DownloadMetadata) {
     let fm = FileManager.default
 
-    // If download was cancelled while queued, skip processing
     self.lock.lock()
     let stillActive = self.activeMetadata[key] != nil
     self.lock.unlock()
@@ -74,9 +69,11 @@ extension BackgroundDownloadManager {
     self.completeWithSuccess(key: key, metadata: metadata)
   }
 
-  // MARK: Private
+  private static func volumeIsFull() -> Bool {
+    guard let freeBytes = DiskSpace.availableBytes() else { return false }
+    return freeBytes < 100_000_000
+  }
 
-  /// Returns nil on success, or an error on SHA256 mismatch.
   private func verifySHA256(of fileURL: URL, expected: String) -> R2DownloadError? {
     do {
       let actualHash = try Self.computeSHA256(of: fileURL)
@@ -89,7 +86,6 @@ extension BackgroundDownloadManager {
     }
   }
 
-  /// Returns nil on success, or an error on extraction failure.
   private func extractToDestination(zipURL: URL, destinationDir: URL) -> R2DownloadError? {
     let fm = FileManager.default
     do {
@@ -107,9 +103,10 @@ extension BackgroundDownloadManager {
 
       return nil
     } catch {
+      let ranOutOfSpace = Self.volumeIsFull()
       try? fm.removeItem(at: zipURL)
       try? fm.removeItem(at: destinationDir)
-      return .extractionFailed(error)
+      return ranOutOfSpace ? .extractionRanOutOfSpace : .extractionFailed(error)
     }
   }
 

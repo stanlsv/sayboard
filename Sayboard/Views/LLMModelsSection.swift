@@ -1,15 +1,13 @@
-// LLMModelsSection -- LLM model list section for the Models tab
 
 import SwiftUI
 
-// MARK: - LLMModelsSection
-
 struct LLMModelsSection: View {
-
-  // MARK: Internal
 
   var body: some View {
     Group {
+      if let replaced = self.llmDownloadService.replacedByUpgrade {
+        self.upgradeNotice(replaced: replaced)
+      }
       self.languageFilterButton
       VStack(spacing: 12) {
         ForEach(self.filteredAndSortedVariants) { variant in
@@ -30,8 +28,6 @@ struct LLMModelsSection: View {
     }
   }
 
-  // MARK: Private
-
   @EnvironmentObject private var llmDownloadService: LLMDownloadService
   @Environment(\.locale) private var locale
   @State private var selectedVariant: LLMModelVariant?
@@ -43,12 +39,16 @@ struct LLMModelsSection: View {
     self.selectedVariant ?? self.llmDownloadService.selectedVariant
   }
 
+  private var catalogVariants: [LLMModelVariant] {
+    LLMModelVariant.allCases.filter { !$0.isSuperseded || self.llmDownloadService.isDownloaded($0) }
+  }
+
   private var filteredAndSortedVariants: [LLMModelVariant] {
     let variants =
       if let language = self.selectedLanguageFilter {
-        LLMModelVariant.allCases.filter { $0.supportedLanguages.contains(language) }
+        self.catalogVariants.filter { $0.supportedLanguages.contains(language) }
       } else {
-        Array(LLMModelVariant.allCases)
+        self.catalogVariants
       }
     let selected = self.effectiveSelectedVariant
     return variants.sorted { lhs, rhs in
@@ -65,6 +65,23 @@ struct LLMModelsSection: View {
       let lhsRating = (lhs.quality + lhs.speed) / 2.0
       let rhsRating = (rhs.quality + rhs.speed) / 2.0
       return lhsRating > rhsRating
+    }
+  }
+
+  private var upgradeNoticeHeader: some View {
+    HStack(alignment: .top) {
+      Text("Model updated")
+        .font(.subheadline.weight(.semibold))
+      Spacer()
+      Button {
+        self.llmDownloadService.dismissUpgradeNotice()
+      } label: {
+        Image(systemName: "xmark")
+          .font(.caption.weight(.bold))
+          .foregroundStyle(.secondary)
+      }
+      .buttonStyle(.plain)
+      .accessibilityLabel("Dismiss")
     }
   }
 
@@ -126,6 +143,38 @@ struct LLMModelsSection: View {
       Text("All languages")
         .font(.subheadline)
     }
+  }
+
+  private func upgradeNotice(replaced: LLMModelVariant) -> some View {
+    VStack(alignment: .leading, spacing: 10) {
+      self.upgradeNoticeHeader
+      Text("Now using \(self.effectiveSelectedVariant.displayName). \(replaced.displayName) is still on your device.")
+        .font(.footnote)
+        .foregroundStyle(.secondary)
+        .fixedSize(horizontal: false, vertical: true)
+      self.upgradeNoticeActions(replaced: replaced)
+    }
+    .padding(12)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(Color(.secondarySystemGroupedBackground))
+    .clipShape(RoundedRectangle(cornerRadius: 12))
+  }
+
+  private func upgradeNoticeActions(replaced: LLMModelVariant) -> some View {
+    HStack(spacing: 12) {
+      Button("Switch back") {
+        self.llmDownloadService.revertUpgrade()
+      }
+      Button("Remove", role: .destructive) {
+        self.llmDownloadService.deleteReplacedModel()
+      }
+      Spacer()
+      Text(verbatim: replaced.formattedDownloadSize(locale: self.locale))
+        .font(.caption)
+        .foregroundStyle(.secondary)
+    }
+    .font(.footnote.weight(.medium))
+    .buttonStyle(.plain)
   }
 
   private func syncSelectedVariant() {

@@ -1,12 +1,7 @@
-// Snippet -- Data model and expansion engine for text replacement snippets
 
 import Foundation
 
-// MARK: - Snippet
-
 struct Snippet: Codable, Identifiable, Sendable, Equatable {
-
-  // MARK: Lifecycle
 
   init(id: UUID = UUID(), trigger: String, replacement: String, isEnabled: Bool = true) {
     self.id = id
@@ -15,21 +10,14 @@ struct Snippet: Codable, Identifiable, Sendable, Equatable {
     self.isEnabled = isEnabled
   }
 
-  // MARK: Internal
-
   let id: UUID
   var trigger: String
   var replacement: String
   var isEnabled: Bool
 }
 
-// MARK: - SnippetExpander
-
 enum SnippetExpander {
 
-  /// Expands all enabled snippet triggers in the given text.
-  /// Matches are case-insensitive and respect word boundaries.
-  /// Longer triggers are matched first to prevent partial overlap.
   static func expand(_ text: String, snippets: [Snippet]) -> String {
     let activeSnippets = snippets
       .filter { $0.isEnabled && !$0.trigger.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }

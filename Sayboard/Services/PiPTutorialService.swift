@@ -3,17 +3,8 @@ import AVKit
 
 import UIKit
 
-// PiPTutorialService -- Plays bundled tutorial videos in Picture-in-Picture mode
-// so they float over iOS Settings while the user follows setup instructions.
-// AVFoundation types lack Sendable conformance in the SDK, so @preconcurrency
-// is needed to suppress false positives in this @MainActor-isolated class.
-
-// MARK: - PiPTutorialService
-
 @MainActor
 final class PiPTutorialService: NSObject, ObservableObject {
-
-  // MARK: Internal
 
   @Published private(set) var isActive = false
 
@@ -31,12 +22,10 @@ final class PiPTutorialService: NSObject, ObservableObject {
     self.stopTutorial()
     self.setupPlayer(url: videoURL)
 
-    // Delay PiP start slightly to let AVPlayerLayer attach and render a frame.
     DispatchQueue.main.asyncAfter(deadline: .now() + Self.pipStartDelay) { [weak self] in
       guard let self, self.isActive else { return }
       self.startPiP()
       if thenOpenSettings {
-        // Open Settings after PiP has had time to initialize.
         DispatchQueue.main.asyncAfter(deadline: .now() + Self.settingsOpenDelay) {
           Self.openSystemSettings()
         }
@@ -47,14 +36,10 @@ final class PiPTutorialService: NSObject, ObservableObject {
   func stopTutorial() {
     guard self.isActive else { return }
     self.pipController?.stopPictureInPicture()
-    // Teardown happens in pictureInPictureControllerDidStopPictureInPicture delegate.
-    // If there is no active PiP session yet, tear down immediately.
     if self.pipController?.isPictureInPictureActive != true {
       self.tearDown()
     }
   }
-
-  // MARK: Private
 
   private static let pipStartDelay: TimeInterval = 0.3
   private static let pipRetryDelay: TimeInterval = 0.3
@@ -72,17 +57,12 @@ final class PiPTutorialService: NSObject, ObservableObject {
     }
   }
 
-  /// Ensure the audio session supports PiP playback. Without an active audio session,
-  /// AVPictureInPictureController may report isPictureInPicturePossible = false.
-  /// Uses .playback + .mixWithOthers so it doesn't interfere with recording.
   private func configureAudioSessionForPiP() {
     let session = AVAudioSession.sharedInstance()
     do {
       try session.setCategory(.playback, options: .mixWithOthers)
       try session.setActive(true)
-    } catch {
-      // no-op
-    }
+    } catch { }
   }
 
   private func setupPlayer(url: URL) {
@@ -93,7 +73,6 @@ final class PiPTutorialService: NSObject, ObservableObject {
     newPlayer.isMuted = true
     newPlayer.allowsExternalPlayback = false
 
-    // Loop: seek to start when reaching end.
     self.looperObserver = NotificationCenter.default.addObserver(
       forName: .AVPlayerItemDidPlayToEndTime,
       object: playerItem,
@@ -103,9 +82,7 @@ final class PiPTutorialService: NSObject, ObservableObject {
       newPlayer?.play()
     }
 
-    // Create a hidden host view to anchor AVPlayerLayer.
     let layer = AVPlayerLayer(player: newPlayer)
-    // PiP requires a non-zero frame for the player layer.
     layer.frame = CGRect(x: 0, y: 0, width: 568, height: 320)
     layer.videoGravity = .resizeAspect
 
@@ -141,8 +118,6 @@ final class PiPTutorialService: NSObject, ObservableObject {
       return
     }
     guard controller.isPictureInPicturePossible else {
-      // Retry once after a short delay -- AVPictureInPictureController
-      // may need an extra runloop cycle after AVPlayerLayer renders.
       DispatchQueue.main.asyncAfter(deadline: .now() + Self.pipRetryDelay) { [weak self] in
         guard let self, self.isActive, self.pipController === controller else { return }
         if controller.isPictureInPicturePossible {
@@ -172,8 +147,6 @@ final class PiPTutorialService: NSObject, ObservableObject {
   }
 
 }
-
-// MARK: AVPictureInPictureControllerDelegate
 
 extension PiPTutorialService: AVPictureInPictureControllerDelegate {
 

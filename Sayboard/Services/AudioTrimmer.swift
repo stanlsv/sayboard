@@ -1,20 +1,13 @@
-// AudioTrimmer -- Trims CAF audio files to speech boundaries with fade-in/out
 
 import Accelerate
 @preconcurrency import AVFoundation
-
-// MARK: - TrimResult
 
 struct TrimResult: Sendable {
   let duration: TimeInterval
   let waveformSamples: [Float]
 }
 
-// MARK: - AudioTrimmer
-
 enum AudioTrimmer {
-
-  // MARK: Internal
 
   static func trimToSpeech(
     fileURL: URL,
@@ -55,10 +48,8 @@ enum AudioTrimmer {
     return TrimResult(duration: duration, waveformSamples: waveform)
   }
 
-  // MARK: Private
-
   private static let paddingSeconds: Float = 0.3
-  private static let fadeFrameCount = 441 // ~10ms at 44.1kHz
+  private static let fadeFrameCount = 441
   private static let skipThreshold = 0.95
   private static let waveformBinCount = 128
 
@@ -175,7 +166,6 @@ enum AudioTrimmer {
     }
   }
 
-  /// Computes waveform using DSWaveformImage convention (0 = loud, 1 = silent).
   private static func computeWaveform(buffer: AVAudioPCMBuffer) -> [Float] {
     guard let channelData = buffer.floatChannelData else {
       return Array(repeating: Float(1), count: self.waveformBinCount)

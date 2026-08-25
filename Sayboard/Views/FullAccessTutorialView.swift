@@ -1,12 +1,7 @@
-// FullAccessTutorialView -- Animated mock of iOS Settings guiding the user to enable Full Access.
 
 import SwiftUI
 
-// MARK: - FullAccessTutorialView
-
 struct FullAccessTutorialView: View {
-
-  // MARK: Internal
 
   var includeFullAccessRow = true
 
@@ -53,19 +48,14 @@ struct FullAccessTutorialView: View {
     }
   }
 
-  // MARK: Fileprivate
-
   fileprivate enum RowID: String {
     case keyboards
     case sayboardToggle
     case fullAccessToggle
   }
 
-  // MARK: Private
-
   private static let coordinateSpace = "tutorial"
 
-  // Timing constants (nanoseconds)
   private static let initialDelay: UInt64 = 800_000_000
   private static let cursorTravelDuration = 0.4
   private static let prePressPause: UInt64 = 200_000_000
@@ -138,11 +128,9 @@ struct FullAccessTutorialView: View {
     while !Task.isCancelled {
       try? await Task.sleep(nanoseconds: Self.initialDelay)
 
-      // Show cursor and move to keyboards row
       self.cursorVisible = true
       await self.moveCursor(to: .keyboards)
 
-      // Press on keyboards row
       try? await Task.sleep(nanoseconds: Self.prePressPause)
       await self.performPress()
 
@@ -154,15 +142,12 @@ struct FullAccessTutorialView: View {
         self.isKeyboardsHighlighted = false
       }
 
-      // Show toggle rows
       withAnimation(.easeOut(duration: 0.3)) {
         self.showToggleRows = true
       }
 
-      // Wait for layout to settle so toggle row positions are captured
       try? await Task.sleep(nanoseconds: Self.toggleFlipPause)
 
-      // Move to Sayboard toggle, press, flip
       await self.moveCursor(to: .sayboardToggle)
       try? await Task.sleep(nanoseconds: Self.prePressPause)
       await self.performPress()
@@ -170,7 +155,6 @@ struct FullAccessTutorialView: View {
         self.sayboardToggleOn = true
       }
 
-      // Move to Allow Full Access toggle, press, flip
       if self.includeFullAccessRow {
         try? await Task.sleep(nanoseconds: Self.toggleFlipPause)
         await self.moveCursor(to: .fullAccessToggle)
@@ -181,10 +165,8 @@ struct FullAccessTutorialView: View {
         }
       }
 
-      // Hold
       try? await Task.sleep(nanoseconds: Self.holdDelay)
 
-      // Fade out cursor, then reset card
       withAnimation(.easeIn(duration: 0.2)) {
         self.cursorVisible = false
       }
@@ -214,8 +196,6 @@ struct FullAccessTutorialView: View {
   }
 }
 
-// MARK: - RowCenterPreferenceKey
-
 private struct RowCenterPreferenceKey: PreferenceKey {
   static let defaultValue = [String: CGPoint]()
 
@@ -223,8 +203,6 @@ private struct RowCenterPreferenceKey: PreferenceKey {
     value.merge(nextValue()) { _, new in new }
   }
 }
-
-// MARK: - ReportCenter Modifier
 
 extension View {
   fileprivate func reportCenter(

@@ -1,12 +1,7 @@
 import SwiftUI
 
-// PlayPauseShape -- Morphing shape: play triangle splits into two pause bars
-
 struct PlayPauseShape: Shape {
 
-  // MARK: Internal
-
-  /// 0 = play (triangle), 1 = pause (two bars)
   var progress: Double
 
   var animatableData: Double {
@@ -24,7 +19,6 @@ struct PlayPauseShape: Shape {
 
     var path = Path()
 
-    // Left piece: triangle left half -> left bar
     let leftPoints = [
       CGPoint(x: 0, y: 0),
       CGPoint(x: lerp(width * 0.5, width * 0.35, factor), y: lerp(height * 0.25, 0, factor)),
@@ -33,8 +27,6 @@ struct PlayPauseShape: Shape {
     ]
     self.addRoundedPolygon(to: &path, points: leftPoints, radii: [outerRadius, innerRadius, innerRadius, outerRadius])
 
-    // Right piece: triangle right half (collapsed) -> right bar
-    // tipGap separates the two tip points so the arc can round the corner
     let rightPoints = [
       CGPoint(x: lerp(width * 0.5, width * 0.65, factor), y: lerp(height * 0.25, 0, factor)),
       CGPoint(x: width, y: lerp(height * 0.5 - tipGap, 0, factor)),
@@ -45,8 +37,6 @@ struct PlayPauseShape: Shape {
 
     return path
   }
-
-  // MARK: Private
 
   private func addRoundedPolygon(to path: inout Path, points: [CGPoint], radii: [CGFloat]) {
     guard points.count >= 3, radii.count == points.count else { return }

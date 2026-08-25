@@ -10,7 +10,7 @@
 </div>
 
 <p align="center">
-  This repository contains the complete source code of Sayboard — privacy-first voice keyboard for iOS. All speech recognition runs on-device with no servers, no accounts, and no tracking.
+  This repository contains the complete source code of Sayboard — privacy-first voice keyboard for iPhone and iPad. All speech recognition runs on-device with no servers, no accounts, and no tracking.
 </p>
 
 <p align="center">

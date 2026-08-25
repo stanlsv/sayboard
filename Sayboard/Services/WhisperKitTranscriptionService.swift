@@ -1,10 +1,8 @@
-// WhisperKitTranscriptionService -- Loads WhisperKit models and transcribes audio samples
 
+import CoreML
 import Foundation
 
 @preconcurrency import WhisperKit
-
-// MARK: - ModelLoadState
 
 enum ModelLoadState: Equatable, Sendable {
   case unloaded
@@ -13,25 +11,23 @@ enum ModelLoadState: Equatable, Sendable {
   case error(String)
 }
 
-// MARK: - TranscriptionOutput
-
 struct TranscriptionOutput: Sendable {
   let text: String
   let firstWordStart: Float?
   let lastWordEnd: Float?
 }
 
-// MARK: - WhisperKitTranscriptionService
+enum TranscriptionResult: Sendable {
+  case text(TranscriptionOutput)
+  case noSpeech
+  case failed(String)
+}
 
 @MainActor
 final class WhisperKitTranscriptionService: ObservableObject {
 
-  // MARK: Internal
-
   @Published private(set) var loadState = ModelLoadState.unloaded
 
-  /// Loads a WhisperKit model from the given folder. If a load is already in
-  /// progress, subsequent callers await the same result instead of no-oping.
   func loadModel(from folderPath: String) async {
     if let existing = self.loadTask {
       await existing.value
@@ -41,11 +37,14 @@ final class WhisperKitTranscriptionService: ObservableObject {
     self.loadGeneration += 1
     let expectedGen = self.loadGeneration
     self.loadState = .loading
+    let computeMode = OperatingSystem.isBackgroundNeuralEngineBlocked ? "cpuOnly (iOS 27 ANE gate)" : "default (ANE)"
+    DiagnosticLog.write("whisper: model load start, compute=\(computeMode)")
 
     let task = Task<Void, Never>.detached(priority: .userInitiated) { [weak self] in
       do {
         let config = WhisperKitConfig(
           modelFolder: folderPath,
+          computeOptions: Self.computeOptions(),
           load: true,
           download: false,
         )
@@ -58,12 +57,15 @@ final class WhisperKitTranscriptionService: ObservableObject {
           }
           self.whisperKit = kit
           self.loadState = .loaded
+          DiagnosticLog.write("whisper: model loaded")
         }
       } catch {
         let errorMessage = error.localizedDescription
+        let errorDetail = "\(type(of: error)): \(error)"
         await MainActor.run { [weak self] in
           guard let self, expectedGen == self.loadGeneration else { return }
           self.loadState = .error(errorMessage)
+          DiagnosticLog.write("whisper: MODEL LOAD FAILED \(errorDetail)")
         }
       }
     }
@@ -72,44 +74,53 @@ final class WhisperKitTranscriptionService: ObservableObject {
     self.loadTask = nil
   }
 
-  /// Awaits a pending model load (if any). Returns immediately if not loading.
   func waitForLoad() async {
     guard let task = self.loadTask else { return }
     await task.value
   }
 
-  func transcribe(audioSamples: [Float]) async -> TranscriptionOutput? {
-    guard let whisperKit, loadState == .loaded else {
-      return nil
+  func transcribe(audioSamples: [Float]) async -> TranscriptionResult {
+    guard let whisperKit, self.loadState == .loaded else {
+      let state = String(describing: loadState)
+      let hasInstance = self.whisperKit != nil
+      DiagnosticLog.write("whisper: ABORT — instance=\(hasInstance) loadState=\(state)")
+      return .failed("model not loaded (instance=\(hasInstance) state=\(state))")
     }
-    guard !audioSamples.isEmpty else { return nil }
+    guard !audioSamples.isEmpty else {
+      DiagnosticLog.write("whisper: ABORT — 0 samples")
+      return .failed("no audio samples")
+    }
 
+    DiagnosticLog.write("whisper: inference start, \(audioSamples.count) samples")
     do {
       let options = self.makeDecodingOptions()
       let results = try await whisperKit.transcribe(
         audioArray: audioSamples,
         decodeOptions: options,
       )
+      let detectedLang = results.first?.language ?? "unknown"
 
-      let goodSegments = results.flatMap { $0.segments }.filter { segment in
-        let dominated = segment.noSpeechProb > Self.noSpeechThreshold
-        let lowConf = segment.avgLogprob < Self.logProbThreshold
-        let repetitive = segment.compressionRatio > Self.compressionRatioThreshold
-        return !dominated && !lowConf && !repetitive
-      }
+      let allSegments = results.flatMap { $0.segments }
+      let goodSegments = Self.keepableSegments(from: allSegments)
 
       let text = goodSegments.map(\.text).joined().trimmingCharacters(in: .whitespacesAndNewlines)
 
-      guard !text.isEmpty, text.wholeMatch(of: Self.audioEventTagPattern) == nil else { return nil }
+      DiagnosticLog.write("whisper: \(allSegments.count) seg, \(goodSegments.count) kept, \(text.count) chars, \(detectedLang)")
+
+      guard !text.isEmpty, text.wholeMatch(of: Self.audioEventTagPattern) == nil else {
+        DiagnosticLog.write("whisper: NO SPEECH — empty after filtering, or audio-event tag only")
+        return .noSpeech
+      }
 
       let allWords = goodSegments.compactMap(\.words).flatMap { $0 }
-      return TranscriptionOutput(
+      return .text(TranscriptionOutput(
         text: text,
         firstWordStart: allWords.first?.start,
         lastWordEnd: allWords.last?.end,
-      )
+      ))
     } catch {
-      return nil
+      DiagnosticLog.write("whisper: THREW \(type(of: error)): \(error)")
+      return .failed(error.localizedDescription)
     }
   }
 
@@ -124,27 +135,34 @@ final class WhisperKitTranscriptionService: ObservableObject {
     self.loadState = .unloaded
   }
 
-  // MARK: Private
-
-  /// Segments with no-speech probability above this are silence — skip them.
   private static let noSpeechThreshold: Float = 0.6
-  /// Segments with average log-probability below this are low-confidence — skip them.
   private static let logProbThreshold: Float = -1.0
-  /// Segments with compression ratio above this are repetitive/hallucinated — skip them.
   private static let compressionRatioThreshold: Float = 2.4
 
-  /// Whisper audio event tags: `[BLANK_AUDIO]`, `[Music]`, `(Applause)`, etc.
-  /// Real speech is never just a single bracketed tag.
   private static let audioEventTagPattern = /^\s*[\[\(].+[\]\)]\s*$/
 
   private var whisperKit: WhisperKit?
   private var loadTask: Task<Void, Never>?
   private var loadGeneration = 0
 
-  /// Builds `DecodingOptions` for the current variant, applying the user's
-  /// preferred-languages setting. With one preferred language we lock the
-  /// decoder via prefill prompt; with zero or multiple we fall back to
-  /// auto-detect (no logit-mask API in WhisperKit).
+  private static nonisolated func computeOptions() -> ModelComputeOptions? {
+    guard OperatingSystem.isBackgroundNeuralEngineBlocked else { return nil }
+    return ModelComputeOptions(
+      melCompute: .cpuOnly,
+      audioEncoderCompute: .cpuOnly,
+      textDecoderCompute: .cpuOnly,
+    )
+  }
+
+  private static func keepableSegments(from segments: [TranscriptionSegment]) -> [TranscriptionSegment] {
+    segments.filter { segment in
+      let dominated = segment.noSpeechProb > Self.noSpeechThreshold
+      let lowConf = segment.avgLogprob < Self.logProbThreshold
+      let repetitive = segment.compressionRatio > Self.compressionRatioThreshold
+      return !dominated && !lowConf && !repetitive
+    }
+  }
+
   private func makeDecodingOptions() -> DecodingOptions {
     let settings = SharedSettings()
     settings.synchronize()

@@ -1,8 +1,5 @@
-// LLMModelStorageManager -- Manages on-disk LLM model storage under <Application Support>/LLMModels/
 
 import Foundation
-
-// MARK: - LLMModelStorageManager
 
 enum LLMModelStorageManager {
 
@@ -19,14 +16,12 @@ enum LLMModelStorageManager {
     self.modelFileURL(for: variant) != nil
   }
 
-  /// Returns the URL of the .gguf file for a downloaded variant, or nil if not found.
   static func modelFileURL(for variant: LLMModelVariant) -> URL? {
     let dir = self.directory(for: variant)
     let ggufURL = dir.appendingPathComponent(variant.ggufFileName)
     if FileManager.default.fileExists(atPath: ggufURL.path) {
       return ggufURL
     }
-    // Search recursively for any .gguf file in case of nested extraction
     guard
       let enumerator = FileManager.default.enumerator(
         at: dir,
@@ -46,6 +41,26 @@ enum LLMModelStorageManager {
     let dir = self.directory(for: variant)
     guard FileManager.default.fileExists(atPath: dir.path) else { return }
     try FileManager.default.removeItem(at: dir)
+  }
+
+  static func removeOrphanedDirectories() {
+    let fm = FileManager.default
+    let root = self.modelsRoot
+    guard fm.fileExists(atPath: root.path) else { return }
+
+    let known = Set(LLMModelVariant.allCases.map(\.rawValue))
+    let contents: [URL]
+    do {
+      contents = try fm.contentsOfDirectory(at: root, includingPropertiesForKeys: nil)
+    } catch {
+      return
+    }
+
+    for url in contents where !known.contains(url.lastPathComponent) {
+      do {
+        try fm.removeItem(at: url)
+      } catch { }
+    }
   }
 
   static func ensureRootExists() throws {

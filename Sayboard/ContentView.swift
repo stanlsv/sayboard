@@ -9,8 +9,6 @@ struct ContentView: View {
       .onAppear { self.checkOnboarding() }
   }
 
-  // MARK: Private
-
   @State private var showOnboarding = false
 
   private func checkOnboarding() {

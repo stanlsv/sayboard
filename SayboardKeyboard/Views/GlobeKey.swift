@@ -1,8 +1,5 @@
 import SwiftUI
 
-// GlobeKey -- Globe icon styled to match keyboard keys, with a UIKit overlay
-// that handles tap (switch keyboard) and long press (keyboard picker).
-
 struct GlobeKey: View {
 
   let fixedWidth: CGFloat

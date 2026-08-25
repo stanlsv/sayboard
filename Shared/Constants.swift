@@ -1,7 +1,5 @@
 import Foundation
 
-// MARK: - AppGroup
-
 enum AppGroup {
   static let identifier = "group.app.sayboard.shared"
 
@@ -13,8 +11,6 @@ enum AppGroup {
     UserDefaults(suiteName: identifier)
   }
 }
-
-// MARK: - DeepLink
 
 enum DeepLink {
   static let scheme = "sayboard"
@@ -46,10 +42,9 @@ enum DeepLink {
   }
 }
 
-// MARK: - SharedKey
-
 enum SharedKey {
   static let transcribedText = "transcribedText"
+  static let lastDictationOutcome = "lastDictationOutcome"
   static let isRecording = "isRecording"
   static let selectedVariant = "selectedVariant"
   static let keyboardRequestedDictation = "keyboardRequestedDictation"
@@ -65,6 +60,7 @@ enum SharedKey {
   static let downloadStartedAt = "downloadStartedAt"
   static let preferredLanguagesPerVariant = "preferredLanguagesPerVariant"
   static let hasUsableModel = "hasUsableModel"
+  static let parakeetV3NeedsRedownload = "parakeetV3NeedsRedownload"
   static let audioLevel = "audioLevel"
   static let isMicrophoneAuthorized = "isMicrophoneAuthorized"
   static let hasCompletedOnboarding = "hasCompletedOnboarding"
@@ -78,6 +74,7 @@ enum SharedKey {
   static let selectedLLMVariant = "selectedLLMVariant"
   static let hasUsableLLMModel = "hasUsableLLMModel"
   static let llmDownloadInProgressVariants = "llmDownloadInProgressVariants"
+  static let completedLLMUpgradeFrom = "completedLLMUpgradeFrom"
   static let isLLMProcessing = "isLLMProcessing"
   static let llmEnabled = "llmEnabled"
   static let defaultLLMAction = "defaultLLMAction"
@@ -94,8 +91,6 @@ enum SharedKey {
   static let keyboardHapticsEnabled = "keyboardHapticsEnabled"
 }
 
-// MARK: - HistoryRetentionPolicy
-
 enum HistoryRetentionPolicy: String, CaseIterable, Sendable {
   case never
   case last5
@@ -107,8 +102,6 @@ enum HistoryRetentionPolicy: String, CaseIterable, Sendable {
   case pastWeek
   case pastMonth
   case forever
-
-  // MARK: Internal
 
   var displayNameKey: String {
     switch self {
@@ -141,8 +134,6 @@ enum HistoryRetentionPolicy: String, CaseIterable, Sendable {
   }
 }
 
-// MARK: - DarwinNotificationName
-
 enum DarwinNotificationName {
   static let transcriptionReady = "app.sayboard.transcriptionReady"
   static let dictationStarted = "app.sayboard.dictationStarted"
@@ -160,8 +151,6 @@ enum DarwinNotificationName {
   static let llmProcessingFailed = "app.sayboard.llmProcessingFailed"
 }
 
-// MARK: - SessionAutoStopPolicy
-
 enum SessionAutoStopPolicy: String, CaseIterable, Sendable {
   case never
   case fiveMinutes
@@ -172,8 +161,6 @@ enum SessionAutoStopPolicy: String, CaseIterable, Sendable {
   case fourHours
   case eightHours
   case twelveHours
-
-  // MARK: Internal
 
   var displayNameKey: String {
     switch self {
@@ -204,15 +191,11 @@ enum SessionAutoStopPolicy: String, CaseIterable, Sendable {
   }
 }
 
-// MARK: - InternalNotification
-
 extension Notification.Name {
   static let appLanguageChangeRequested = Notification.Name("app.sayboard.appLanguageChangeRequested")
   static let dictationFailedNoModel = Notification.Name("app.sayboard.dictationFailedNoModel")
   static let dictationFailedNoMic = Notification.Name("app.sayboard.dictationFailedNoMic")
 }
-
-// MARK: - AppLanguageConfig
 
 enum AppLanguageConfig {
   static let supported: Set = [
@@ -257,9 +240,6 @@ enum AppLanguageConfig {
   }
 }
 
-// MARK: - AnimationSpeed
-
 enum AnimationSpeed {
-  /// Global animation speed multiplier (1.0 = default, 2.0 = 2x faster)
   static let globalMultiplier: Float = 1.5
 }

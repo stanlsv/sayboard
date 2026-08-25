@@ -4,8 +4,6 @@ import Testing
 @Suite("SharedSettings preferred languages")
 struct SharedSettingsLanguageTests {
 
-  // MARK: Internal
-
   @Test
   func `default is empty for any variant`() throws {
     let settings = try Self.makeSettings()
@@ -53,8 +51,6 @@ struct SharedSettingsLanguageTests {
     settings.setPreferredLanguages(["de"], for: .whisperSmall)
     #expect(settings.preferredLanguages(for: .whisperSmall) == ["de"])
   }
-
-  // MARK: Private
 
   private static func makeSettings() throws -> SharedSettings {
     let suiteName = self.uniqueSuiteName()

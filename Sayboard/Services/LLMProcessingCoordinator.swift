@@ -1,15 +1,10 @@
-// LLMProcessingCoordinator -- Orchestrates LLM inference: unloads STT, loads LLM, runs inference, writes result
 
 import Foundation
 
 import UIKit
 
-// MARK: - LLMProcessingCoordinator
-
 @MainActor
 final class LLMProcessingCoordinator: ObservableObject {
-
-  // MARK: Internal
 
   let inferenceService = LLMInferenceService()
 
@@ -33,8 +28,6 @@ final class LLMProcessingCoordinator: ObservableObject {
     }
   }
 
-  // MARK: Private
-
   private struct ValidatedRequest {
     let request: LLMRequest
     let modelPath: String
@@ -48,8 +41,10 @@ final class LLMProcessingCoordinator: ObservableObject {
 
   private func handleProcessingRequest() async {
     guard !self.isProcessing else {
+      DiagnosticLog.write("llm: request ignored, already processing")
       return
     }
+    DiagnosticLog.write("llm: request received")
 
     self.isProcessing = true
     let settings = SharedSettings()
@@ -70,9 +65,12 @@ final class LLMProcessingCoordinator: ObservableObject {
     await self.prepareForInference(variant: validated.variant, modelPath: validated.modelPath)
 
     guard self.inferenceService.loadState == .loaded else {
+      let state = String(describing: self.inferenceService.loadState)
+      DiagnosticLog.write("llm: load failed, state=\(state)")
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingFailed)
       return
     }
+    DiagnosticLog.write("llm: model loaded")
 
     let systemPrompt = self.buildSystemPrompt(for: validated.request, settings: settings)
     let result = await self.runInferenceWithTimeout(systemPrompt: systemPrompt, userText: validated.request.text)
@@ -89,7 +87,9 @@ final class LLMProcessingCoordinator: ObservableObject {
       }
       LLMBridge.writeResult(finalResult)
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingComplete)
+      DiagnosticLog.write("llm: complete, result=\(finalResult.count) chars")
     } else {
+      DiagnosticLog.write("llm: FAILED, inference produced nothing")
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingFailed)
     }
 
@@ -99,20 +99,25 @@ final class LLMProcessingCoordinator: ObservableObject {
   private func validateRequest(settings: SharedSettings) -> ValidatedRequest? {
     settings.synchronize()
     guard let request = LLMBridge.readRequest() else {
+      DiagnosticLog.write("llm: no request in bridge")
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingFailed)
       return nil
     }
+    DiagnosticLog.write("llm: text=\(request.text.count) chars, action=\(request.action.rawValue)")
 
     guard let downloadService = self.downloadService, downloadService.hasUsableModel else {
+      DiagnosticLog.write("llm: no usable model, selected=\(settings.selectedLLMVariant.rawValue)")
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingFailed)
       return nil
     }
 
     let variant = settings.selectedLLMVariant
     guard let modelPath = downloadService.modelFileURL(for: variant)?.path else {
+      DiagnosticLog.write("llm: model file missing for \(variant.rawValue)")
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingFailed)
       return nil
     }
+    DiagnosticLog.write("llm: variant=\(variant.rawValue), template=\(variant.chatTemplate.rawValue)")
 
     return ValidatedRequest(request: request, modelPath: modelPath, variant: variant)
   }
@@ -120,9 +125,13 @@ final class LLMProcessingCoordinator: ObservableObject {
   private func beginInferenceBackgroundTask() -> UIBackgroundTaskIdentifier {
     var bgTaskID = UIBackgroundTaskIdentifier.invalid
     bgTaskID = UIApplication.shared.beginBackgroundTask(withName: "LLMInference") {
+      DiagnosticLog.write("llm: background task EXPIRED — suspension imminent")
       UIApplication.shared.endBackgroundTask(bgTaskID)
       bgTaskID = .invalid
     }
+    let remaining = UIApplication.shared.backgroundTimeRemaining
+    let budget = remaining < .greatestFiniteMagnitude ? "\(Int(remaining))s" : "unlimited"
+    DiagnosticLog.write("llm: bg task started, budget=\(budget)")
     return bgTaskID
   }
 
@@ -154,7 +163,6 @@ final class LLMProcessingCoordinator: ObservableObject {
   }
 
   private func runInferenceWithTimeout(systemPrompt: String, userText: String) async -> String? {
-    // Check background time remaining
     let remaining = UIApplication.shared.backgroundTimeRemaining
     let timeout: TimeInterval =
       if remaining < .greatestFiniteMagnitude {
@@ -173,7 +181,6 @@ final class LLMProcessingCoordinator: ObservableObject {
         return nil
       }
 
-      // Return first non-nil result, or nil on timeout
       if let result = await group.next() {
         group.cancelAll()
         return result

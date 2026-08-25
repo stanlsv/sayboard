@@ -1,10 +1,7 @@
-// GlyphPath -- Renders a glyph as a SwiftUI Shape with its ink bounds centered in the rect.
 
 import CoreText
 import SwiftUI
 import UIKit
-
-// MARK: - GlyphPath
 
 struct GlyphPath: Shape {
   let character: String
@@ -23,8 +20,6 @@ struct GlyphPath: Shape {
       return Path()
     }
 
-    // CT path is in font space (Y-up, baseline at origin). Flip Y for SwiftUI and translate
-    // so the ink bounding box's center coincides with rect's center.
     let bounds = cgPath.boundingBox
     let transform = CGAffineTransform.identity
       .translatedBy(x: rect.midX, y: rect.midY)
@@ -35,11 +30,7 @@ struct GlyphPath: Shape {
   }
 }
 
-// MARK: - GlyphPath + Inclusion
-
 extension GlyphPath {
-
-  // MARK: Internal
 
   static func canRender(_ character: String) -> Bool {
     guard character.count == 1, let char = character.first else { return false }
@@ -48,14 +39,10 @@ extension GlyphPath {
     return true
   }
 
-  // MARK: Private
-
   private static let keepTypographic: Set<Character> = [
-    // Bottom-anchored: optical center near baseline.
     ".",
     ",",
     "_",
-    // Top-anchored: optical center above geometric center.
     "^",
     "'",
     "\"",

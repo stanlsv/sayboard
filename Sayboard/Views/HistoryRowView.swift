@@ -1,10 +1,6 @@
 import SwiftUI
 
-// HistoryRowView -- Single row in the history list
-
 struct HistoryRowView: View {
-
-  // MARK: Internal
 
   let record: HistoryRecord
   let onDelete: () -> Void
@@ -17,8 +13,6 @@ struct HistoryRowView: View {
     }
     .padding(.vertical, 4)
   }
-
-  // MARK: Private
 
   @EnvironmentObject private var playerService: AudioPlayerService
   @State private var isExpanded = false

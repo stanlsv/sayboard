@@ -1,10 +1,6 @@
 import SwiftUI
 
-// MARK: - StyleOptionRow
-
 struct StyleOptionRow: View {
-
-  // MARK: Internal
 
   let style: WritingStyle
   let isSelected: Bool
@@ -44,8 +40,6 @@ struct StyleOptionRow: View {
     }
     .contentShape(Rectangle())
   }
-
-  // MARK: Private
 
   private var avatarColor: Color {
     switch self.style {

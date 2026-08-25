@@ -1,10 +1,6 @@
 import Foundation
 
-// HistoryRecord -- A single transcription history entry
-
 struct HistoryRecord: Codable, Identifiable, Sendable {
-
-  // MARK: Lifecycle
 
   init(
     id: UUID,
@@ -31,8 +27,6 @@ struct HistoryRecord: Codable, Identifiable, Sendable {
     self.audioFileName = try container.decode(String.self, forKey: .audioFileName)
     self.waveformSamples = (try? container.decode([Float].self, forKey: .waveformSamples)) ?? []
   }
-
-  // MARK: Internal
 
   let id: UUID
   let date: Date

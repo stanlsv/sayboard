@@ -1,14 +1,6 @@
 import Foundation
 
-// MARK: - HistoryStore
-
-// HistoryStore -- CRUD + auto-delete for transcription history
-// Stores metadata as JSON in the App Group container.
-// Audio files live in an `audio/` subdirectory of the same container.
-
 struct HistoryStore: Sendable {
-
-  // MARK: Internal
 
   static let shared = Self()
 
@@ -122,8 +114,6 @@ struct HistoryStore: Sendable {
     self.writeRecords(retained)
   }
 
-  // MARK: Private
-
   private let historyFileName = "history.json"
   private let audioDirectoryName = "audio"
 
@@ -171,7 +161,6 @@ struct HistoryStore: Sendable {
 
   private func countNewerThan(hours: Int, in records: [HistoryRecord]) -> Int {
     let cutoff = Date().addingTimeInterval(-Double(hours) * 3600)
-    // swiftformat:disable:next preferCountWhere
     return records.filter { $0.date >= cutoff }.count
   }
 

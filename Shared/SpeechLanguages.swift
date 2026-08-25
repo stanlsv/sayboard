@@ -1,9 +1,6 @@
 import Foundation
 
-// MARK: - SpeechLanguages
-
 enum SpeechLanguages {
-  /// All languages supported by OpenAI Whisper models (100 languages).
   static let whisper: Set = [
     "af",
     "am",
@@ -107,37 +104,35 @@ enum SpeechLanguages {
     "zh",
   ]
 
-  /// Languages supported by NVIDIA Parakeet TDT v3 (25 languages).
   static let parakeetV3: Set = [
-    "ar",
+    "bg",
     "cs",
     "da",
     "de",
     "el",
     "en",
     "es",
+    "et",
     "fi",
     "fr",
-    "hi",
+    "hr",
     "hu",
     "it",
-    "ja",
-    "ko",
+    "lt",
+    "lv",
+    "mt",
     "nl",
-    "no",
     "pl",
     "pt",
     "ro",
     "ru",
     "sk",
+    "sl",
     "sv",
-    "tr",
     "uk",
-    "zh",
   ]
 
   static let englishOnly: Set = ["en"]
 
-  /// Union of all languages supported by any model.
   static let all: Set<String> = whisper
 }

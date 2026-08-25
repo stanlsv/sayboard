@@ -11,6 +11,8 @@ excluded:
   - Pods
   - .build
   - build
+  # Paths here are literal, not globs, so the nested checkout needs naming of its own.
+  - scripts/strip-comments/.build
 
 # ============================================================================
 # Indentation

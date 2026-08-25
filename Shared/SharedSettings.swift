@@ -1,13 +1,6 @@
 import Foundation
 
-// MARK: - SharedSettings
-
-// SharedSettings -- Read/write settings via App Group UserDefaults
-
-// swiftlint:disable:next type_body_length
 struct SharedSettings {
-
-  // MARK: Lifecycle
 
   init() {
     self.init(defaults: AppGroup.sharedDefaults ?? .standard)
@@ -21,12 +14,6 @@ struct SharedSettings {
     ])
   }
 
-  // MARK: Internal
-
-  /// Maximum age (CFAbsoluteTime delta) for `keyboardRequestedDictation` to be
-  /// considered fresh. Defends against orphan flags surviving across sessions
-  /// if a crash interleaved between the keyboard's set and the main app's
-  /// consume.
   static let keyboardRequestTTL: TimeInterval = 3.0
 
   var selectedVariant: ModelVariant {
@@ -47,15 +34,16 @@ struct SharedSettings {
     nonmutating set { defaults.set(newValue, forKey: SharedKey.isRecording) }
   }
 
+  var lastDictationOutcome: DictationOutcome? {
+    get { self.defaults.string(forKey: SharedKey.lastDictationOutcome).flatMap(DictationOutcome.init(rawValue:)) }
+    nonmutating set { defaults.set(newValue?.rawValue, forKey: SharedKey.lastDictationOutcome) }
+  }
+
   var keyboardRequestedDictation: Bool {
     get { self.defaults.bool(forKey: SharedKey.keyboardRequestedDictation) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.keyboardRequestedDictation) }
   }
 
-  /// CFAbsoluteTime stamped by the keyboard right before it sets the
-  /// dictation flag. Paired with the bool to defend against partial-write
-  /// crashes: a reader observing flag=true with timestamp=0 treats the
-  /// request as stale, not recent.
   var keyboardRequestedDictationAt: TimeInterval {
     get { self.defaults.double(forKey: SharedKey.keyboardRequestedDictationAt) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.keyboardRequestedDictationAt) }
@@ -66,9 +54,6 @@ struct SharedSettings {
     nonmutating set { defaults.set(newValue, forKey: SharedKey.isSessionActive) }
   }
 
-  /// Wall-clock timestamp written by the main app while its audio session is
-  /// alive. Read by the keyboard before posting `requestStartDictation` to
-  /// detect a jetsammed main app and skip the 5s Darwin fallback.
   var mainAppHeartbeat: TimeInterval {
     get { self.defaults.double(forKey: SharedKey.mainAppHeartbeat) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.mainAppHeartbeat) }
@@ -80,8 +65,6 @@ struct SharedSettings {
         let raw = defaults.string(forKey: SharedKey.sessionAutoStopPolicy),
         let policy = SessionAutoStopPolicy(rawValue: raw)
       else {
-        // Longer default on iOS 26.4+ since each dictation needs a manual
-        // swipe back; existing user choices are honoured.
         return OperatingSystem.isHostBundleIdBroken ? .thirtyMinutes : .fiveMinutes
       }
       return policy
@@ -136,8 +119,6 @@ struct SharedSettings {
     }
   }
 
-  /// Per-variant preferred recognition languages, keyed by `ModelVariant.rawValue`.
-  /// Empty/missing entry means auto-detect for that variant.
   var preferredLanguagesPerVariant: [String: [String]] {
     get {
       guard let data = defaults.data(forKey: SharedKey.preferredLanguagesPerVariant) else {
@@ -160,6 +141,11 @@ struct SharedSettings {
     nonmutating set { defaults.set(newValue, forKey: SharedKey.hasUsableModel) }
   }
 
+  var parakeetV3NeedsRedownload: Bool {
+    get { self.defaults.bool(forKey: SharedKey.parakeetV3NeedsRedownload) }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.parakeetV3NeedsRedownload) }
+  }
+
   var audioLevel: Float {
     get { self.defaults.float(forKey: SharedKey.audioLevel) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.audioLevel) }
@@ -180,8 +166,6 @@ struct SharedSettings {
     nonmutating set { defaults.set(newValue, forKey: SharedKey.isModelLoading) }
   }
 
-  /// Set once the first model build succeeds. Gates the keyboard's "for first use"
-  /// loading copy so it never claims a one-time setup on later (re)builds.
   var hasPreparedModelOnce: Bool {
     get { self.defaults.bool(forKey: SharedKey.hasPreparedModelOnce) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.hasPreparedModelOnce) }
@@ -250,11 +234,25 @@ struct SharedSettings {
         let raw = defaults.string(forKey: SharedKey.selectedLLMVariant),
         let variant = LLMModelVariant(rawValue: raw)
       else {
-        return .qwen3Small
+        return .qwen35Small
       }
       return variant
     }
     nonmutating set { defaults.set(newValue.rawValue, forKey: SharedKey.selectedLLMVariant) }
+  }
+
+  var completedLLMUpgradeFrom: LLMModelVariant? {
+    get {
+      guard let raw = defaults.string(forKey: SharedKey.completedLLMUpgradeFrom) else { return nil }
+      return LLMModelVariant(rawValue: raw)
+    }
+    nonmutating set {
+      if let newValue {
+        defaults.set(newValue.rawValue, forKey: SharedKey.completedLLMUpgradeFrom)
+      } else {
+        defaults.removeObject(forKey: SharedKey.completedLLMUpgradeFrom)
+      }
+    }
   }
 
   var llmDownloadInProgressVariants: Set<LLMModelVariant> {
@@ -295,7 +293,6 @@ struct SharedSettings {
           return selection
         }
       }
-      // Migrate from old key
       if
         let raw = defaults.string(forKey: SharedKey.defaultLLMAction),
         let action = LLMAction(rawValue: raw)
@@ -371,8 +368,6 @@ struct SharedSettings {
     }
   }
 
-  /// True iff the keyboard set the dictation flag within the TTL window.
-  /// Non-consuming. Synchronizes before reading.
   func isKeyboardRequestRecent(now: TimeInterval = CFAbsoluteTimeGetCurrent()) -> Bool {
     self.defaults.synchronize()
     let timestamp = self.keyboardRequestedDictationAt
@@ -380,8 +375,6 @@ struct SharedSettings {
     return (now - timestamp) <= Self.keyboardRequestTTL
   }
 
-  /// Returns true and atomically clears the flag + timestamp iff a recent
-  /// keyboard request is pending; otherwise leaves state untouched.
   @discardableResult
   func consumeKeyboardRequestIfRecent(now: TimeInterval = CFAbsoluteTimeGetCurrent()) -> Bool {
     guard self.isKeyboardRequestRecent(now: now) else { return false }
@@ -405,13 +398,9 @@ struct SharedSettings {
     self.preferredLanguagesPerVariant = dict
   }
 
-  /// Flush the in-memory UserDefaults cache so the next read comes from disk.
-  /// Required for cross-process reads where another process has written.
   func synchronize() {
     self.defaults.synchronize()
   }
-
-  // MARK: Private
 
   private let defaults: UserDefaults
 }

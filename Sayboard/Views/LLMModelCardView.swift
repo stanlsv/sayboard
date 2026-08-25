@@ -1,13 +1,8 @@
-// LLMModelCardView -- Card UI for a single LLM model variant
 
 import SwiftUI
 import UIKit
 
-// MARK: - LLMModelCardView
-
 struct LLMModelCardView: View {
-
-  // MARK: Internal
 
   let variant: LLMModelVariant
   let isActive: Bool
@@ -27,6 +22,9 @@ struct LLMModelCardView: View {
           .foregroundStyle(.secondary)
           .lineLimit(2)
           .padding(.bottom, 4)
+        if let failure = self.downloadState.errorMessage {
+          ModelNoticeRow(text: Text(failure))
+        }
         self.bottomRow
       }
       .padding(12)
@@ -46,8 +44,6 @@ struct LLMModelCardView: View {
     .onTapGesture(perform: self.handleTap)
   }
 
-  // MARK: Private
-
   @Environment(\.locale) private var locale
 
   private let cardCornerRadius: CGFloat = 12
@@ -66,6 +62,8 @@ struct LLMModelCardView: View {
             .padding(.trailing, self.isActive ? 6 : 0)
           if self.variant.isRecommended {
             self.recommendedBadge
+          } else if let successor = self.variant.successor {
+            self.supersededBadge(successorName: successor.displayName)
           }
         }
       }
@@ -139,6 +137,16 @@ struct LLMModelCardView: View {
   private var isDownloading: Bool {
     if case .downloading = self.downloadState { return true }
     return false
+  }
+
+  private func supersededBadge(successorName: String) -> some View {
+    Text("Replaced by \(successorName)")
+      .font(.caption.weight(.medium))
+      .foregroundStyle(.orange)
+      .padding(.horizontal, 8)
+      .padding(.vertical, 3)
+      .background(Color.orange.opacity(0.12))
+      .clipShape(Capsule())
   }
 
   private func handleTap() {

@@ -11,7 +11,12 @@ struct ModelVariantCapabilityTests {
   }
 
   @Test
-  func `non-whisper engine variants do not support selection`() {
+  func `parakeet v3 supports selection`() {
+    #expect(ModelVariant.parakeetV3.supportsLanguageSelection)
+  }
+
+  @Test
+  func `english-only variants do not support selection`() {
     #expect(!ModelVariant.parakeetV2.supportsLanguageSelection)
     #expect(!ModelVariant.moonshineTiny.supportsLanguageSelection)
     #expect(!ModelVariant.moonshineBase.supportsLanguageSelection)
@@ -21,16 +26,9 @@ struct ModelVariantCapabilityTests {
   }
 
   @Test
-  func `parakeet v3 is gated until FluidAudio exposes the language hint`() {
-    // Parakeet v3 supports 25 languages internally, but FluidAudio's public API
-    // does not expose a language parameter, so the picker stays hidden.
-    #expect(!ModelVariant.parakeetV3.supportsLanguageSelection)
-  }
-
-  @Test
-  func `flag is true exactly for whisper multilingual variants`() {
+  func `flag is true exactly for the multilingual whisper and parakeet variants`() {
     let supporting = ModelVariant.allCases.filter(\.supportsLanguageSelection)
-    let expected: Set<ModelVariant> = [.whisperTiny, .whisperBase, .whisperSmall]
+    let expected: Set<ModelVariant> = [.whisperTiny, .whisperBase, .whisperSmall, .parakeetV3]
     #expect(Set(supporting) == expected)
   }
 }

@@ -1,11 +1,7 @@
 import SwiftUI
 import UIKit
 
-// MARK: - MainTabView
-
 struct MainTabView: View {
-
-  // MARK: Internal
 
   var body: some View {
     ZStack {
@@ -21,8 +17,6 @@ struct MainTabView: View {
     }
   }
 
-  // MARK: Private
-
   private enum TabID: String {
     case history
     case models
@@ -34,8 +28,7 @@ struct MainTabView: View {
     case keyboardMissing
     case fullAccessMissing
     case noModel
-
-    // MARK: Internal
+    case modelRemovedByUpdate
 
     var title: LocalizedStringKey {
       switch self {
@@ -43,6 +36,7 @@ struct MainTabView: View {
       case .keyboardMissing: "Keyboard Not Added"
       case .fullAccessMissing: "Full Access Required"
       case .noModel: "No Model Installed"
+      case .modelRemovedByUpdate: "Model Update Required"
       }
     }
 
@@ -52,6 +46,7 @@ struct MainTabView: View {
       case .keyboardMissing: "Sayboard needs to be added as a keyboard to use voice dictation in any app."
       case .fullAccessMissing: "Sayboard needs Full Access to hear your voice from the keyboard."
       case .noModel: "Download a speech recognition model to start using voice input."
+      case .modelRemovedByUpdate: "Parakeet v3 has been updated and needs to be downloaded again."
       }
     }
   }
@@ -144,7 +139,6 @@ struct MainTabView: View {
     }
   }
 
-  /// Cold-launch banner check (static, no environment objects available).
   private static func initialBanner() -> SetupBanner? {
     let onboardingCompleted = UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding)
     guard onboardingCompleted else { return nil }
@@ -159,7 +153,7 @@ struct MainTabView: View {
       return .fullAccessMissing
     }
     if !settings.hasUsableModel {
-      return .noModel
+      return settings.parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
     }
     return nil
   }
@@ -169,7 +163,7 @@ struct MainTabView: View {
     case .micDenied: .microphone
     case .keyboardMissing: .addKeyboard
     case .fullAccessMissing: .fullAccess
-    case .noModel: nil
+    case .noModel, .modelRemovedByUpdate: nil
     }
   }
 
@@ -178,8 +172,6 @@ struct MainTabView: View {
     self.activeBanner = self.recheckBanner()
   }
 
-  /// Recheck using live PermissionService values
-  /// (refreshed by SayboardApp.handleScenePhaseChange on foreground return).
   private func recheckBanner() -> SetupBanner? {
     let onboardingCompleted = UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding)
     guard onboardingCompleted else { return nil }
@@ -192,15 +184,16 @@ struct MainTabView: View {
     if !self.permissionService.hasFullAccess {
       return .fullAccessMissing
     }
-    if !SharedSettings().hasUsableModel {
-      return .noModel
+    let settings = SharedSettings()
+    if !settings.hasUsableModel {
+      return settings.parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
     }
     return nil
   }
 
   private func bannerView(for banner: SetupBanner) -> SetupBannerView {
     let primaryAction =
-      if banner == .noModel {
+      if banner == .noModel || banner == .modelRemovedByUpdate {
         SetupBannerAction(title: "Open Models", style: .primary) {
           self.activeBanner = nil
           self.selectedTab = TabID.models.rawValue
@@ -231,7 +224,7 @@ struct MainTabView: View {
       AnyView(FullAccessTutorialView(includeFullAccessRow: false))
     case .fullAccessMissing:
       AnyView(FullAccessTutorialView())
-    case .noModel:
+    case .noModel, .modelRemovedByUpdate:
       nil
     }
   }
@@ -264,15 +257,9 @@ struct MainTabView: View {
   }
 }
 
-// MARK: - TabBarTapInterceptor
-
-/// Finds the UITabBar in the window hierarchy and attaches a tap gesture recognizer
-/// to detect rapid taps on the Settings tab (Easter egg trigger).
 private struct TabBarTapInterceptor: UIViewRepresentable {
 
   final class InterceptorView: UIView {
-
-    // MARK: Lifecycle
 
     init(coordinator: Coordinator) {
       self.coordinator = coordinator
@@ -286,8 +273,6 @@ private struct TabBarTapInterceptor: UIViewRepresentable {
       fatalError("init(coder:) is not supported")
     }
 
-    // MARK: Internal
-
     override func didMoveToWindow() {
       super.didMoveToWindow()
       guard let window, !self.coordinator.isInstalled else { return }
@@ -300,22 +285,16 @@ private struct TabBarTapInterceptor: UIViewRepresentable {
       }
     }
 
-    // MARK: Private
-
     private let coordinator: Coordinator
   }
 
   @MainActor
   final class Coordinator: NSObject, UIGestureRecognizerDelegate {
 
-    // MARK: Lifecycle
-
     init(settingsTabIndex: Int, onSettingsTapped: @escaping () -> Void) {
       self.settingsTabIndex = settingsTabIndex
       self.onSettingsTapped = onSettingsTapped
     }
-
-    // MARK: Internal
 
     private(set) var isInstalled = false
 
@@ -334,8 +313,6 @@ private struct TabBarTapInterceptor: UIViewRepresentable {
     ) -> Bool {
       true
     }
-
-    // MARK: Private
 
     private static let requiredTapCount = 7
     private static let tapWindowSeconds: TimeInterval = 3

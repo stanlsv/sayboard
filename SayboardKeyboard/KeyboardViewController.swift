@@ -1,21 +1,14 @@
-// swiftlint:disable file_length
 
 import ObjectiveC
 
 import SwiftUI
 import UIKit
 
-// MARK: - KeyboardViewController
-
 final class KeyboardViewController: UIInputViewController {
-
-  // MARK: Internal
 
   static var llmCompleteObserver: DarwinNotificationObserver?
   static var llmFailedObserver: DarwinNotificationObserver?
   static var llmStartedObserver: DarwinNotificationObserver?
-  /// Static observers: one set per process, dispatching to activeInstance.
-  /// Prevents observer leaks when iOS creates multiple VC instances in the same process.
   nonisolated(unsafe) static weak var activeInstance: KeyboardViewController?
 
   var llmOriginalTextLength = 0
@@ -95,36 +88,39 @@ final class KeyboardViewController: UIInputViewController {
 
   func insertTranscribedText() {
     let text = TranscriptionBridge.readTranscription()
-    let isEmpty = text?.isEmpty ?? true
+    let _ = text?.isEmpty ?? true
     guard let text, !text.isEmpty else {
+      DiagnosticLog.write("keyboard: NO TEXT available to insert")
+      let settings = SharedSettings()
+      settings.synchronize()
+      if let outcome = settings.lastDictationOutcome {
+        self.keyboardState.dictationOutcome = outcome
+      }
       return
     }
+    self.keyboardState.dictationOutcome = nil
     if !self.isPerformingHistoryNavigation {
       self.keyboardState.clearLLMHistory()
     }
     TranscriptionBridge.clearTranscription()
 
-    // If auto-action is configured, skip displaying STT text and pass directly to LLM
     if self.autoApplyLLMIfNeeded(directText: text) {
       return
     }
 
+    DiagnosticLog.write("keyboard: inserting \(text.count) chars into textDocumentProxy")
     textDocumentProxy.insertText(text)
     self.copyFinalTextToClipboardIfEnabled(text)
   }
 
-  /// Copies the final inserted text to UIPasteboard when the user has opted in.
   func copyFinalTextToClipboardIfEnabled(_ text: String) {
     guard SharedSettings().alsoCopyToClipboard else { return }
     UIPasteboard.general.string = text
   }
 
-  /// Pings the main app; it responds with `sessionStarted`/`dictationStarted` if alive.
   func pingMainAppForSessionStatus() {
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.requestSessionStatus)
   }
-
-  // MARK: Private
 
   private static let staleFallbackTimeout: TimeInterval = 5
   private static let heartbeatStaleThreshold: TimeInterval = 1.5
@@ -138,7 +134,6 @@ final class KeyboardViewController: UIInputViewController {
 
   private var heightConstraint: NSLayoutConstraint?
   private var hostingHeightConstraint: NSLayoutConstraint?
-  /// Height inputs combined into the keyboard height (see `applyKeyboardHeight`).
   private var actionBarVisible = false
   private var statusStripHeight: CGFloat = 0
 
@@ -169,8 +164,8 @@ final class KeyboardViewController: UIInputViewController {
         guard let vc = Self.activeInstance else {
           return
         }
-        let isRec = vc.keyboardState.isRecording
-        let isProc = vc.keyboardState.isProcessing
+        let _ = vc.keyboardState.isRecording
+        let _ = vc.keyboardState.isProcessing
         vc.cancelProcessingTimeout()
         vc.insertTranscribedText()
         vc.finalizeProcessingPipeline()
@@ -216,7 +211,6 @@ final class KeyboardViewController: UIInputViewController {
         if !vc.isPerformingHistoryNavigation {
           vc.keyboardState.clearLLMHistory()
         }
-        // Dictation implies an active session for the Darwin mic-button path
         vc.keyboardState.isSessionActive = true
         vc.keyboardState.startLevelPolling()
       }
@@ -233,7 +227,6 @@ final class KeyboardViewController: UIInputViewController {
         vc.keyboardState.stopLevelPolling()
         vc.keyboardState.isRecording = false
         vc.keyboardState.syncModelLoading()
-        // transcriptionReady may not have arrived yet due to cross-process ordering
         vc.insertTranscribedText()
         vc.finalizeProcessingPipeline()
       }
@@ -262,35 +255,25 @@ final class KeyboardViewController: UIInputViewController {
   private func startDictationViaDarwin() {
     let processing = self.keyboardState.isProcessing
     let recording = self.keyboardState.isRecording
-    let sessionActive = self.keyboardState.isSessionActive
+    let _ = self.keyboardState.isSessionActive
 
     guard !processing, !recording else {
       return
     }
-    // Re-detect host bundle ID right before dictation.
-    // The ivar may not be populated during viewWillAppear but is available by user interaction.
     saveHostBundleId()
     let settings = SharedSettings()
     settings.synchronize()
 
-    // If the main app's audio-thread heartbeat is stale, the process was
-    // jetsammed since the last keyboard ping — Darwin would time out for 5s
-    // before falling back. Skip straight to the deep link.
     let heartbeatAge = CFAbsoluteTimeGetCurrent() - settings.mainAppHeartbeat
     if heartbeatAge > Self.heartbeatStaleThreshold {
       self.openDictateDeepLinkFallback(reason: "heartbeat stale (\(heartbeatAge)s)")
       return
     }
 
-    // No `keyboardRequestedDictation = true` here: Darwin path fires no deep link,
-    // so the flag would never be consumed and cause spurious host-return overlays
-    // on later manual launches.
     settings.dictationSessionToken = UUID().uuidString
     settings.synchronize()
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.requestStartDictation)
 
-    // Stale session fallback: if no dictationStarted within timeout,
-    // the app may have been killed. Reset session and auto-open via deep link.
     self.staleFallbackTimer?.invalidate()
     self.staleFallbackTimer = Timer.scheduledTimer(
       withTimeInterval: Self.staleFallbackTimeout,
@@ -307,14 +290,9 @@ final class KeyboardViewController: UIInputViewController {
     }
   }
 
-  /// Reset session/processing flags, mark the next deep link as keyboard-originated,
-  /// and open `sayboard://dictate` so the main app handles dictation start. Used both
-  /// for the heartbeat-stale fast path and the 5-second Darwin fallback timer.
   private func openDictateDeepLinkFallback(reason _: String) {
     let settings = SharedSettings()
     settings.isSessionActive = false
-    // Stamp timestamp BEFORE the bool: a reader observing flag=true with
-    // timestamp=0 (mid-write crash) treats the request as stale, not recent.
     settings.keyboardRequestedDictationAt = CFAbsoluteTimeGetCurrent()
     settings.keyboardRequestedDictation = true
     settings.dictationSessionToken = UUID().uuidString
@@ -331,24 +309,18 @@ final class KeyboardViewController: UIInputViewController {
 
 }
 
-// MARK: - Session & Model Loading Observers
-
 extension KeyboardViewController {
 
-  // MARK: Internal
-
   func stopDictationViaDarwin() {
-    let recording = self.keyboardState.isRecording
-    let sessionActive = self.keyboardState.isSessionActive
+    let _ = self.keyboardState.isRecording
+    let _ = self.keyboardState.isSessionActive
     self.keyboardState.isProcessing = true
     self.keyboardState.syncModelLoading()
     self.keyboardState.stopLevelPolling()
-    let loading = self.keyboardState.isModelLoading
+    let _ = self.keyboardState.isModelLoading
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.requestStopDictation)
     self.startProcessingTimeout()
   }
-
-  // MARK: Private
 
   private func setupSessionLifecycleObservers() {
     Self.sessionStartedObserver?.stopObserving()
@@ -358,12 +330,11 @@ extension KeyboardViewController {
     ) {
       DispatchQueue.main.async {
         guard let vc = Self.activeInstance else { return }
-        let wasActive = vc.keyboardState.isSessionActive
+        let _ = vc.keyboardState.isSessionActive
         let isProc = vc.keyboardState.isProcessing
         vc.pingValidator.cancel()
         vc.keyboardState.isSessionActive = true
         if isProc || vc.keyboardState.isLLMProcessing {
-          // App is alive — note the ping response but let processing timeout continue
           vc.receivedPingDuringProcessing = true
         } else {
           vc.cancelProcessingTimeout()
@@ -376,7 +347,7 @@ extension KeyboardViewController {
     ) {
       DispatchQueue.main.async {
         guard let vc = Self.activeInstance else { return }
-        let wasActive = vc.keyboardState.isSessionActive
+        let _ = vc.keyboardState.isSessionActive
         vc.cancelProcessingTimeout()
         vc.keyboardState.stopLevelPolling()
         vc.keyboardState.isSessionActive = false
@@ -399,23 +370,13 @@ extension KeyboardViewController {
   }
 }
 
-// MARK: - Dynamic Keyboard Height
-
 extension KeyboardViewController {
 
-  // MARK: Internal
-
-  /// Toggles the LLM action-bar contribution to the keyboard height.
-  /// Always recomputes via `applyKeyboardHeight`, whose output guard also
-  /// catches `keyboardKind` changes on a reused controller.
   func updateKeyboardHeight(actionBarVisible: Bool) {
     self.actionBarVisible = actionBarVisible
     self.applyKeyboardHeight()
   }
 
-  /// Reports the measured height of the status strip content (the model
-  /// loading / low-storage label) so the keyboard can grow to fit it instead
-  /// of the text overflowing the keys. `height` is the SwiftUI-measured size.
   func updateStatusStripHeight(_ height: CGFloat) {
     let rounded = height.rounded(.up)
     guard self.statusStripHeight != rounded else { return }
@@ -449,12 +410,6 @@ extension KeyboardViewController {
     self.hostingController = hosting
   }
 
-  // MARK: Private
-
-  /// Single source of truth for the keyboard height: base layout (optionally
-  /// including the LLM action bar) plus the measured status-strip content, so
-  /// any status text — model loading, low-storage rebuild — gets real vertical
-  /// space rather than overflowing the keys.
   private func applyKeyboardHeight() {
     guard let hc = self.heightConstraint else { return }
     let base = KeyboardMetrics.totalHeight(

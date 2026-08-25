@@ -2,11 +2,7 @@ import DSWaveformImage
 import DSWaveformImageViews
 import SwiftUI
 
-// WaveformPlayerView -- Voice-message-style audio player with waveform visualization
-
 struct WaveformPlayerView: View {
-
-  // MARK: Internal
 
   let audioURL: URL
   let totalDuration: TimeInterval
@@ -27,8 +23,6 @@ struct WaveformPlayerView: View {
       .background { self.bubbleBackground }
     }
   }
-
-  // MARK: Private
 
   @State private var wasPlayingBeforeScrub = false
 

@@ -4,23 +4,13 @@ import FluidAudio
 
 import SwiftUI
 
-// MARK: - ModelLoading
-
 @MainActor
 protocol ModelLoading: AnyObject {
   func loadModel(variant: ModelVariant, from url: URL) async -> Bool
 }
 
-// MARK: - SpeechRecognitionService
-
-// SpeechRecognitionService -- On-device speech-to-text powered by WhisperKit or Parakeet.
-// Records audio via BackgroundAudioSession, accumulates 16kHz samples,
-// and transcribes on stop using the active engine's transcription service.
-
 @MainActor
 final class SpeechRecognitionService: ObservableObject {
-
-  // MARK: Lifecycle
 
   init() {
     self.setupDarwinObservers()
@@ -28,10 +18,6 @@ final class SpeechRecognitionService: ObservableObject {
     self.forwardSessionState()
   }
 
-  // MARK: Internal
-
-  /// Safety net for the "tapped record and walked away" case — the
-  /// session inactivity timer is suspended while a tap is active.
   static let maxRecordingDuration: TimeInterval = 30 * 60
 
   @Published var isRecording = false
@@ -51,8 +37,6 @@ final class SpeechRecognitionService: ObservableObject {
   var currentAudioFileName: String?
   var currentWordBoundaries: (start: Float, end: Float)?
 
-  /// True while `stopRecording()` is awaiting model load / transcription.
-  /// Prevents concurrent start calls from resetting the accumulator.
   private(set) var isStopping = false
 
   var activeLoadState: ModelLoadState {
@@ -64,10 +48,10 @@ final class SpeechRecognitionService: ObservableObject {
   }
 
   func startRecording() {
-    let loadState = String(describing: self.activeLoadState)
+    let _ = String(describing: self.activeLoadState)
     let micAuth = self.settings.isMicrophoneAuthorized
-    let sessionActive = self.session.isSessionActive
-    let engineRunning = self.session.audioEngine.isRunning
+    let _ = self.session.isSessionActive
+    let _ = self.session.audioEngine.isRunning
 
     guard !self.isRecording, !self.isStopping else {
       return
@@ -96,12 +80,11 @@ final class SpeechRecognitionService: ObservableObject {
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.dictationStarted)
   }
 
-  /// Starts audio capture without requiring a loaded model.
   func startCapture() {
     let micAuth = self.settings.isMicrophoneAuthorized
-    let sessionActive = self.session.isSessionActive
-    let engineRunning = self.session.audioEngine.isRunning
-    let loadState = String(describing: self.activeLoadState)
+    let _ = self.session.isSessionActive
+    let _ = self.session.audioEngine.isRunning
+    let _ = String(describing: self.activeLoadState)
 
     guard !self.isRecording, !self.isStopping else {
       return
@@ -129,7 +112,7 @@ final class SpeechRecognitionService: ObservableObject {
   }
 
   func stopRecording() async {
-    let loadState = String(describing: self.activeLoadState)
+    let _ = String(describing: self.activeLoadState)
 
     guard !self.isStopping else {
       return
@@ -144,15 +127,10 @@ final class SpeechRecognitionService: ObservableObject {
 
     self.cancelMaxDurationTimer()
     self.session.deactivateTap()
-    // Snapshot samples before any await -- a concurrent startCapture() could
-    // reset the accumulator while we wait for the model to load.
     let savedSamples = self.accumulator.samples
 
-    // Wait for model to finish loading before transcribing (don't discard audio).
-    // Also attempt to load if the model is unloaded or errored -- the user recorded
-    // audio via startCapture() which doesn't require a loaded model.
     if self.activeLoadState != .loaded {
-      let state = String(describing: self.activeLoadState)
+      let _ = String(describing: self.activeLoadState)
       if self.activeLoadState == .loading {
         await self.awaitModelLoad()
       } else if let downloadService {
@@ -178,15 +156,12 @@ final class SpeechRecognitionService: ObservableObject {
     _ = await self.loadModel(variant: selected, from: url)
   }
 
-  /// Unloads the current model and loads the new one. The audio session stays alive.
   func reloadModel(variant: ModelVariant, folderURL: URL?) async {
     await self.unloadAllEngines()
     guard let folderURL else { return }
     _ = await self.loadModel(variant: variant, from: folderURL)
   }
 
-  /// Unloads all STT models to free memory for LLM processing.
-  /// Does NOT end the audio session so it can resume dictation later.
   func unloadForLLMProcessing() async {
     if self.isRecording {
       await self.stopRecording()
@@ -194,21 +169,13 @@ final class SpeechRecognitionService: ObservableObject {
     await self.unloadAllEngines()
   }
 
-  /// Unloads all models and ends the audio session (no models left).
   func deactivateCompletely() async {
     await self.unloadAllEngines()
     self.session.endSession()
   }
 
-  /// Ensures the active engine's model is loaded, then starts recording.
-  /// Used by deep link and Darwin notification handlers where the model
-  /// may not yet be in memory.
-  ///
-  /// If the model is already loaded, starts recording immediately.
-  /// If not, starts audio capture first (buffers audio, posts dictationStarted
-  /// to keyboard) then loads the model in the background.
   func startRecordingAfterModelLoad() async {
-    let loadState = String(describing: self.activeLoadState)
+    let _ = String(describing: self.activeLoadState)
     guard !self.isStopping else {
       return
     }
@@ -226,8 +193,6 @@ final class SpeechRecognitionService: ObservableObject {
       }
     }
   }
-
-  // MARK: Private
 
   private var errorMessage: String?
   private var sessionCancellable: AnyCancellable?
@@ -254,7 +219,6 @@ final class SpeechRecognitionService: ObservableObject {
     self.maxDurationTimer = nil
   }
 
-  /// Awaits a pending model load on the active engine.
   private func awaitModelLoad() async {
     switch self.settings.selectedVariant.engine {
     case .whisperKit:
@@ -276,7 +240,7 @@ final class SpeechRecognitionService: ObservableObject {
 
   private func unloadAllEngines() async {
     await self.whisperService.unloadModel()
-    self.parakeetService.unloadModel()
+    await self.parakeetService.unloadModel()
     self.moonshineService.unloadModel()
   }
 
@@ -309,11 +273,7 @@ final class SpeechRecognitionService: ObservableObject {
 
 }
 
-// MARK: - Darwin Observers
-
 extension SpeechRecognitionService {
-
-  // MARK: Internal
 
   func setupDarwinObservers() {
     self.setupDictationObservers()
@@ -351,8 +311,6 @@ extension SpeechRecognitionService {
       }
   }
 
-  // MARK: Private
-
   private func hasValidSessionToken(caller _: String) -> Bool {
     let tokenSettings = SharedSettings()
     tokenSettings.synchronize()
@@ -371,7 +329,7 @@ extension SpeechRecognitionService {
           return
         }
         guard self.hasValidSessionToken(caller: "requestStartDictation") else { return }
-        let state = String(describing: self.activeLoadState)
+        let _ = String(describing: self.activeLoadState)
         await self.startRecordingAfterModelLoad()
       }
     }
@@ -390,8 +348,6 @@ extension SpeechRecognitionService {
   }
 
 }
-
-// MARK: ModelLoading
 
 extension SpeechRecognitionService: ModelLoading {
 

@@ -1,10 +1,6 @@
 import SwiftUI
 
-// MARK: - StandardKeyboardLayout
-
 struct StandardKeyboardLayout: View {
-
-  // MARK: Internal
 
   let proxy: KeyboardProxy
 
@@ -23,8 +19,6 @@ struct StandardKeyboardLayout: View {
     }
   }
 
-  // MARK: Private
-
   private var chrome: KeyboardChromeMetrics {
     KeyboardChromeMetrics(keyboardState: self.keyboardState)
   }
@@ -40,11 +34,8 @@ struct StandardKeyboardLayout: View {
 
 }
 
-// MARK: - StandardKeyboardLayout Helpers
-
 extension StandardKeyboardLayout {
   private var sideButtons: some View {
-    // swiftlint:disable:next closure_body_length
     HStack(alignment: .bottom, spacing: KeyboardChromeMetrics.buttonSpacing) {
       KeyButton(
         content: .systemImage("gearshape"),

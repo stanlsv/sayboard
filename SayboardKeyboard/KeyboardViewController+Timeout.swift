@@ -1,8 +1,5 @@
-// KeyboardViewController+Timeout -- Processing timeout with LLM result polling
 
 import UIKit
-
-// MARK: - Processing Timeout
 
 extension KeyboardViewController {
 
@@ -20,8 +17,6 @@ extension KeyboardViewController {
     if self.processingStartTime == nil {
       self.processingStartTime = Date()
     }
-    // Ping the main app and reset the flag. If alive, it responds with
-    // sessionStarted which sets receivedPingDuringProcessing = true.
     self.receivedPingDuringProcessing = false
     self.pingMainAppForSessionStatus()
 
@@ -38,9 +33,7 @@ extension KeyboardViewController {
         } ?? 0
 
         if self.receivedPingDuringProcessing {
-          // App responded — it is alive
           if elapsed < Self.processingHardTimeout {
-            // Poll for LLM result in case completion notification was lost
             if self.keyboardState.isLLMProcessing {
               self.checkForPendingLLMResult()
             }
@@ -55,7 +48,6 @@ extension KeyboardViewController {
             self.resetProcessingState()
           }
         } else {
-          // No ping response — app is dead
           self.insertTranscribedText()
           self.checkForPendingLLMResult()
           self.resetProcessingState()
@@ -74,7 +66,6 @@ extension KeyboardViewController {
     if !self.isPerformingHistoryNavigation {
       self.keyboardState.clearLLMHistory()
     }
-    // Clear shared flags so the next keyboard appearance does not see stale state
     let settings = SharedSettings()
     settings.isSessionActive = false
     settings.isRecording = false

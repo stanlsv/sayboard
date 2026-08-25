@@ -21,22 +21,25 @@ settings:
     DEAD_CODE_STRIPPING: true
     ENABLE_USER_SCRIPT_SANDBOXING: false
 
+# Pinned, not floored: `from:` lets a fresh checkout resolve above the version the code was
+# written against, so an older commit stops building -- e137cc2 declared FluidAudio 0.7.9 and
+# picked up 0.15.5, whose AsrManager API is different. Upgrades stay a deliberate edit here.
 packages:
   WhisperKit:
-    url: https://github.com/argmaxinc/WhisperKit.git
-    from: "0.9.0"
+    url: https://github.com/argmaxinc/argmax-oss-swift.git
+    exactVersion: "1.1.0"
   DSWaveformImage:
     url: https://github.com/dmrschmidt/DSWaveformImage.git
-    from: "14.0.0"
+    exactVersion: "14.3.0"
   FluidAudio:
     url: https://github.com/FluidInference/FluidAudio.git
-    from: "0.7.9"
+    exactVersion: "0.15.5"
   ZIPFoundation:
     url: https://github.com/weichsel/ZIPFoundation.git
-    from: "0.9.19"
+    exactVersion: "0.9.20"
   Moonshine:
     url: https://github.com/moonshine-ai/moonshine-swift.git
-    from: "0.0.49"
+    exactVersion: "0.0.49"
 localPackages:
   - Packages/LlamaCpp
 
@@ -68,7 +71,7 @@ targets:
       - script: |
           export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
           if command -v swiftlint >/dev/null 2>&1; then
-            swiftlint lint --strict --quiet
+            echo "SwiftLint runs in the development repo, not here"
           else
             echo "warning: SwiftLint not installed. Run: brew install swiftlint"
           fi
@@ -112,7 +115,7 @@ targets:
       - script: |
           export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
           if command -v swiftlint >/dev/null 2>&1; then
-            swiftlint lint --strict --quiet
+            echo "SwiftLint runs in the development repo, not here"
           else
             echo "warning: SwiftLint not installed. Run: brew install swiftlint"
           fi

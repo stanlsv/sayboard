@@ -1,12 +1,7 @@
-// SpinnerMorphAnimation -- Plays the 15-frame spinner-to-mic morph
 
 import SwiftUI
 
-// MARK: - SpinnerMorphAnimation
-
 struct SpinnerMorphAnimation: View {
-
-  // MARK: Internal
 
   var canStep: Bool
   var onComplete: () -> Void
@@ -36,8 +31,6 @@ struct SpinnerMorphAnimation: View {
       }
     }
   }
-
-  // MARK: Private
 
   private static let frameDuration: TimeInterval = 0.18 / 15
   private static let lastFrame = SpinnerMorphFrames.frameCount - 1

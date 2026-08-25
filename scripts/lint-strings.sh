@@ -6,7 +6,12 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-CATALOGS=$(find "$REPO_ROOT" -name '*.xcstrings' -not -path '*/.*' -not -path '*/DerivedData/*')
+# Prune by directory name while walking, not by matching the whole path: `-path '*/.*'` also
+# rejects every catalog when the repo root itself sits under a dot directory, which is where
+# `git worktree` puts trees under `.claude/`.
+CATALOGS=$(find "$REPO_ROOT" -mindepth 1 \
+  \( -name '.*' -o -name 'DerivedData' \) -prune -o \
+  -name '*.xcstrings' -print)
 
 if [ -z "$CATALOGS" ]; then
   echo "No .xcstrings files found."
@@ -105,7 +110,9 @@ def lint_catalog(path):
 # ============================================================================
 
 def main():
-    paths = sys.argv[1].split()
+    # One path per line: find emits them that way, and splitting on whitespace instead would cut
+    # any path containing a space in half.
+    paths = sys.argv[1].splitlines()
     total_errors = 0
     total_warnings = 0
 

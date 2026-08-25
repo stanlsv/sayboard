@@ -1,10 +1,6 @@
 import SwiftUI
 
-// SpaceBarKey -- Space bar with trackpad-style cursor movement on long press + drag
-
 struct SpaceBarKey: View {
-
-  // MARK: Internal
 
   let useCustomSpaceBar: Bool
   let onSpace: () -> Void
@@ -32,8 +28,6 @@ struct SpaceBarKey: View {
       .sensoryFeedback(.impact(weight: .light), trigger: self.trackpadActivationCount)
       .gatedSensoryFeedback(.selection, trigger: self.spaceTapCount)
   }
-
-  // MARK: Private
 
   private static let activationDelay: TimeInterval = 0.3
   private static let pointsPerCharacter: CGFloat = 8
@@ -73,7 +67,6 @@ struct SpaceBarKey: View {
     let elapsed = value.time.timeIntervalSince(startTime)
 
     if self.isTrackpadActive {
-      // Vertical dead zone: stop cursor movement if finger drifts too far vertically
       guard abs(value.translation.height) < Self.verticalDeadZone else { return }
 
       let totalOffset = value.translation.width / Self.pointsPerCharacter

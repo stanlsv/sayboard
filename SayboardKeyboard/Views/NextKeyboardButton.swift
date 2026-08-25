@@ -1,10 +1,6 @@
 import SwiftUI
 import UIKit
 
-// NextKeyboardButton -- Transparent UIButton overlay that sends
-// handleInputModeList(from:with:) up the responder chain.
-// Tap switches keyboard; long press shows the system keyboard picker.
-
 struct NextKeyboardButton: UIViewRepresentable {
 
   func makeUIView(context _: Context) -> UIButton {
