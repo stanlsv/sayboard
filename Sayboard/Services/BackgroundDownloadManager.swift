@@ -44,6 +44,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
   let lock = NSLock()
   var activeMetadata = [String: DownloadMetadata]()
   var activeTasks = [String: URLSessionDownloadTask]()
+  var lastProgress = [String: (percent: Int, nanoseconds: UInt64)]()
 
   static func ownsSession(identifier: String) -> Bool {
     identifier == Self.sessionIdentifier || identifier == Self.upgradeSessionIdentifier
@@ -83,12 +84,14 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     request.cachePolicy = .reloadIgnoringLocalCacheData
     let session = self.session(for: metadata.downloadType)
     let task = session.downloadTask(with: request)
+    task.countOfBytesClientExpectsToReceive = metadata.sizeBytes
 
     var updatedMetadata = metadata
     updatedMetadata.taskIdentifier = task.taskIdentifier
     updatedMetadata.sessionIdentifier = session.configuration.identifier
     self.activeMetadata[existingKey] = updatedMetadata
     self.activeTasks[existingKey] = task
+    self.lastProgress[existingKey] = nil
 
     self.persistMetadata()
 
@@ -100,6 +103,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     let key = "\(downloadType.rawValue)/\(variantRawValue)"
     self.activeMetadata.removeValue(forKey: key)
     let task = self.activeTasks.removeValue(forKey: key)
+    self.lastProgress.removeValue(forKey: key)
     self.persistMetadata()
     self.lock.unlock()
 
@@ -202,7 +206,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
 
     self.lock.lock()
     guard
-      let (_, metadata) = self.findMetadata(
+      let (key, metadata) = self.findMetadata(
         sessionIdentifier: session.configuration.identifier,
         taskIdentifier: downloadTask.taskIdentifier,
       )
@@ -210,7 +214,10 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
       self.lock.unlock()
       return
     }
+    let shouldEmit = self.shouldEmitProgress(fraction, forKey: key)
     self.lock.unlock()
+
+    guard shouldEmit else { return }
 
     let event = DownloadEvent.progress(
       downloadType: metadata.downloadType,
@@ -231,6 +238,27 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     DispatchQueue.main.async { handler() }
   }
 
+  func shouldEmitProgress(
+    _ fraction: Double,
+    forKey key: String,
+    now: UInt64 = DispatchTime.now().uptimeNanoseconds,
+  ) -> Bool {
+    let percent = Int(fraction * 100)
+
+    guard let last = self.lastProgress[key] else {
+      self.lastProgress[key] = (percent, now)
+      return true
+    }
+
+    let elapsed = now &- last.nanoseconds
+    guard percent != last.percent || elapsed >= Self.progressMinIntervalNanos else {
+      return false
+    }
+
+    self.lastProgress[key] = (percent, now)
+    return true
+  }
+
   func findMetadata(sessionIdentifier: String?, taskIdentifier: Int) -> (key: String, metadata: DownloadMetadata)? {
     for (key, meta) in self.activeMetadata where meta.taskIdentifier == taskIdentifier {
       let owner = meta.sessionIdentifier ?? Self.sessionIdentifier
@@ -245,6 +273,7 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
     self.lock.lock()
     self.activeMetadata.removeValue(forKey: key)
     self.activeTasks.removeValue(forKey: key)
+    self.lastProgress.removeValue(forKey: key)
     self.persistMetadata()
     self.lock.unlock()
 
@@ -265,7 +294,12 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
   }
 
   private static let hashBufferSize = 1_048_576
+
+  private static let progressMinIntervalNanos: UInt64 = 100_000_000
+
   private static let resourceTimeout: TimeInterval = 3600
+
+  private static let discretionaryResourceTimeout: TimeInterval = 7 * 24 * 3600
 
   private let processingQueue = DispatchQueue(label: "app.sayboard.download-processing")
 
@@ -274,22 +308,28 @@ final class BackgroundDownloadManager: NSObject, URLSessionDownloadDelegate, @un
   private lazy var session: URLSession = self.makeSession(
     identifier: Self.sessionIdentifier,
     allowsExpensiveNetwork: true,
+    isDiscretionary: false,
   )
 
   private lazy var upgradeSession: URLSession = self.makeSession(
     identifier: Self.upgradeSessionIdentifier,
     allowsExpensiveNetwork: false,
+    isDiscretionary: true,
   )
 
   private var metadataFileURL: URL? {
     AppGroup.containerURL?.appendingPathComponent("active-downloads.json")
   }
 
-  private func makeSession(identifier: String, allowsExpensiveNetwork: Bool) -> URLSession {
+  private func makeSession(
+    identifier: String,
+    allowsExpensiveNetwork: Bool,
+    isDiscretionary: Bool,
+  ) -> URLSession {
     let config = URLSessionConfiguration.background(withIdentifier: identifier)
-    config.isDiscretionary = false
+    config.isDiscretionary = isDiscretionary
     config.sessionSendsLaunchEvents = true
-    config.timeoutIntervalForResource = Self.resourceTimeout
+    config.timeoutIntervalForResource = isDiscretionary ? Self.discretionaryResourceTimeout : Self.resourceTimeout
     config.allowsExpensiveNetworkAccess = allowsExpensiveNetwork
     config.allowsConstrainedNetworkAccess = allowsExpensiveNetwork
     if AppGroup.containerURL != nil {

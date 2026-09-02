@@ -205,7 +205,7 @@ struct SharedSettings {
     get {
       guard
         let raw = defaults.string(forKey: SharedKey.defaultWritingStyle),
-        let style = WritingStyle(rawValue: raw)
+        let style = WritingStyle(stored: raw)
       else {
         return .formal
       }
@@ -267,6 +267,22 @@ struct SharedSettings {
         defaults.removeObject(forKey: SharedKey.llmDownloadInProgressVariants)
       } else {
         defaults.set(newValue.map(\.rawValue), forKey: SharedKey.llmDownloadInProgressVariants)
+      }
+    }
+  }
+
+  var declinedLLMUpgrades: Set<LLMModelVariant> {
+    get {
+      guard let rawValues = defaults.stringArray(forKey: SharedKey.declinedLLMUpgrades) else {
+        return []
+      }
+      return Set(rawValues.compactMap { LLMModelVariant(rawValue: $0) })
+    }
+    nonmutating set {
+      if newValue.isEmpty {
+        defaults.removeObject(forKey: SharedKey.declinedLLMUpgrades)
+      } else {
+        defaults.set(newValue.map(\.rawValue), forKey: SharedKey.declinedLLMUpgrades)
       }
     }
   }

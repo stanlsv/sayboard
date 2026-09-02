@@ -34,7 +34,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
   ) -> UISceneConfiguration {
     DiagnosticLog.write(
       "app: launched on \(ProcessInfo.processInfo.operatingSystemVersionString), "
-        + "backgroundANEBlocked=\(OperatingSystem.isBackgroundNeuralEngineBlocked)"
+        + "backgroundANEBlocked=\(OperatingSystem.isBackgroundNeuralEngineBlocked), "
+        + "physicalMemory=\(ProcessInfo.processInfo.physicalMemory / 1_000_000)MB"
     )
     for ctx in options.urlContexts {
       let source = ctx.options.sourceApplication

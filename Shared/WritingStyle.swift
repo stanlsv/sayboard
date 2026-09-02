@@ -8,16 +8,21 @@ enum WritingStyle: String, Codable, Sendable, CaseIterable {
   init(from decoder: Decoder) throws {
     let container = try decoder.singleValueContainer()
     let rawValue = try container.decode(String.self)
+    guard let style = Self(stored: rawValue) else {
+      throw DecodingError.dataCorruptedError(
+        in: container,
+        debugDescription: "Unknown WritingStyle raw value: \(rawValue)",
+      )
+    }
+    self = style
+  }
+
+  init?(stored rawValue: String) {
     switch rawValue {
     case "informal": self = .casual
-    case "official": self = .veryCasual
+    case "official": self = .formal
     default:
-      guard let value = Self(rawValue: rawValue) else {
-        throw DecodingError.dataCorruptedError(
-          in: container,
-          debugDescription: "Unknown WritingStyle raw value: \(rawValue)",
-        )
-      }
+      guard let value = Self(rawValue: rawValue) else { return nil }
       self = value
     }
   }
@@ -92,6 +97,10 @@ enum TextStyleFormatter {
     return set
   }()
 
+  private static var literalSpan: Regex<Substring> {
+    #/https?://\S+|www\.\S+|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|\d{1,2}[:：]\d{2}(?:[:：]\d{2})?|\d+[.,]\d+/#
+  }
+
   private static func applyCasual(_ text: String) -> String {
     let lines = text.split(separator: "\n", omittingEmptySubsequences: false)
     let processed = lines.map { line in
@@ -111,8 +120,23 @@ enum TextStyleFormatter {
   }
 
   private static func applyVeryCasual(_ text: String) -> String {
-    var result = text.lowercased()
-    result = String(result.filter { !self.veryCasualStripSet.contains($0) })
+    var result = ""
+    var cursor = text.startIndex
+    for match in text.matches(of: self.literalSpan) {
+      result += self.strippingProse(text[cursor ..< match.range.lowerBound])
+      result += text[match.range]
+      cursor = match.range.upperBound
+    }
+    result += self.strippingProse(text[cursor...])
+    return self.tidyingWhitespace(result)
+  }
+
+  private static func strippingProse(_ text: Substring) -> String {
+    String(text.lowercased().filter { !self.veryCasualStripSet.contains($0) })
+  }
+
+  private static func tidyingWhitespace(_ text: String) -> String {
+    var result = text
     while result.contains("  ") {
       result = result.replacingOccurrences(of: "  ", with: " ")
     }
@@ -140,6 +164,14 @@ struct AppStyleEntry: Codable, Sendable, Identifiable, Hashable {
 
 struct AppStyleStore {
 
+  init() {
+    self.init(defaults: AppGroup.sharedDefaults ?? .standard)
+  }
+
+  init(defaults: UserDefaults) {
+    self.defaults = defaults
+  }
+
   func loadEntries() -> [AppStyleEntry] {
     guard let data = self.defaults.data(forKey: SharedKey.appWritingStyles) else {
       return []
@@ -156,6 +188,10 @@ struct AppStyleStore {
 
   func style(for bundleId: String) -> WritingStyle? {
     self.loadEntries().first { $0.bundleId == bundleId }?.style
+  }
+
+  func resolvedStyle(hostBundleId: String?, defaultStyle: WritingStyle) -> WritingStyle {
+    hostBundleId.flatMap { self.style(for: $0) } ?? defaultStyle
   }
 
   func addEntry(_ entry: AppStyleEntry) {
@@ -182,5 +218,5 @@ struct AppStyleStore {
     self.saveEntries(entries)
   }
 
-  private let defaults = AppGroup.sharedDefaults ?? .standard
+  private let defaults: UserDefaults
 }

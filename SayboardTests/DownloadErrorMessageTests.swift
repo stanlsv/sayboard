@@ -17,6 +17,12 @@ struct DownloadErrorMessageTests {
   }
 
   @Test
+  func `a refusal before the transfer is named as out of space`() {
+    #expect(localizedDownloadError(R2DownloadError.insufficientDiskSpace) ==
+      "Not enough storage space. Free up space and try again.")
+  }
+
+  @Test
   func `an opaque extraction failure the volume survived stays generic`() {
     let wrapped = R2DownloadError.extractionFailed(OpaqueUnwritableFile.unwritableFile)
     #expect(localizedDownloadError(wrapped) == "Download failed. Tap Retry to try again.")

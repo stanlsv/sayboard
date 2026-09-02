@@ -354,7 +354,7 @@ extension SpeechRecognitionService: ModelLoading {
   func loadModel(variant: ModelVariant, from url: URL) async -> Bool {
     switch variant.engine {
     case .whisperKit:
-      await self.whisperService.loadModel(from: url.path)
+      await self.whisperService.loadModel(variant: variant, from: url.path)
       return self.whisperService.loadState == .loaded
 
     case .parakeet:

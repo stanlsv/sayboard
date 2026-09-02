@@ -60,9 +60,7 @@ struct HistoryListView: View {
   private var recordsList: some View {
     ScrollView {
       LazyVStack(spacing: 0) {
-        if !self.records.isEmpty {
-          self.privacyHeader
-        }
+        self.privacyHeader
         ForEach(self.records) { record in
           VStack(spacing: 0) {
             if record.id != self.records.first?.id {

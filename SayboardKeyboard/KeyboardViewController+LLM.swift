@@ -72,7 +72,7 @@ extension KeyboardViewController {
     let inputText: String
     if let directText {
       inputText = directText
-      self.llmOriginalTextLength = 0
+      self.llmOriginalText = ""
       self.pendingAutoActionText = directText
     } else {
       let beforeText = textDocumentProxy.documentContextBeforeInput ?? ""
@@ -83,7 +83,7 @@ extension KeyboardViewController {
         return
       }
       inputText = beforeText
-      self.llmOriginalTextLength = beforeText.count
+      self.llmOriginalText = beforeText
       self.pendingAutoActionText = nil
     }
 
@@ -147,9 +147,15 @@ extension KeyboardViewController {
     DiagnosticLog.write("llm/kb: inserting \(result.count) chars")
 
     let currentBeforeText = textDocumentProxy.documentContextBeforeInput ?? ""
-    let deleteCount = min(self.llmOriginalTextLength, currentBeforeText.count)
+    let expected = self.llmOriginalText
+    guard expected.isEmpty || currentBeforeText == expected else {
+      DiagnosticLog.write("llm/kb: document changed under the request, refusing to replace")
+      self.keyboardState.llmError = .noTextBeforeCursor
+      self.finishLLMInsertion()
+      return
+    }
 
-    for _ in 0 ..< deleteCount {
+    for _ in 0 ..< expected.count {
       textDocumentProxy.deleteBackward()
     }
 
@@ -159,12 +165,16 @@ extension KeyboardViewController {
     self.keyboardState.llmTextHistory.append(result)
     self.keyboardState.llmHistoryIndex = self.keyboardState.llmTextHistory.count - 1
 
+    self.finishLLMInsertion()
+  }
+
+  private func finishLLMInsertion() {
     LLMBridge.clearResult()
     LLMBridge.clearRequest()
     self.keyboardState.isLLMProcessing = false
     self.keyboardState.isProcessing = false
     self.pendingAutoActionText = nil
-    self.llmOriginalTextLength = 0
+    self.llmOriginalText = ""
   }
 
   private func navigateLLMHistory(to targetIndex: Int) {

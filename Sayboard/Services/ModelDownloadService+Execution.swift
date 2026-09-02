@@ -28,6 +28,11 @@ extension ModelDownloadService {
         throw R2DownloadError.manifestMissingVariant(variant.rawValue)
       }
 
+      let requiredBytes = ModelDiskReserve.requiredBytes(peak: entry.peakDiskBytes)
+      if let available = ModelDiskReserve.availableBytes(), available < requiredBytes {
+        throw R2DownloadError.insufficientDiskSpace
+      }
+
       try ModelStorageManager.ensureRootExists()
       let destDir = ModelStorageManager.directory(for: variant)
 
@@ -158,7 +163,7 @@ private func isOutOfSpaceError(_ error: Error) -> Bool {
     guard depth <= 4 else { return false }
 
     switch error {
-    case R2DownloadError.extractionRanOutOfSpace:
+    case R2DownloadError.extractionRanOutOfSpace, R2DownloadError.insufficientDiskSpace:
       return true
     case R2DownloadError.extractionFailed(let underlying), R2DownloadError.downloadFailed(let underlying):
       if matches(underlying, depth: depth + 1) { return true }

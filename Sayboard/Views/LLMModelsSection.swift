@@ -4,17 +4,18 @@ import SwiftUI
 struct LLMModelsSection: View {
 
   var body: some View {
-    Group {
+    let variants = self.filteredAndSortedVariants
+    return Group {
       if let replaced = self.llmDownloadService.replacedByUpgrade {
         self.upgradeNotice(replaced: replaced)
       }
       self.languageFilterButton
       VStack(spacing: 12) {
-        ForEach(self.filteredAndSortedVariants) { variant in
+        ForEach(variants) { variant in
           self.modelCard(for: variant)
         }
       }
-      .animation(.easeInOut(duration: 0.35), value: self.filteredAndSortedVariants)
+      .animation(.easeInOut(duration: 0.35), value: variants)
     }
     .sensoryFeedback(.selection, trigger: self.selectionHapticTrigger)
     .onChange(of: self.llmDownloadService.selectedVariant) {
@@ -62,9 +63,7 @@ struct LLMModelsSection: View {
 
       if lhs.isRecommended != rhs.isRecommended { return lhs.isRecommended }
 
-      let lhsRating = (lhs.quality + lhs.speed) / 2.0
-      let rhsRating = (rhs.quality + rhs.speed) / 2.0
-      return lhsRating > rhsRating
+      return lhs.catalogRank > rhs.catalogRank
     }
   }
 
@@ -218,5 +217,6 @@ struct LLMModelsSection: View {
         }
       },
     )
+    .equatable()
   }
 }

@@ -2,8 +2,6 @@
 import Combine
 import Foundation
 
-import UIKit
-
 @MainActor
 final class ModelDownloadService: ObservableObject {
 
@@ -137,20 +135,11 @@ final class ModelDownloadService: ObservableObject {
       )
     else { return }
 
-    guard hasEnoughDiskSpace(for: variant) else {
-      self.variantStates[variant] = .error(
-        message: "Not enough storage space. Free up space and try again."
-      )
-      return
-    }
-
     let settings = SharedSettings()
     var variants = settings.downloadInProgressVariants
     variants.insert(variant)
     settings.downloadInProgressVariants = variants
     settings.downloadStartedAt = Date()
-
-    UIApplication.shared.isIdleTimerDisabled = true
 
     self.variantStates[variant] = .downloading(progress: 0)
 
@@ -177,7 +166,10 @@ final class ModelDownloadService: ObservableObject {
   func deleteModel(variant: ModelVariant) {
     do {
       try ModelStorageManager.delete(variant)
-    } catch { }
+    } catch {
+      let name = variant.rawValue
+      DiagnosticLog.write("models: DELETE FAILED \(name): \(error)")
+    }
 
     self.variantStates[variant] = .notDownloaded
 
@@ -267,7 +259,6 @@ final class ModelDownloadService: ObservableObject {
     settings.downloadInProgressVariants = variants
     if variants.isEmpty {
       settings.downloadStartedAt = nil
-      UIApplication.shared.isIdleTimerDisabled = false
     }
   }
 
@@ -275,29 +266,9 @@ final class ModelDownloadService: ObservableObject {
     let settings = SharedSettings()
     settings.downloadInProgressVariants = []
     settings.downloadStartedAt = nil
-    UIApplication.shared.isIdleTimerDisabled = false
   }
 
   private func migrateFromHuggingFaceIfNeeded() {
     LegacyModelMigration.runIfNeeded()
-  }
-}
-
-private let diskSpaceSafetyMultiplier = 2.6
-
-private func hasEnoughDiskSpace(for variant: ModelVariant) -> Bool {
-  let requiredBytes = Int64(Double(variant.downloadSizeMB.megabytesInBytes) * diskSpaceSafetyMultiplier)
-  do {
-    let appSupportURL = try FileManager.default.url(
-      for: .applicationSupportDirectory,
-      in: .userDomainMask,
-      appropriateFor: nil,
-      create: false,
-    )
-    let values = try appSupportURL.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
-    guard let available = values.volumeAvailableCapacityForImportantUsage else { return true }
-    return available >= requiredBytes
-  } catch {
-    return true
   }
 }

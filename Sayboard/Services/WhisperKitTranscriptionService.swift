@@ -28,7 +28,7 @@ final class WhisperKitTranscriptionService: ObservableObject {
 
   @Published private(set) var loadState = ModelLoadState.unloaded
 
-  func loadModel(from folderPath: String) async {
+  func loadModel(variant: ModelVariant, from folderPath: String) async {
     if let existing = self.loadTask {
       await existing.value
       return
@@ -37,14 +37,19 @@ final class WhisperKitTranscriptionService: ObservableObject {
     self.loadGeneration += 1
     let expectedGen = self.loadGeneration
     self.loadState = .loading
-    let computeMode = OperatingSystem.isBackgroundNeuralEngineBlocked ? "cpuOnly (iOS 27 ANE gate)" : "default (ANE)"
-    DiagnosticLog.write("whisper: model load start, compute=\(computeMode)")
+    let compute = Self.computeOptions(for: variant)
+    let computeMode = compute == nil ? "default (ANE)" : "cpuOnly"
+    let footprintBefore = ProcessFootprint.residentMB()
+    DiagnosticLog.write(
+      "whisper: model load start, compute=\(computeMode), "
+        + "\(os_proc_available_memory() / 1_000_000)MB free, footprint \(footprintBefore)MB"
+    )
 
     let task = Task<Void, Never>.detached(priority: .userInitiated) { [weak self] in
       do {
         let config = WhisperKitConfig(
           modelFolder: folderPath,
-          computeOptions: Self.computeOptions(),
+          computeOptions: compute,
           load: true,
           download: false,
         )
@@ -57,7 +62,11 @@ final class WhisperKitTranscriptionService: ObservableObject {
           }
           self.whisperKit = kit
           self.loadState = .loaded
-          DiagnosticLog.write("whisper: model loaded")
+          let footprintAfter = ProcessFootprint.residentMB()
+          DiagnosticLog.write(
+            "whisper: model loaded, \(os_proc_available_memory() / 1_000_000)MB free after, "
+              + "footprint \(footprintAfter)MB (+\(footprintAfter - footprintBefore)MB)"
+          )
         }
       } catch {
         let errorMessage = error.localizedDescription
@@ -105,7 +114,10 @@ final class WhisperKitTranscriptionService: ObservableObject {
 
       let text = goodSegments.map(\.text).joined().trimmingCharacters(in: .whitespacesAndNewlines)
 
-      DiagnosticLog.write("whisper: \(allSegments.count) seg, \(goodSegments.count) kept, \(text.count) chars, \(detectedLang)")
+      DiagnosticLog.write(
+        "whisper: \(allSegments.count) seg, \(goodSegments.count) kept, \(text.count) chars, "
+          + "\(detectedLang), peak footprint \(ProcessFootprint.residentMB())MB"
+      )
 
       guard !text.isEmpty, text.wholeMatch(of: Self.audioEventTagPattern) == nil else {
         DiagnosticLog.write("whisper: NO SPEECH — empty after filtering, or audio-event tag only")
@@ -145,8 +157,8 @@ final class WhisperKitTranscriptionService: ObservableObject {
   private var loadTask: Task<Void, Never>?
   private var loadGeneration = 0
 
-  private static nonisolated func computeOptions() -> ModelComputeOptions? {
-    guard OperatingSystem.isBackgroundNeuralEngineBlocked else { return nil }
+  private static nonisolated func computeOptions(for variant: ModelVariant) -> ModelComputeOptions? {
+    guard OperatingSystem.isBackgroundNeuralEngineBlocked || variant == .whisperTurbo else { return nil }
     return ModelComputeOptions(
       melCompute: .cpuOnly,
       audioEncoderCompute: .cpuOnly,

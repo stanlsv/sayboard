@@ -52,6 +52,7 @@ enum LLMPromptTemplates {
       <|im_start|>user
       \(user)<|im_end|>
       <|im_start|>assistant
+
       """
 
     case .gemma:
@@ -61,15 +62,17 @@ enum LLMPromptTemplates {
 
       \(user)<end_of_turn>
       <start_of_turn>model
+
       """
 
     case .llama:
       """
-      <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+      <|start_header_id|>system<|end_header_id|>
 
       \(system)<|eot_id|><|start_header_id|>user<|end_header_id|>
 
       \(user)<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
 
       """
     }
@@ -143,7 +146,7 @@ enum LLMPromptTemplates {
     """
     You are a text-processing tool. Continue writing from where the text ends. \
     Match the existing tone, style, and topic. Write 2-3 new sentences that naturally follow. \
-    \(langInstruction) Output the original text followed by your continuation. No introductions. No explanations.
+    \(langInstruction) Output ONLY the continuation. No introductions. No explanations.
     """
   }
 

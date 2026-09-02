@@ -22,7 +22,15 @@ struct ModelEntry: Decodable, Sendable {
   let url: URL
   let sha256: String
   let sizeBytes: Int64
+  let expandedBytes: Int64?
   let engine: STTEngine
+
+  var peakDiskBytes: Int64 {
+    guard let expandedBytes else {
+      return Int64(Double(self.sizeBytes) * ModelDiskReserve.unmeasuredSpeechMultiplier)
+    }
+    return self.sizeBytes + expandedBytes
+  }
 }
 
 struct LLMModelEntry: Decodable, Sendable {
@@ -30,10 +38,18 @@ struct LLMModelEntry: Decodable, Sendable {
   let sha256: String
   let sizeBytes: Int64
   let minLlamaBuild: Int?
+  let expandedBytes: Int64?
 
   var isLoadableByThisBuild: Bool {
     guard let minLlamaBuild else { return true }
     return LlamaRuntime.buildNumber >= minLlamaBuild
+  }
+
+  var peakDiskBytes: Int64 {
+    guard let expandedBytes else {
+      return self.sizeBytes * 2
+    }
+    return self.sizeBytes + expandedBytes
   }
 }
 

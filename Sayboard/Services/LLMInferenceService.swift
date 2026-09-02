@@ -1,4 +1,5 @@
 
+
 import Foundation
 import llama
 
@@ -51,7 +52,11 @@ final class LLMInferenceService: ObservableObject {
       self.loadState = .error("Not enough free memory to load this model. Close other apps and try again.")
       return
     }
-    DiagnosticLog.write("llm: loading \(variant.rawValue), \(os_proc_available_memory() / 1_000_000)MB free")
+    let footprintBefore = ProcessFootprint.residentMB()
+    DiagnosticLog.write(
+      "llm: loading \(variant.rawValue), \(os_proc_available_memory() / 1_000_000)MB free, "
+        + "footprint \(footprintBefore)MB"
+    )
 
     let contextSize = variant.contextSize
     let threadCount = Self.inferenceThreadCount
@@ -87,7 +92,13 @@ final class LLMInferenceService: ObservableObject {
       self.model = result.model.pointer
       self.context = result.context.pointer
       self.loadState = .loaded
-      DiagnosticLog.write("llm: loaded ok, \(os_proc_available_memory() / 1_000_000)MB free after")
+      let footprintAfter = ProcessFootprint.residentMB()
+      DiagnosticLog.write(
+        "llm: loaded ok, \(os_proc_available_memory() / 1_000_000)MB free after, "
+          + "footprint \(footprintAfter)MB (+\(footprintAfter - footprintBefore)MB), "
+          + "declared \(variant.ramRequirementMB)MB"
+      )
+      DiagnosticLog.write("llm: backends -- \(Self.systemInfo())")
     } else {
       self.loadState = .error("Failed to load LLM model")
       DiagnosticLog.write("llm: llama.cpp refused \(variant.rawValue) — unsupported arch or bad file?")
@@ -111,7 +122,8 @@ final class LLMInferenceService: ObservableObject {
     self.loadState = .unloaded
   }
 
-  func process(systemPrompt: String, userText: String) async -> String? {
+  func process(systemPrompt: String, userText: String, assistantPrefill: String = "") async -> String? {
+    let prompt = Prompt(system: systemPrompt, user: userText, assistantPrefill: assistantPrefill)
     guard
       let model = self.model,
       let context = self.context,
@@ -131,10 +143,15 @@ final class LLMInferenceService: ObservableObject {
         model: sendableModel.pointer,
         context: sendableCtx.pointer,
         variant: variant,
-        systemPrompt: systemPrompt,
-        userText: userText,
+        prompt: prompt,
       )
     }.value
+  }
+
+  private struct Prompt: Sendable {
+    let system: String
+    let user: String
+    let assistantPrefill: String
   }
 
   private nonisolated static let contextReserveTokens = 16
@@ -152,20 +169,24 @@ final class LLMInferenceService: ObservableObject {
   private var currentVariant: LLMModelVariant?
   private var isProcessing = false
 
+  private nonisolated static func systemInfo() -> String {
+    guard let raw = llama_print_system_info() else { return "unavailable" }
+    return String(cString: raw).trimmingCharacters(in: .whitespacesAndNewlines)
+  }
+
   private nonisolated static func runInference(
     model: OpaquePointer,
     context: OpaquePointer,
     variant: LLMModelVariant,
-    systemPrompt: String,
-    userText: String,
+    prompt: Prompt,
   ) -> String? {
     let template = variant.chatTemplate
     let promptString = self.buildFormattedPrompt(
       model: model,
-      system: systemPrompt,
-      user: userText,
+      system: prompt.system,
+      user: prompt.user,
       chatTemplate: template,
-    )
+    ) + prompt.assistantPrefill
 
     let vocab = llama_model_get_vocab(model)
     let tokens = self.tokenize(vocab: vocab, prompt: promptString)
@@ -199,7 +220,8 @@ final class LLMInferenceService: ObservableObject {
     }
     DiagnosticLog.write(
       "llm: raw=\(generated.text.count) chars, eos=\(generated.stoppedAtEOS), "
-        + "closingTag=\(generated.text.contains("</think>"))"
+        + "closingTag=\(generated.text.contains("</think>")), "
+        + "peak footprint \(ProcessFootprint.residentMB())MB"
     )
 
     guard let answer = template.answer(from: generated.text), !answer.isEmpty else {
@@ -207,7 +229,7 @@ final class LLMInferenceService: ObservableObject {
       return nil
     }
     DiagnosticLog.write("llm: answer=\(answer.count) chars")
-    return answer
+    return prompt.assistantPrefill + answer
   }
 
   private nonisolated static func tokenize(

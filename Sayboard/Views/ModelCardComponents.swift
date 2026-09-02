@@ -19,34 +19,118 @@ struct ModelNoticeRow: View {
   }
 }
 
-struct ModelStatBar: View {
-
-  let label: String
+struct ModelStat: Identifiable {
+  let labelKey: String
   let value: Double
 
+  var id: String {
+    self.labelKey
+  }
+}
+
+struct ModelStatBars: View {
+
+  let stats: [ModelStat]
+
   var body: some View {
-    HStack(spacing: 8) {
-      Text(LocalizedStringKey(self.label))
-        .font(.caption2)
-        .foregroundStyle(.secondary)
-        .frame(width: self.labelWidth, alignment: .trailing)
-      GeometryReader { geometry in
-        ZStack(alignment: .leading) {
-          Capsule()
-            .fill(Color.secondary.opacity(0.15))
-            .frame(height: self.barHeight)
-          Capsule()
-            .fill(Color.accentColor)
-            .frame(width: geometry.size.width * self.value, height: self.barHeight)
+    Grid(horizontalSpacing: 8, verticalSpacing: 6) {
+      ForEach(self.stats) { stat in
+        GridRow {
+          Text(LocalizedStringKey(stat.labelKey))
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .gridColumnAlignment(.trailing)
+          ZStack(alignment: .leading) {
+            Capsule()
+              .fill(Color.secondary.opacity(0.15))
+            Capsule()
+              .fill(Color.accentColor)
+              .frame(width: Self.barWidth * stat.value)
+          }
+          .frame(width: Self.barWidth, height: Self.barHeight)
         }
       }
-      .frame(width: self.barWidth, height: self.barHeight)
     }
   }
 
-  private let barHeight: CGFloat = 6
-  private let barWidth: CGFloat = 50
-  private let labelWidth: CGFloat = 52
+  private static let barHeight: CGFloat = 6
+  private static let barWidth: CGFloat = 50
+}
+
+struct ModelBadgePill: View {
+
+  let text: Text
+  let color: Color
+  var systemImage: String?
+
+  var body: some View {
+    HStack(spacing: 4) {
+      if let systemImage = self.systemImage {
+        Image(systemName: systemImage)
+          .font(.caption2.weight(.bold))
+      }
+      self.text
+        .font(.caption.weight(.medium))
+        .lineLimit(1)
+        .truncationMode(.tail)
+    }
+    .foregroundStyle(self.color)
+    .padding(.horizontal, 8)
+    .padding(.vertical, 3)
+    .background(self.color.opacity(0.12))
+    .clipShape(Capsule())
+  }
+}
+
+struct ModelBadgesRow<Trailing: View>: View {
+
+  let isActive: Bool
+  @ViewBuilder let trailing: Trailing
+
+  var body: some View {
+    FlowLayout {
+      ModelBadgePill(text: Text("Active"), color: .accentColor, systemImage: "checkmark")
+        .fixedSize()
+        .frame(width: self.isActive ? nil : 0)
+        .clipped()
+        .opacity(self.isActive ? 1 : 0)
+      self.trailing
+    }
+  }
+}
+
+struct ModelLanguageTag: View {
+
+  let languageTagKey: String
+  let formattedRAM: String
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 2) {
+      self.languages
+      self.memory
+    }
+    .foregroundStyle(.secondary)
+  }
+
+  private var languages: some View {
+    HStack(spacing: 4) {
+      Image(systemName: "globe")
+        .font(.caption2)
+      Text(LocalizedStringKey(self.languageTagKey))
+        .font(.caption)
+    }
+    .fixedSize()
+  }
+
+  private var memory: some View {
+    HStack(spacing: 4) {
+      Image(systemName: "memorychip")
+        .font(.caption2)
+      Text("\(self.formattedRAM) RAM")
+        .font(.caption)
+    }
+    .fixedSize()
+  }
 }
 
 struct UnsupportedModelOverlay: View {
@@ -101,7 +185,7 @@ struct DownloadStatusView: View {
       }
     }
     .transition(.identity)
-    .frame(height: self.statusRowHeight)
+    .frame(minHeight: self.statusRowHeight)
     .animation(nil, value: self.downloadState)
   }
 
@@ -111,13 +195,15 @@ struct DownloadStatusView: View {
 
   private var notDownloadedView: some View {
     Button(action: self.onDownload) {
-      HStack(spacing: 4) {
+      FlowLayout(spacing: 4, lineSpacing: 2) {
         Image(systemName: "arrow.down.circle.fill")
           .font(.caption)
         Text("Download")
           .font(.caption.weight(.medium))
+          .fixedSize()
         Text(verbatim: "(\(self.formattedSize))")
           .font(.caption)
+          .fixedSize()
       }
       .foregroundStyle(Color.accentColor)
     }
@@ -126,11 +212,13 @@ struct DownloadStatusView: View {
 
   private var downloadedBadge: some View {
     HStack(spacing: 8) {
-      HStack(spacing: 4) {
+      FlowLayout(spacing: 4, lineSpacing: 2) {
         Text("Downloaded")
           .font(.caption.weight(.medium))
+          .fixedSize()
         Text(verbatim: "(\(self.formattedSize))")
           .font(.caption)
+          .fixedSize()
       }
       .foregroundStyle(.secondary)
       Button {

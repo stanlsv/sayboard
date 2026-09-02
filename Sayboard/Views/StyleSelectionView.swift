@@ -52,8 +52,7 @@ struct StyleSelectionView: View {
   private var cardList: some View {
     VStack(spacing: 12) {
       ForEach(WritingStyle.allCases, id: \.self) { style in
-        let selected = self.selectedStyle == style
-        Button {
+        StyleCard(style: style, isSelected: self.selectedStyle == style) {
           self.selectedStyle = style
           let entry = AppStyleEntry(
             bundleId: self.bundleId,
@@ -64,18 +63,7 @@ struct StyleSelectionView: View {
           self.store.addEntry(entry)
           self.onStyleChanged()
           self.dismiss()
-        } label: {
-          StyleOptionRow(style: style, isSelected: selected)
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(
-              RoundedRectangle(cornerRadius: 12)
-                .stroke(selected ? Color.accentColor : .clear, lineWidth: 2)
-            )
         }
-        .foregroundStyle(.primary)
       }
     }
   }

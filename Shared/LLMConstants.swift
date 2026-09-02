@@ -38,10 +38,11 @@ enum ChatTemplate: String, CaseIterable, Codable, Sendable {
 
 enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   case qwen35Small = "qwen35-0.8b-q4km"
-  case gemma3One = "gemma3-1b-q5km"
+  case gemma3OneQAT = "gemma3-1b-qat-q4_0"
   case llama32One = "llama32-1b-q5km"
   case smollm2Medium = "smollm2-1.7b-q4km"
   case qwen35Large = "qwen35-2b-q5km"
+  case gemma3One = "gemma3-1b-q5km"
   case qwen3Small = "qwen3-0.6b-q5km"
   case qwen3Large = "qwen3-1.7b-q8"
 
@@ -60,7 +61,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var displayName: String {
     switch self {
     case .qwen35Small: "Qwen 3.5 0.8B"
-    case .gemma3One: "Gemma 3 1B"
+    case .gemma3OneQAT, .gemma3One: "Gemma 3 1B"
     case .llama32One: "Llama 3.2 1B"
     case .smollm2Medium: "SmolLM2 1.7B"
     case .qwen35Large: "Qwen 3.5 2B"
@@ -72,7 +73,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var descriptionKey: String {
     switch self {
     case .qwen35Small, .qwen3Small: "Smallest and fastest model. Basic quality with multilingual support."
-    case .gemma3One: "Better quality than Qwen 3 0.6B. Multilingual support."
+    case .gemma3OneQAT, .gemma3One: "Good quality at high speed. The most balanced model on this list."
     case .llama32One: "Similar quality to Gemma 3. Stronger in English, weaker multilingual."
     case .smollm2Medium: "Higher quality than 1B models. English-focused, slower processing."
     case .qwen35Large: "Best overall quality and the widest language coverage. Slower than the 1B models."
@@ -83,6 +84,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var downloadSizeMB: Int {
     switch self {
     case .qwen35Small: 562
+    case .gemma3OneQAT: 721
     case .gemma3One: 851
     case .llama32One: 912
     case .smollm2Medium: 1056
@@ -95,6 +97,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var ramRequirementMB: Int {
     switch self {
     case .qwen35Small: 750
+    case .gemma3OneQAT: 850
     case .gemma3One: 1000
     case .llama32One: 1050
     case .smollm2Medium: 1550
@@ -107,7 +110,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var quality: Double {
     switch self {
     case .qwen35Small: 0.60
-    case .gemma3One: 0.65
+    case .gemma3OneQAT, .gemma3One: 0.65
     case .llama32One: 0.60
     case .smollm2Medium: 0.75
     case .qwen35Large: 0.88
@@ -119,6 +122,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var speed: Double {
     switch self {
     case .qwen35Small: 0.92
+    case .gemma3OneQAT: 0.86
     case .gemma3One: 0.80
     case .llama32One: 0.78
     case .smollm2Medium: 0.60
@@ -131,7 +135,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var languageTagKey: String {
     switch self {
     case .qwen35Small, .qwen35Large: "200+ languages"
-    case .gemma3One: "140 languages"
+    case .gemma3OneQAT, .gemma3One: "140 languages"
     case .llama32One: "8 languages"
     case .smollm2Medium: "English"
     case .qwen3Small, .qwen3Large: "100+ languages"
@@ -140,7 +144,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
 
   var supportedLanguages: Set<String> {
     switch self {
-    case .qwen35Small, .qwen35Large, .qwen3Small, .qwen3Large, .gemma3One:
+    case .qwen35Small, .qwen35Large, .qwen3Small, .qwen3Large, .gemma3OneQAT, .gemma3One:
       SpeechLanguages.whisper
     case .llama32One:
       ["en", "de", "fr", "it", "pt", "hi", "es", "th"]
@@ -149,8 +153,12 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     }
   }
 
+  var catalogRank: Double {
+    self.quality * Self.qualityWeight + self.speed * (1 - Self.qualityWeight)
+  }
+
   var isRecommended: Bool {
-    self == .gemma3One
+    self == .gemma3OneQAT
   }
 
   var isSuperseded: Bool {
@@ -161,13 +169,15 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     switch self {
     case .qwen3Small: .qwen35Small
     case .qwen3Large: .qwen35Large
-    case .qwen35Small, .qwen35Large, .gemma3One, .llama32One, .smollm2Medium: nil
+    case .gemma3One: .gemma3OneQAT
+    case .qwen35Small, .qwen35Large, .gemma3OneQAT, .llama32One, .smollm2Medium: nil
     }
   }
 
   var ggufFileName: String {
     switch self {
     case .qwen35Small: "qwen3.5-0.8b-q4_k_m.gguf"
+    case .gemma3OneQAT: "gemma3-1b-qat-q4_0.gguf"
     case .gemma3One: "gemma3-1b-q5_k_m.gguf"
     case .llama32One: "llama-3.2-1b-q5_k_m.gguf"
     case .smollm2Medium: "smollm2-1.7b-q4_k_m.gguf"
@@ -184,7 +194,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var chatTemplate: ChatTemplate {
     switch self {
     case .qwen35Small, .qwen35Large, .qwen3Small, .qwen3Large: .qwenNoThinking
-    case .gemma3One: .gemma
+    case .gemma3OneQAT, .gemma3One: .gemma
     case .llama32One: .llama
     case .smollm2Medium: .chatml
     }
@@ -192,7 +202,7 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
 
   var contextSize: Int {
     switch self {
-    case .gemma3One, .llama32One, .qwen3Small, .qwen35Small:
+    case .gemma3OneQAT, .gemma3One, .llama32One, .qwen3Small, .qwen35Small:
       1024
     case .smollm2Medium, .qwen3Large, .qwen35Large:
       2048
@@ -212,6 +222,8 @@ enum LLMModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   }
 
   private static let systemOverheadMB = 2000
+
+  private static let qualityWeight = 0.7
 
 }
 
@@ -244,6 +256,10 @@ enum LLMAction: String, CaseIterable, Codable, Sendable {
     case .expand: "Expand"
     case .addPunctuation: "Add punctuation"
     }
+  }
+
+  var continuesInput: Bool {
+    self == .continueWriting
   }
 
   static func enabledActions(excluding disabled: Set<Self>) -> [Self] {

@@ -17,9 +17,10 @@ extension SpeechRecognitionService {
   }
 
   func styled(_ text: String) -> String {
-    let store = AppStyleStore()
-    let resolvedStyle = self.settings.hostBundleId.flatMap { store.style(for: $0) }
-      ?? self.settings.defaultWritingStyle
+    let resolvedStyle = AppStyleStore().resolvedStyle(
+      hostBundleId: self.settings.hostBundleId,
+      defaultStyle: self.settings.defaultWritingStyle,
+    )
     let formatted = TextStyleFormatter.format(text, style: resolvedStyle)
     return SnippetExpander.expand(formatted, snippets: self.settings.snippets)
   }
@@ -54,9 +55,9 @@ extension SpeechRecognitionService {
 
     if case .text(let output) = result {
       let sanitizedText = TextSanitizer.sanitize(output.text)
-      self.currentTranscription = sanitizedText
-
       let bridgeText = self.styled(sanitizedText)
+      self.currentTranscription = bridgeText
+
       TranscriptionBridge.writeTranscription(bridgeText)
 
       if let start = output.firstWordStart, let end = output.lastWordEnd {

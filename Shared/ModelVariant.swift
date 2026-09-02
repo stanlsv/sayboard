@@ -18,6 +18,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   case whisperTiny = "openai_whisper-tiny"
   case whisperBase = "openai_whisper-base"
   case whisperSmall = "openai_whisper-small"
+  case whisperTurbo = "openai_whisper-large-v3-v20240930_turbo_632MB"
   case parakeetV2 = "parakeet-tdt-0.6b-v2"
   case parakeetV3 = "parakeet-tdt-0.6b-v3"
   case moonshineTiny = "moonshine-tiny-en"
@@ -32,7 +33,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
 
   var engine: STTEngine {
     switch self {
-    case .whisperTiny, .whisperBase, .whisperSmall:
+    case .whisperTiny, .whisperBase, .whisperSmall, .whisperTurbo:
       .whisperKit
     case .parakeetV2, .parakeetV3:
       .parakeet
@@ -46,6 +47,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     case .whisperTiny: "Whisper Tiny"
     case .whisperBase: "Whisper Base"
     case .whisperSmall: "Whisper Small"
+    case .whisperTurbo: "Whisper Turbo"
     case .parakeetV2: "Parakeet v2"
     case .parakeetV3: "Parakeet v3"
     case .moonshineTiny: "Moonshine Tiny"
@@ -59,14 +61,37 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   var descriptionKey: String {
     switch self {
     case .whisperTiny: "Lightest multilingual model. Basic accuracy, but supports 100 languages."
+
     case .whisperBase: "Better accuracy than Whisper Tiny. Supports 100 languages."
-    case .whisperSmall: "Best Whisper model. Similar size to Parakeet, but more languages."
+
+    case .whisperSmall:
+      """
+      Compact Whisper model. It is slightly smaller than Parakeet and \
+      supports far more languages.
+      """
+
+    case .whisperTurbo:
+      """
+      Most accurate Whisper model. It covers the languages Parakeet does not support. \
+      Slower than every other model, especially on the first run.
+      """
+
     case .parakeetV2: "Top English accuracy among all models. English only."
-    case .parakeetV3: "Best overall model. 25 languages with top-tier accuracy and auto-detection."
+
+    case .parakeetV3:
+      """
+      Best overall model. 25 European languages with top-tier accuracy and auto-detection. \
+      For English, Whisper Turbo is worth trying too.
+      """
+
     case .moonshineTiny: "Smallest model available. English only, basic accuracy."
+
     case .moonshineBase: "Small English model. Better than Moonshine Tiny, no streaming."
+
     case .moonshineTinyStreaming: "Smallest streaming model. Real-time English with basic accuracy."
+
     case .moonshineSmallStreaming: "Compact streaming model. Good English accuracy at a small size."
+
     case .moonshineMediumStreaming: "Best streaming accuracy, close to Parakeet. English only."
     }
   }
@@ -76,6 +101,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     case .whisperTiny: 69
     case .whisperBase: 132
     case .whisperSmall: 445
+    case .whisperTurbo: 478
     case .parakeetV2: 450
     case .parakeetV3: 477
     case .moonshineTiny: 29
@@ -91,6 +117,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     case .whisperTiny: 130
     case .whisperBase: 250
     case .whisperSmall: 850
+    case .whisperTurbo: 1200
     case .parakeetV2: 860
     case .parakeetV3: 890
     case .moonshineTiny: 60
@@ -106,6 +133,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     case .whisperTiny: 0.35
     case .whisperBase: 0.48
     case .whisperSmall: 0.68
+    case .whisperTurbo: 0.90
     case .parakeetV2: 0.93
     case .parakeetV3: 0.95
     case .moonshineTiny: 0.38
@@ -121,6 +149,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     case .whisperTiny: 0.98
     case .whisperBase: 0.93
     case .whisperSmall: 0.85
+    case .whisperTurbo: 0.30
     case .parakeetV2: 0.9
     case .parakeetV3: 0.85
     case .moonshineTiny: 0.97
@@ -131,17 +160,31 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     }
   }
 
+  var catalogRank: Double {
+    self.accuracy * Self.accuracyWeight + self.speed * (1 - Self.accuracyWeight)
+  }
+
   var isRecommended: Bool {
     self == .parakeetV3
   }
 
+  var minimumDeviceMemoryMB: Int? {
+    switch self {
+    case .whisperTurbo: 5000
+    default: nil
+    }
+  }
+
   var isSupportedOnCurrentDevice: Bool {
-    ProcessInfo.processInfo.physicalMemory >= self.ramRequirementMB.megabytesInBytes
+    let physicalMemory = ProcessInfo.processInfo.physicalMemory
+    guard physicalMemory >= self.ramRequirementMB.megabytesInBytes else { return false }
+    guard let floor = self.minimumDeviceMemoryMB else { return true }
+    return physicalMemory >= floor.megabytesInBytes
   }
 
   var supportedLanguages: Set<String> {
     switch self {
-    case .whisperTiny, .whisperBase, .whisperSmall:
+    case .whisperTiny, .whisperBase, .whisperSmall, .whisperTurbo:
       SpeechLanguages.whisper
     case .parakeetV2:
       SpeechLanguages.englishOnly
@@ -154,7 +197,7 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
 
   var languageTagKey: String {
     switch self {
-    case .whisperTiny, .whisperBase, .whisperSmall:
+    case .whisperTiny, .whisperBase, .whisperSmall, .whisperTurbo:
       "100 languages"
     case .parakeetV2:
       "English"
@@ -205,6 +248,8 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
   func formattedRAM(locale: Locale = .current) -> String {
     self.ramRequirementMB.formattedAsBytes(locale: locale)
   }
+
+  private static let accuracyWeight = 0.7
 
 }
 

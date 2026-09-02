@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-private enum ModelTab: String, CaseIterable {
+enum ModelTab: String, CaseIterable {
   case speechRecognition
   case textProcessing
 }
@@ -58,7 +58,7 @@ struct ModelsView: View {
   }
 
   @EnvironmentObject private var downloadService: ModelDownloadService
-  @State private var selectedTab = ModelTab.speechRecognition
+  @SceneStorage("modelsTab") private var selectedTab = ModelTab.speechRecognition
   @State private var selectedVariant: ModelVariant?
   @State private var selectedLanguageFilter: String?
   @State private var showLanguagePicker = false
@@ -94,21 +94,20 @@ struct ModelsView: View {
 
       if lhs.isRecommended != rhs.isRecommended { return lhs.isRecommended }
 
-      let lhsRating = (lhs.accuracy + lhs.speed) / 2.0
-      let rhsRating = (rhs.accuracy + rhs.speed) / 2.0
-      return lhsRating > rhsRating
+      return lhs.catalogRank > rhs.catalogRank
     }
   }
 
   private var sttContent: some View {
-    Group {
+    let variants = self.filteredAndSortedVariants
+    return Group {
       self.languageFilterButton
       VStack(spacing: 12) {
-        ForEach(self.filteredAndSortedVariants) { variant in
+        ForEach(variants) { variant in
           self.modelCard(for: variant)
         }
       }
-      .animation(.easeInOut(duration: 0.35), value: self.filteredAndSortedVariants)
+      .animation(.easeInOut(duration: 0.35), value: variants)
     }
   }
 
@@ -249,5 +248,6 @@ struct ModelsView: View {
         self.languagePrefVariant = variant
       },
     )
+    .equatable()
   }
 }

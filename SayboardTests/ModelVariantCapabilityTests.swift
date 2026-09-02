@@ -28,7 +28,7 @@ struct ModelVariantCapabilityTests {
   @Test
   func `flag is true exactly for the multilingual whisper and parakeet variants`() {
     let supporting = ModelVariant.allCases.filter(\.supportsLanguageSelection)
-    let expected: Set<ModelVariant> = [.whisperTiny, .whisperBase, .whisperSmall, .parakeetV3]
+    let expected: Set<ModelVariant> = [.whisperTiny, .whisperBase, .whisperSmall, .whisperTurbo, .parakeetV3]
     #expect(Set(supporting) == expected)
   }
 }

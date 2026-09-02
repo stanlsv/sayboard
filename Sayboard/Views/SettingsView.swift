@@ -88,6 +88,7 @@ struct SettingsView: View {
       self.historySection
       TextOutputSection()
       self.keyboardSection
+      FeedbackSection()
       self.aboutSection
     }
     .sensoryFeedback(.success, trigger: self.historyClearedTrigger)
@@ -95,6 +96,7 @@ struct SettingsView: View {
     .navigationTitle("Settings")
     .onAppear {
       self.refreshHistoryInfo()
+      self.refreshCacheSize()
       self.showsLowStorageWarning = DiskSpace.isLow() && !OperatingSystem.isBackgroundNeuralEngineBlocked
     }
     .onChange(of: self.selectedRetentionPolicy) { _, newValue in
@@ -122,10 +124,11 @@ struct SettingsView: View {
   private var keyboardHapticsEnabled = true
   @AppStorage(SharedKey.needsInputModeSwitchKey, store: UserDefaults(suiteName: AppGroup.identifier))
   private var needsInputModeSwitchKey = false
+  @AppStorage(SharedKey.hasUsableModel, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var hasUsableModel = false
   @Environment(\.locale) private var locale
   @EnvironmentObject private var speechService: SpeechRecognitionService
   @EnvironmentObject private var permissionService: PermissionService
-  @EnvironmentObject private var downloadService: ModelDownloadService
   @EnvironmentObject private var pipTutorialService: PiPTutorialService
   @State private var settings = SharedSettings()
   @State private var selectedRetentionPolicy: HistoryRetentionPolicy
@@ -137,6 +140,7 @@ struct SettingsView: View {
   @State private var historyClearedTrigger = false
   @State private var cacheClearedTrigger = false
   @State private var showsLowStorageWarning = false
+  @State private var cacheSizeBytes: Int64 = 0
   @SceneStorage("selectedTab") private var selectedTab = "history"
 
   private let clearHistoryMessage: LocalizedStringKey = "All recordings from the History tab, including transcription text and audio files stored on this device, will be permanently deleted."
@@ -164,7 +168,7 @@ struct SettingsView: View {
     self.permissionService.microphoneState != .granted
       || !self.permissionService.isKeyboardAdded
       || !self.permissionService.hasFullAccess
-      || !self.downloadService.hasUsableModel
+      || !self.hasUsableModel
   }
 
   private var setupSection: some View {
@@ -178,7 +182,7 @@ struct SettingsView: View {
       if !self.permissionService.hasFullAccess {
         self.fullAccessSetupRow
       }
-      if !self.downloadService.hasUsableModel {
+      if !self.hasUsableModel {
         self.modelSetupRow
       }
       if self.showsLowStorageWarning {
@@ -341,6 +345,7 @@ struct SettingsView: View {
       ) {
         Button("Clear Cache", role: .destructive) {
           ModelStorageManager.clearCompiledModelCache()
+          self.refreshCacheSize()
           self.cacheClearedTrigger.toggle()
         }
       } message: {
@@ -357,9 +362,8 @@ struct SettingsView: View {
   }
 
   private var formattedCacheSize: String {
-    let bytes = ModelStorageManager.compiledModelCacheSize()
-    guard bytes > 0 else { return "" }
-    return bytes.formatted(.byteCount(style: .file).locale(self.locale))
+    guard self.cacheSizeBytes > 0 else { return "" }
+    return self.cacheSizeBytes.formatted(.byteCount(style: .file).locale(self.locale))
   }
 
   private var appLanguageRow: some View {
@@ -373,6 +377,10 @@ struct SettingsView: View {
           .foregroundStyle(.secondary)
       }
     }
+  }
+
+  private func refreshCacheSize() {
+    self.cacheSizeBytes = ModelStorageManager.compiledModelCacheSize()
   }
 
   private func refreshHistoryInfo() {

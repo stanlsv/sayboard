@@ -2,8 +2,6 @@
 import Combine
 import Foundation
 
-import UIKit
-
 @MainActor
 final class LLMDownloadService: ObservableObject {
 
@@ -16,6 +14,8 @@ final class LLMDownloadService: ObservableObject {
 
   @Published var variantStates = [LLMModelVariant: ModelDownloadState]()
   @Published var selectedVariant: LLMModelVariant = SharedSettings().selectedLLMVariant
+
+  @Published var didEnableByDownload = false
 
   var hasUsableModel: Bool {
     self.isDownloaded(SharedSettings().selectedLLMVariant)
@@ -71,14 +71,6 @@ final class LLMDownloadService: ObservableObject {
   func startDownload(variant: LLMModelVariant) {
     guard !self.isDownloadInFlight(variant) else { return }
 
-    guard self.hasEnoughDiskSpace(for: variant) else {
-      self.variantStates[variant] = .error(
-        message: "Not enough storage space. Free up space and try again."
-      )
-      return
-    }
-
-    UIApplication.shared.isIdleTimerDisabled = true
     self.variantStates[variant] = .downloading(progress: 0)
     self.addVariantToPersistence(variant)
 
@@ -88,6 +80,7 @@ final class LLMDownloadService: ObservableObject {
   }
 
   func cancelDownload(variant: LLMModelVariant) {
+    self.recordUpgradeDecline(for: variant)
     self.enqueueTasks[variant]?.cancel()
     self.enqueueTasks[variant] = nil
 
@@ -104,6 +97,7 @@ final class LLMDownloadService: ObservableObject {
   }
 
   func deleteModel(variant: LLMModelVariant) {
+    self.recordUpgradeDecline(for: variant)
     do {
       try LLMModelStorageManager.delete(variant)
     } catch { }
@@ -121,6 +115,9 @@ final class LLMDownloadService: ObservableObject {
       }
     }
     self.syncHasUsableModel()
+    if !self.hasUsableModel {
+      settings.llmEnabled = false
+    }
   }
 
   func dismissError(variant: LLMModelVariant) {
@@ -134,6 +131,10 @@ final class LLMDownloadService: ObservableObject {
 
   func revertUpgrade() {
     guard let replaced = self.replacedByUpgrade else { return }
+    if let successor = replaced.successor {
+      let settings = SharedSettings()
+      settings.declinedLLMUpgrades.insert(successor)
+    }
     self.selectVariant(replaced)
     self.dismissUpgradeNotice()
   }
@@ -185,8 +186,6 @@ final class LLMDownloadService: ObservableObject {
 
   private static let llmDownloadTypes: [DownloadType] = [.llm, .llmUpgrade]
 
-  private static let diskSpaceSafetyMultiplier = 2.1
-
   private var cachedManifest: ModelManifest?
   private var eventCancellable: AnyCancellable?
   private var enqueueTasks = [LLMModelVariant: Task<Void, Never>]()
@@ -221,15 +220,14 @@ final class LLMDownloadService: ObservableObject {
         self.completeUpgrade(to: variant)
       } else {
         self.autoSelectIfNeeded(variant: variant)
+        self.enableProcessingAfterDownload(variant: variant)
       }
-      UIApplication.shared.isIdleTimerDisabled = false
 
     case .failed(_, let variantRawValue, let error):
       guard let variant = LLMModelVariant(rawValue: variantRawValue) else { return }
       self.enqueueTasks[variant] = nil
       self.variantStates[variant] = .error(message: localizedDownloadError(error))
       self.removeVariantFromPersistence(variant)
-      UIApplication.shared.isIdleTimerDisabled = false
     }
   }
 
@@ -242,6 +240,15 @@ final class LLMDownloadService: ObservableObject {
       guard entry.isLoadableByThisBuild else {
         DiagnosticLog.write("llm: \(variant.rawValue) needs llama.cpp > \(LlamaRuntime.buildNumber)")
         throw R2DownloadError.appTooOldForModel
+      }
+
+      let peakRequired = ModelDiskReserve.requiredBytes(peak: entry.peakDiskBytes)
+      let settledRequired = downloadType == .llmUpgrade
+        ? entry.sizeBytes + ModelDiskReserve.unattendedFloorBytes
+        : 0
+      let requiredBytes = max(peakRequired, settledRequired)
+      if let available = ModelDiskReserve.availableBytes(), available < requiredBytes {
+        throw R2DownloadError.insufficientDiskSpace
       }
 
       try LLMModelStorageManager.ensureRootExists()
@@ -258,9 +265,21 @@ final class LLMDownloadService: ObservableObject {
 
       BackgroundDownloadManager.shared.enqueueDownload(metadata: metadata)
     } catch {
+      if downloadType == .llmUpgrade, case R2DownloadError.insufficientDiskSpace = error {
+        self.variantStates[variant] = .notDownloaded
+        self.removeVariantFromPersistence(variant)
+        return
+      }
       self.variantStates[variant] = .error(message: localizedDownloadError(error))
       self.removeVariantFromPersistence(variant)
     }
+  }
+
+  private func recordUpgradeDecline(for variant: LLMModelVariant) {
+    guard let predecessor = LLMModelVariant.allCases.first(where: { $0.successor == variant }) else { return }
+    guard self.isDownloaded(predecessor) else { return }
+    let settings = SharedSettings()
+    settings.declinedLLMUpgrades.insert(variant)
   }
 
   private func startUpgradeIfNeeded() {
@@ -269,14 +288,12 @@ final class LLMDownloadService: ObservableObject {
 
     guard self.isDownloaded(current), let successor = current.successor else { return }
     guard !self.isDownloaded(successor) else { return }
+    guard !settings.declinedLLMUpgrades.contains(successor) else { return }
     guard successor.isSupportedOnCurrentDevice else {
       return
     }
     guard !self.isDownloadInFlight(successor) else { return }
     if case .downloading = self.state(for: successor) { return }
-    guard self.hasEnoughDiskSpace(for: successor) else {
-      return
-    }
 
     self.variantStates[successor] = .downloading(progress: 0)
     self.enqueueTasks[successor] = Task {
@@ -331,29 +348,19 @@ final class LLMDownloadService: ObservableObject {
     self.syncHasUsableModel()
   }
 
+  private func enableProcessingAfterDownload(variant _: LLMModelVariant) {
+    let settings = SharedSettings()
+    guard !settings.llmEnabled else { return }
+    settings.llmEnabled = true
+    self.didEnableByDownload = true
+  }
+
   private func isDownloadInFlight(_ variant: LLMModelVariant) -> Bool {
     Self.llmDownloadTypes.contains { type in
       BackgroundDownloadManager.shared.hasActiveDownload(
         variantRawValue: variant.rawValue,
         downloadType: type,
       )
-    }
-  }
-
-  private func hasEnoughDiskSpace(for variant: LLMModelVariant) -> Bool {
-    let requiredBytes = Int64(Double(variant.downloadSizeMB.megabytesInBytes) * Self.diskSpaceSafetyMultiplier)
-    do {
-      let appSupportURL = try FileManager.default.url(
-        for: .applicationSupportDirectory,
-        in: .userDomainMask,
-        appropriateFor: nil,
-        create: false,
-      )
-      let values = try appSupportURL.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
-      guard let available = values.volumeAvailableCapacityForImportantUsage else { return true }
-      return available >= requiredBytes
-    } catch {
-      return true
     }
   }
 

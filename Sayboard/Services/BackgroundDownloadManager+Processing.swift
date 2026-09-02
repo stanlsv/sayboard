@@ -114,6 +114,7 @@ extension BackgroundDownloadManager {
     self.lock.lock()
     self.activeMetadata.removeValue(forKey: key)
     self.activeTasks.removeValue(forKey: key)
+    self.lastProgress.removeValue(forKey: key)
     self.persistMetadata()
     self.lock.unlock()
 

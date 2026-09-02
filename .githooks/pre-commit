@@ -37,7 +37,13 @@ fi
 if command -v swiftlint >/dev/null 2>&1; then
   echo "Running SwiftLint..."
   LINT_RESULT=0
-  echo "$STAGED_SWIFT_FILES" | xargs swiftlint lint --strict --quiet 2>/dev/null || LINT_RESULT=$?
+  # --config is not optional here: given explicit paths, SwiftLint stops honouring the
+  # .swiftlint.yml it would find on its own and falls back to built-in defaults, so the hook
+  # enforced different limits than the build's own `swiftlint lint` over the whole project.
+  REPO_ROOT=$(git rev-parse --show-toplevel)
+  echo "$STAGED_SWIFT_FILES" \
+    | xargs swiftlint lint --strict --quiet --config "$REPO_ROOT/.swiftlint.yml" 2>/dev/null \
+    || LINT_RESULT=$?
 
   if [ "$LINT_RESULT" -ne 0 ]; then
     echo "SwiftLint: found violations. Fix them before committing."

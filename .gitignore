@@ -49,10 +49,11 @@ playground.xcworkspace
 *.swp
 *.swo
 *~
+.vscode/
 
 # Tutorial generation -- preview output
 scripts/tutorials/output/
 
 # Claude Code
-.claude/
-.vscode/
+.claude/*
+!.claude/commands/

@@ -11,7 +11,7 @@ final class KeyboardViewController: UIInputViewController {
   static var llmStartedObserver: DarwinNotificationObserver?
   nonisolated(unsafe) static weak var activeInstance: KeyboardViewController?
 
-  var llmOriginalTextLength = 0
+  var llmOriginalText = ""
   var isPerformingHistoryNavigation = false
   var pendingAutoActionText: String?
 

@@ -95,7 +95,9 @@ To get started, you need a [Mac](https://www.apple.com/mac/), [Xcode](https://de
 
 ## Bug Reports and Questions
 
-The best way to submit a bug report or support request is via email: [support@sayboard.app](mailto:support@sayboard.app).
+Settings has a Report a Problem section that opens either a prefilled GitHub issue or a prefilled email, whichever you prefer. Both carry the app version, the iOS version and the device identifier, so the report arrives ready to work on.
+
+You can also write directly to [support@sayboard.app](mailto:support@sayboard.app).
 
 Sayboard doesn't collect any analytics or telemetry, so we rely on your feedback to find and fix problems.
 

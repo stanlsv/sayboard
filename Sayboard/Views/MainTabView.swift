@@ -15,6 +15,18 @@ struct MainTabView: View {
     .task {
       self.activeBanner = Self.initialBanner()
     }
+    .alert(
+      "AI Text Processing Enabled",
+      isPresented: self.$llmDownloadService.didEnableByDownload,
+    ) {
+      Button("OK") { }
+        .keyboardShortcut(.defaultAction)
+      Button("Turn Off") {
+        SharedSettings().llmEnabled = false
+      }
+    } message: {
+      Text("The AI button is now on the keyboard.")
+    }
   }
 
   private enum TabID: String {
@@ -57,8 +69,10 @@ struct MainTabView: View {
 
   @EnvironmentObject private var permissionService: PermissionService
   @EnvironmentObject private var pipTutorialService: PiPTutorialService
+  @EnvironmentObject private var llmDownloadService: LLMDownloadService
   @AppStorage(SharedKey.appLanguage) private var appLanguage = defaultLanguage
   @SceneStorage("selectedTab") private var selectedTab = TabID.history.rawValue
+  @SceneStorage("modelsTab") private var modelsTab = ModelTab.speechRecognition
   @State private var activeBanner: SetupBanner?
 
   private var tabsWithHandlers: some View {
@@ -247,6 +261,7 @@ struct MainTabView: View {
 
     case DeepLink.llmModelsHost:
       self.selectedTab = TabID.models.rawValue
+      self.modelsTab = .textProcessing
 
     case DeepLink.setupMicHost:
       self.activeBanner = nil

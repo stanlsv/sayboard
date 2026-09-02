@@ -7,6 +7,7 @@ enum R2DownloadError: LocalizedError {
   case sha256Mismatch(expected: String, actual: String)
   case extractionFailed(Error)
   case extractionRanOutOfSpace
+  case insufficientDiskSpace
   case downloadFailed(Error)
   case cancelled
 
@@ -22,6 +23,8 @@ enum R2DownloadError: LocalizedError {
       "Zip extraction failed: \(error.localizedDescription)"
     case .extractionRanOutOfSpace:
       "Zip extraction ran out of disk space"
+    case .insufficientDiskSpace:
+      "Not enough free space for the archive and its expanded tree"
     case .downloadFailed(let error):
       "Download failed: \(error.localizedDescription)"
     case .cancelled:

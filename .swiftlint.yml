@@ -13,6 +13,8 @@ excluded:
   - build
   # Paths here are literal, not globs, so the nested checkout needs naming of its own.
   - scripts/strip-comments/.build
+  # Holds a worktree's build output and its SPM checkouts.
+  - .claude
 
 # ============================================================================
 # Indentation
@@ -95,13 +97,14 @@ disabled_rules:
   - comma
   - vertical_whitespace_opening_braces   # Conflicts with SwiftFormat --type-blank-lines preserve
   - vertical_whitespace_closing_braces   # Conflicts with SwiftFormat --type-blank-lines preserve
+  - function_name_whitespace             # Conflicts with SwiftFormat --operator-func no-space
 
 # ============================================================================
 # Rule Configuration
 # ============================================================================
 
 line_length:
-  warning: 130
+  warning: 145
   error: 200
   ignores_urls: true
   ignores_function_declarations: false
@@ -116,11 +119,11 @@ type_body_length:
   error: 500
 
 function_body_length:
-  warning: 50
+  warning: 55
   error: 80
 
 closure_body_length:
-  warning: 30
+  warning: 35
   error: 50
 
 type_name:

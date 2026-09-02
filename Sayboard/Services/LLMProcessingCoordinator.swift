@@ -73,18 +73,15 @@ final class LLMProcessingCoordinator: ObservableObject {
     DiagnosticLog.write("llm: model loaded")
 
     let systemPrompt = self.buildSystemPrompt(for: validated.request, settings: settings)
-    let result = await self.runInferenceWithTimeout(systemPrompt: systemPrompt, userText: validated.request.text)
+    let prefill = validated.request.action.continuesInput ? validated.request.text : ""
+    let result = await self.runInferenceWithTimeout(
+      systemPrompt: systemPrompt,
+      userText: validated.request.text,
+      assistantPrefill: prefill,
+    )
 
     if let result, !result.isEmpty {
-      let finalResult: String
-      if validated.request.action == .addPunctuation || validated.request.action == .fixGrammar {
-        finalResult = result
-      } else {
-        let store = AppStyleStore()
-        let hostId = settings.hostBundleId
-        let resolvedStyle = hostId.flatMap { store.style(for: $0) } ?? settings.defaultWritingStyle
-        finalResult = TextStyleFormatter.format(result, style: resolvedStyle)
-      }
+      let finalResult = self.styled(result, action: validated.request.action, settings: settings)
       LLMBridge.writeResult(finalResult)
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingComplete)
       DiagnosticLog.write("llm: complete, result=\(finalResult.count) chars")
@@ -151,6 +148,15 @@ final class LLMProcessingCoordinator: ObservableObject {
     }
   }
 
+  private func styled(_ text: String, action: LLMAction, settings: SharedSettings) -> String {
+    guard action != .addPunctuation, action != .fixGrammar else { return text }
+    let resolvedStyle = AppStyleStore().resolvedStyle(
+      hostBundleId: settings.hostBundleId,
+      defaultStyle: settings.defaultWritingStyle,
+    )
+    return TextStyleFormatter.format(text, style: resolvedStyle)
+  }
+
   private func buildSystemPrompt(for request: LLMRequest, settings: SharedSettings) -> String {
     let language = request.language
     if
@@ -162,7 +168,11 @@ final class LLMProcessingCoordinator: ObservableObject {
     return LLMPromptTemplates.systemPrompt(for: request.action, language: language)
   }
 
-  private func runInferenceWithTimeout(systemPrompt: String, userText: String) async -> String? {
+  private func runInferenceWithTimeout(
+    systemPrompt: String,
+    userText: String,
+    assistantPrefill: String,
+  ) async -> String? {
     let remaining = UIApplication.shared.backgroundTimeRemaining
     let timeout: TimeInterval =
       if remaining < .greatestFiniteMagnitude {
@@ -173,7 +183,11 @@ final class LLMProcessingCoordinator: ObservableObject {
 
     return await withTaskGroup(of: String?.self) { group in
       group.addTask {
-        await self.inferenceService.process(systemPrompt: systemPrompt, userText: userText)
+        await self.inferenceService.process(
+          systemPrompt: systemPrompt,
+          userText: userText,
+          assistantPrefill: assistantPrefill,
+        )
       }
 
       group.addTask {

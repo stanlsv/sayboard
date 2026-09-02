@@ -38,4 +38,24 @@ struct MegabyteUnitTests {
       #expect(variant.ramRequirementMB.megabytesInBytes < smallestShippingDeviceBytes)
     }
   }
+
+  @Test
+  func `a declared device floor excludes 4GB phones and admits 6GB ones`() {
+    let fourGigabyteDeviceBytes: UInt64 = 3_940_000_000
+    let sixGigabyteDeviceBytes: UInt64 = 5_913_000_000
+
+    for variant in ModelVariant.allCases {
+      guard let floor = variant.minimumDeviceMemoryMB else { continue }
+      #expect(floor.megabytesInBytes > fourGigabyteDeviceBytes)
+      #expect(floor.megabytesInBytes <= sixGigabyteDeviceBytes)
+    }
+  }
+
+  @Test
+  func `a device floor never doubles as the advertised RAM figure`() {
+    for variant in ModelVariant.allCases {
+      guard let floor = variant.minimumDeviceMemoryMB else { continue }
+      #expect(variant.ramRequirementMB < floor)
+    }
+  }
 }

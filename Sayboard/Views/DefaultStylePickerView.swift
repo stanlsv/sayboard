@@ -36,7 +36,6 @@ struct DefaultStylePickerView: View {
     .presentationDetents([.height(self.sheetHeight)])
   }
 
-  private static let cardCornerRadius: CGFloat = 12
   private static let horizontalPadding: CGFloat = 20
 
   private static let groupCornerRadius: CGFloat = 26
@@ -113,22 +112,10 @@ struct DefaultStylePickerView: View {
   }
 
   private func styleCard(for style: WritingStyle) -> some View {
-    let selected = self.selectedStyle == style
-    return Button {
+    StyleCard(style: style, isSelected: self.selectedStyle == style) {
       self.selectedStyle = style
       self.dismiss()
-    } label: {
-      StyleOptionRow(style: style, isSelected: selected)
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: Self.cardCornerRadius))
-        .overlay(
-          RoundedRectangle(cornerRadius: Self.cardCornerRadius)
-            .strokeBorder(selected ? Color.accentColor : .clear, lineWidth: 2)
-        )
     }
-    .foregroundStyle(.primary)
   }
 
   private func appIcon(url: URL?) -> some View {

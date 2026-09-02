@@ -75,6 +75,7 @@ enum SharedKey {
   static let hasUsableLLMModel = "hasUsableLLMModel"
   static let llmDownloadInProgressVariants = "llmDownloadInProgressVariants"
   static let completedLLMUpgradeFrom = "completedLLMUpgradeFrom"
+  static let declinedLLMUpgrades = "declinedLLMUpgrades"
   static let isLLMProcessing = "isLLMProcessing"
   static let llmEnabled = "llmEnabled"
   static let defaultLLMAction = "defaultLLMAction"

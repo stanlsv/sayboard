@@ -72,23 +72,27 @@ final class AppSearchService {
     }
 
     let encoded = trimmed.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? trimmed
-    let urlString = "\(Self.baseURL)?term=\(encoded)&entity=software&limit=\(Self.resultLimit)"
-    guard let url = URL(string: urlString) else {
-      self.results = []
-      self.phase = .done
-      return
-    }
-
+    let found: [AppSearchResult]
     do {
-      let (data, _) = try await URLSession.shared.data(from: url)
-      guard !Task.isCancelled else { return }
-      let response = try JSONDecoder().decode(ITunesSearchResponse.self, from: data)
-      self.results = response.results
+      found = try await self.fetchResults(encoded: encoded, country: Locale.current.region?.identifier)
     } catch {
-      guard !Task.isCancelled else { return }
-      self.results = []
+      found = (try? await self.fetchResults(encoded: encoded, country: nil)) ?? []
     }
 
+    guard !Task.isCancelled else { return }
+    self.results = found
     self.phase = .done
+  }
+
+  private func fetchResults(encoded: String, country: String?) async throws -> [AppSearchResult] {
+    var urlString = "\(Self.baseURL)?term=\(encoded)&entity=software&limit=\(Self.resultLimit)"
+    if let country {
+      urlString += "&country=\(country)"
+    }
+    guard let url = URL(string: urlString) else { throw URLError(.badURL) }
+
+    let (data, response) = try await URLSession.shared.data(from: url)
+    guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
+    return try JSONDecoder().decode(ITunesSearchResponse.self, from: data).results
   }
 }
