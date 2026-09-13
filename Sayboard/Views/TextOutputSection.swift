@@ -50,7 +50,7 @@ struct TextOutputSection: View {
 
   @ViewBuilder
   private var writingStyleRow: some View {
-    if OperatingSystem.isHostBundleIdBroken {
+    if !self.settings.canResolveHostApplication {
       Button {
         self.showStylePicker = true
       } label: {

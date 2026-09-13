@@ -30,6 +30,7 @@ Pods/
 Carthage/Build/
 
 # Fastlane
+fastlane/.env
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png

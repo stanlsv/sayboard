@@ -77,10 +77,8 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
   }
 
   func sceneWillEnterForeground(_: UIScene) {
-    guard
-      OperatingSystem.isHostBundleIdBroken,
-      SharedSettings().isKeyboardRequestRecent()
-    else { return }
+    let settings = SharedSettings()
+    guard settings.hostBundleId == nil, settings.isKeyboardRequestRecent() else { return }
     AppDelegate.pendingPreShowHint = true
     NotificationCenter.default.post(name: AppDelegate.preShowHintNotification, object: nil)
   }
@@ -103,6 +101,7 @@ struct SayboardApp: App {
 
   init() {
     ModelHub.offlineMode = true
+    HostApplicationMonitor.start()
     ParakeetV3JointMigration.runIfNeeded()
     Self.configureDefaultLanguageIfNeeded()
     let settings = SharedSettings()
@@ -117,7 +116,7 @@ struct SayboardApp: App {
     try? Tips.resetDatastore()
     try? Tips.configure()
 
-    let preShowHint = OperatingSystem.isHostBundleIdBroken && settings.isKeyboardRequestRecent()
+    let preShowHint = settings.hostBundleId == nil && settings.isKeyboardRequestRecent()
     self._showsHostReturnHint = State(initialValue: preShowHint)
   }
 
@@ -137,6 +136,9 @@ struct SayboardApp: App {
   private static let languageApplyDelay = 0.2
   private static let overlayDismissDelay = 0.15
   private static let dismissToBackgroundDelay = 0.05
+
+  private static let hostResolveTimeout = 1.0
+  private static let hostResolvePollInterval = 50
 
   @StateObject private var speechService = SpeechRecognitionService()
   @StateObject private var playerService = AudioPlayerService()
@@ -371,7 +373,7 @@ struct SayboardApp: App {
   private func handleDictateDeepLink() {
     SharedSettings().dictationSessionToken = UUID().uuidString
 
-    if OperatingSystem.isHostBundleIdBroken {
+    if SharedSettings().hostBundleId == nil {
       self.showsHostReturnHint = true
     }
 
@@ -380,13 +382,22 @@ struct SayboardApp: App {
       return
     }
 
-    if !OperatingSystem.isHostBundleIdBroken {
-      DispatchQueue.main.asyncAfter(deadline: .now() + Self.dismissToBackgroundDelay) {
-        self.returnToHostApp()
-      }
-    }
+    self.returnToHostWhenResolved()
 
     Task { await self.loadModelInBackgroundIfNeeded() }
+  }
+
+  private func returnToHostWhenResolved() {
+    Task { @MainActor in
+      let deadline = Date().addingTimeInterval(Self.hostResolveTimeout)
+      while SharedSettings().hostBundleId == nil, Date() < deadline {
+        try? await Task.sleep(for: .milliseconds(Self.hostResolvePollInterval))
+      }
+      guard SharedSettings().hostBundleId != nil else { return }
+      try? await Task.sleep(for: .seconds(Self.dismissToBackgroundDelay))
+      self.showsHostReturnHint = false
+      self.returnToHostApp()
+    }
   }
 
   private func tryStartDictation() -> Bool {

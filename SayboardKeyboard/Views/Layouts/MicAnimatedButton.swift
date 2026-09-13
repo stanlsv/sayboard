@@ -123,6 +123,10 @@ struct MicAnimatedButton: View {
       self.proxy.startDictation()
     } else if let url = DeepLink.dictateURL {
       let settings = SharedSettings()
+      if OperatingSystem.isHostBundleIdBroken {
+        KBHostArbiterHook.activeArbiterCheck()
+        if let host = KBHostArbiterHook.lastCapturedHostBundleId() { settings.hostBundleId = host }
+      }
       settings.keyboardRequestedDictationAt = CFAbsoluteTimeGetCurrent()
       settings.keyboardRequestedDictation = true
       settings.dictationSessionToken = UUID().uuidString

@@ -1,10 +1,24 @@
 import ObjectiveC
-
+import os
+import OSLog
 import UIKit
 
 extension KeyboardViewController {
 
   func saveHostBundleId() {
+    self.saveHostProcess()
+
+    if OperatingSystem.isHostBundleIdBroken {
+      KBHostArbiterHook.activeArbiterCheck()
+      guard let host = KBHostArbiterHook.lastCapturedHostBundleId() else {
+        return
+      }
+      let settings = SharedSettings()
+      settings.hostBundleId = host
+      settings.synchronize()
+      return
+    }
+
     let settings = SharedSettings()
     let detected = self.detectHostBundleId()
     let _ = settings.hostBundleId
@@ -16,6 +30,27 @@ extension KeyboardViewController {
     if self.openURLViaResponderChain(url) { return }
 
     if self.openURLViaKVC(url) { return }
+  }
+
+  private static let auditTokenPidOffset = 5 * MemoryLayout<UInt32>.size
+  private static let auditTokenVersionOffset = 7 * MemoryLayout<UInt32>.size
+
+  private func saveHostProcess() {
+    guard let parent else { return }
+    guard let ivar = class_getInstanceVariable(type(of: parent), "_hostAuditToken") else {
+      return
+    }
+    let base = Unmanaged.passUnretained(parent).toOpaque()
+    let token = base.advanced(by: ivar_getOffset(ivar)).assumingMemoryBound(to: audit_token_t.self)
+    let identity = withUnsafeBytes(of: token.pointee) { raw in
+      (
+        pid: Int(raw.load(fromByteOffset: Self.auditTokenPidOffset, as: UInt32.self)),
+        version: Int(raw.load(fromByteOffset: Self.auditTokenVersionOffset, as: UInt32.self)),
+      )
+    }
+    guard identity.pid > 0 else { return }
+    RememberedHost.currentProcess = identity
+    AppGroup.sharedDefaults?.synchronize()
   }
 
   private func detectHostBundleId() -> String? {

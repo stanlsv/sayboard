@@ -65,7 +65,7 @@ struct SharedSettings {
         let raw = defaults.string(forKey: SharedKey.sessionAutoStopPolicy),
         let policy = SessionAutoStopPolicy(rawValue: raw)
       else {
-        return OperatingSystem.isHostBundleIdBroken ? .thirtyMinutes : .fiveMinutes
+        return .fifteenMinutes
       }
       return policy
     }
@@ -88,6 +88,16 @@ struct SharedSettings {
   var hostBundleId: String? {
     get { self.defaults.string(forKey: SharedKey.hostBundleId) }
     nonmutating set { defaults.set(newValue, forKey: SharedKey.hostBundleId) }
+  }
+
+  var canResolveHostApplication: Bool {
+    get {
+      guard self.defaults.object(forKey: SharedKey.canResolveHostApplication) != nil else {
+        return !OperatingSystem.isHostBundleIdBroken
+      }
+      return self.defaults.bool(forKey: SharedKey.canResolveHostApplication)
+    }
+    nonmutating set { defaults.set(newValue, forKey: SharedKey.canResolveHostApplication) }
   }
 
   var retentionPolicy: HistoryRetentionPolicy {

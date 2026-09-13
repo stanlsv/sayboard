@@ -88,7 +88,7 @@
             "value": "Sayboard"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Sayboard"
@@ -274,7 +274,7 @@
             "value": "Sayboard"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Sayboard"
@@ -459,7 +459,7 @@
             "value": "Sayboard heeft microfoontoegang nodig om uw spraak naar tekst om te zetten. Alle verwerking gebeurt op het apparaat."
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Sayboard trenger mikrofontilgang for å gjøre tale om til tekst. All behandling skjer på enheten."

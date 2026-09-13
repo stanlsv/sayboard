@@ -109,6 +109,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.sayboard.keyboard
         INFOPLIST_FILE: SayboardKeyboard/Info.plist
         CODE_SIGN_ENTITLEMENTS: SayboardKeyboard/SayboardKeyboard.entitlements
+        SWIFT_OBJC_BRIDGING_HEADER: SayboardKeyboard/SayboardKeyboard-Bridging-Header.h
         SKIP_INSTALL: true
     dependencies: []
     postCompileScripts:

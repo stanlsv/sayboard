@@ -82,7 +82,7 @@
             "value": "Interpunctie toevoegen"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Legg til tegnsetting"
@@ -261,7 +261,7 @@
             "value": "Opsommingstekens"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Punktliste"
@@ -440,7 +440,7 @@
             "value": "Informeel"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Uformell"
@@ -619,7 +619,7 @@
             "value": "Verder schrijven"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Fortsett å skrive"
@@ -827,7 +827,7 @@
             "value": "Dicteren mislukt. Probeer een ander spraakmodel in Sayboard"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Diktering mislyktes. Prøv en annen talemodell i Sayboard"
@@ -976,7 +976,7 @@
             "value": "Uitbreiden"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Utvid"
@@ -1155,7 +1155,7 @@
             "value": "Grammatica corrigeren"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Rett grammatikk"
@@ -1334,7 +1334,7 @@
             "value": "Formeel"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Formell"
@@ -1512,7 +1512,7 @@
             "value": "Volledige toegang is uitgeschakeld. Open de Sayboard-app voor installatie-instructies"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Full tilgang er deaktivert. Åpne Sayboard-appen for oppsettsanvisninger"
@@ -1690,7 +1690,7 @@
             "value": "Microfoon is uitgeschakeld. Geef Sayboard microfoontoegang om uw spraak te herkennen"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Mikrofonen er deaktivert. Gi Sayboard mikrofontilgang for å gjenkjenne talen din"
@@ -1868,7 +1868,7 @@
             "value": "Nog geen spraakmodel. Download een spraakmodel om spraakinvoer te gebruiken"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Ingen talemodell ennå. Last ned en talemodell for å begynne å bruke taleinndata"
@@ -2076,7 +2076,7 @@
             "value": "Geen spraak herkend. Probeer opnieuw te spreken"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Ingen tale gjenkjent. Prøv å snakke igjen"
@@ -2224,7 +2224,7 @@
             "value": "OK"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "OK"
@@ -2402,7 +2402,7 @@
             "value": "Uit"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Av"
@@ -2580,7 +2580,7 @@
             "value": "Modellen openen"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Åpne Modeller"
@@ -2758,7 +2758,7 @@
             "value": "Open Instellingen"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Åpne Innstillinger"
@@ -2966,7 +2966,7 @@
             "value": "Parakeet v3 is bijgewerkt. Open Sayboard om het opnieuw te downloaden"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Parakeet v3 er oppdatert. Åpne Sayboard for å laste den ned igjen"
@@ -3145,7 +3145,7 @@
             "value": "Spraakmodel voorbereiden"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Forbereder talemodell"
@@ -3323,7 +3323,7 @@
             "value": "Spraakmodel voorbereiden voor eerste gebruik"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Forbereder talemodell for førstegangsbruk"
@@ -3472,7 +3472,7 @@
             "value": "Herhalingen verwijderen"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Fjern gjentakelser"
@@ -3651,7 +3651,7 @@
             "value": "Herschrijven"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Skriv om"
@@ -3830,7 +3830,7 @@
             "value": "Inkorten"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Forkort"
@@ -4009,7 +4009,7 @@
             "value": "Vereenvoudigen"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Forenkle"
@@ -4218,7 +4218,7 @@
             "value": "Opslag kritiek laag. Maak ruimte vrij zodat het model niet telkens opnieuw wordt opgebouwd. Bezig met opnieuw opbouwen"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Kritisk lite lagringsplass. Frigjør plass så modellen ikke gjenoppbygges gjentatte ganger. Gjenoppbygger talemodellen nå"
@@ -4367,7 +4367,7 @@
             "value": "Samenvatten"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "Oppsummer"
@@ -4545,7 +4545,7 @@
             "value": "Om AI-acties te gebruiken, zorg dat het tekstveld tekst bevat en de cursor erachter staat"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "For å bruke AI-handlinger må tekstfeltet ha tekst og markøren stå etter den"
@@ -4725,7 +4725,7 @@
             "value": "WhisperKit"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "WhisperKit"
@@ -4904,7 +4904,7 @@
             "value": "enter"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "retur"
@@ -5083,7 +5083,7 @@
             "value": "spatie"
           }
         },
-        "no": {
+        "nb": {
           "stringUnit": {
             "state": "translated",
             "value": "mellomrom"

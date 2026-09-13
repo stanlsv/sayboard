@@ -50,9 +50,10 @@ struct DefaultStylePickerView: View {
   @State private var archivedEntries = [AppStyleEntry]()
 
   private let store = AppStyleStore()
+  private let settings = SharedSettings()
 
   private var title: LocalizedStringKey {
-    OperatingSystem.isHostBundleIdBroken ? "Writing Style" : "Default Style"
+    self.settings.canResolveHostApplication ? "Default Style" : "Writing Style"
   }
 
   private var cardList: some View {
@@ -132,7 +133,7 @@ struct DefaultStylePickerView: View {
   }
 
   private func loadArchivedEntries() {
-    guard OperatingSystem.isHostBundleIdBroken else { return }
+    guard !self.settings.canResolveHostApplication else { return }
     self.archivedEntries = self.store.loadEntries()
   }
 
