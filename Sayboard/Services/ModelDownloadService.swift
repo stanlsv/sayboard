@@ -102,6 +102,8 @@ final class ModelDownloadService: ObservableObject {
 
       if ModelStorageManager.isDownloaded(variant) {
         self.variantStates[variant] = .downloaded
+      } else if BackgroundDownloadManager.shared.hasActiveDownload(variantRawValue: variant.rawValue, downloadType: .stt) {
+        self.variantStates[variant] = .downloading(progress: 0)
       } else {
         self.variantStates[variant] = .notDownloaded
       }

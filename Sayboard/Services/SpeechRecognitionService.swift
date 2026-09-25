@@ -37,7 +37,7 @@ final class SpeechRecognitionService: ObservableObject {
   var currentAudioFileName: String?
   var currentWordBoundaries: (start: Float, end: Float)?
 
-  private(set) var isStopping = false
+  @Published private(set) var isStopping = false
 
   var activeLoadState: ModelLoadState {
     switch self.settings.selectedVariant.engine {
@@ -128,6 +128,7 @@ final class SpeechRecognitionService: ObservableObject {
     self.cancelMaxDurationTimer()
     self.session.deactivateTap()
     let savedSamples = self.accumulator.samples
+    let stylingHost = OnboardingTextEntry.stylingHost(self.settings.hostBundleId)
 
     if self.activeLoadState != .loaded {
       let _ = String(describing: self.activeLoadState)
@@ -139,7 +140,7 @@ final class SpeechRecognitionService: ObservableObject {
       }
     }
 
-    await self.runFinalTranscription(samples: savedSamples)
+    await self.runFinalTranscription(samples: savedSamples, stylingHost: stylingHost)
 
     self.saveHistoryRecord()
 

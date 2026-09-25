@@ -156,6 +156,7 @@ struct UnsupportedModelOverlay: View {
       }
       .frame(width: geometry.size.width, height: geometry.size.height)
     }
+    .allowsHitTesting(false)
   }
 }
 
@@ -278,6 +279,26 @@ struct DownloadStatusView: View {
           .foregroundStyle(Color.accentColor)
       }
       .buttonStyle(.plain)
+    }
+  }
+}
+
+struct DownloadProgressRow: View {
+  let name: String
+  let progress: Double
+
+  var body: some View {
+    VStack(alignment: .leading, spacing: 6) {
+      HStack {
+        Text(verbatim: self.name)
+          .font(.subheadline.weight(.semibold))
+        Spacer(minLength: 8)
+        Text(self.progress, format: .percent.precision(.fractionLength(0)))
+          .font(.footnote)
+          .monospacedDigit()
+          .foregroundStyle(.secondary)
+      }
+      ProgressView(value: self.progress)
     }
   }
 }

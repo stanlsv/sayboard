@@ -77,6 +77,7 @@ final class KeyboardViewController: UIInputViewController {
     self.pingValidator.startIfNeeded(for: self.keyboardState)
     self.keyboardState.appearedAt = CFAbsoluteTimeGetCurrent()
     saveHostBundleId()
+    self.keyboardState.syncOnboardingPractice(hostProcessID: self.hostProcess?.pid)
     self.insertTranscribedText()
     self.checkForPendingLLMResult()
   }
@@ -189,6 +190,7 @@ final class KeyboardViewController: UIInputViewController {
   private func hostDidEnterForeground() {
     self.syncFullAccessIfChanged()
     self.keyboardState.refresh()
+    self.keyboardState.syncOnboardingPractice(hostProcessID: self.hostProcess?.pid)
     self.pingMainAppForSessionStatus()
     self.pingValidator.startIfNeeded(for: self.keyboardState)
     self.keyboardState.appearedAt = CFAbsoluteTimeGetCurrent()

@@ -117,6 +117,7 @@ struct MicAnimatedButton: View {
   }
 
   private func handleTap() {
+    self.keyboardState.dismissMicHint()
     if self.keyboardState.isRecording {
       self.proxy.stopDictation()
     } else if self.keyboardState.isDictationLocked {
@@ -232,6 +233,13 @@ struct MicButtonWithPulse: View {
 
   private var micButton: some View {
     MicAnimatedButton(sizing: self.sizing, proxy: self.proxy, keyboardState: self.keyboardState)
+      .overlay(alignment: .leading) {
+        if self.keyboardState.showsMicHint {
+          MicHintArrow()
+            .alignmentGuide(.leading) { $0[.trailing] + MicHintArrow.gap }
+            .transition(.asymmetric(insertion: .identity, removal: .opacity))
+        }
+      }
   }
 
   private func decoratedPulse(pulse: PulseRings, show: Bool) -> some View {

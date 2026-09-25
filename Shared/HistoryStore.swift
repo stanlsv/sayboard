@@ -41,10 +41,19 @@ struct HistoryStore: Sendable {
     return total
   }
 
+  func historyModificationDate() -> Date? {
+    guard let url = historyFileURL else { return nil }
+    return try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
+  }
+
   func loadRecords() -> [HistoryRecord] {
-    guard let url = historyFileURL else { return [] }
-    guard let data = try? Data(contentsOf: url) else { return [] }
-    let records = (try? JSONDecoder.historyDecoder.decode([HistoryRecord].self, from: data)) ?? []
+    (try? self.readRecords()) ?? []
+  }
+
+  func readRecords() throws -> [HistoryRecord] {
+    guard let url = historyFileURL, FileManager.default.fileExists(atPath: url.path) else { return [] }
+    let data = try Data(contentsOf: url)
+    let records = try JSONDecoder.historyDecoder.decode([HistoryRecord].self, from: data)
     return records.sorted { $0.date > $1.date }
   }
 
@@ -53,13 +62,13 @@ struct HistoryStore: Sendable {
       self.deleteAudioFile(named: record.audioFileName)
       return
     }
-    var records = self.loadRecords()
+    guard var records = try? self.readRecords() else { return }
     records.insert(record, at: 0)
     self.writeRecords(records)
   }
 
   func deleteRecord(id: UUID) {
-    var records = self.loadRecords()
+    guard var records = try? self.readRecords() else { return }
     guard let index = records.firstIndex(where: { $0.id == id }) else { return }
     let record = records[index]
     self.deleteAudioFile(named: record.audioFileName)
@@ -75,42 +84,37 @@ struct HistoryStore: Sendable {
     self.writeRecords([])
   }
 
+  func retainedRecords(
+    for policy: HistoryRetentionPolicy,
+    in records: [HistoryRecord],
+    now: Date = Date(),
+  ) -> [HistoryRecord] {
+    switch policy {
+    case .never: []
+    case .last5: Array(records.prefix(self.countLimit5))
+    case .last25: Array(records.prefix(self.countLimit25))
+    case .last50: Array(records.prefix(self.countLimit50))
+    case .last100: Array(records.prefix(self.countLimit100))
+    case .last500: Array(records.prefix(self.countLimit500))
+    case .past24Hours: self.records(in: records, newerThan: self.hoursInDay, from: now)
+    case .pastWeek: self.records(in: records, newerThan: self.hoursInWeek, from: now)
+    case .pastMonth: self.records(in: records, newerThan: self.hoursInMonth, from: now)
+    case .forever: records
+    }
+  }
+
   func recordsToDeleteCount(for policy: HistoryRetentionPolicy) -> Int {
     let records = self.loadRecords()
-    let retainedCount: Int =
-      switch policy {
-      case .never: 0
-      case .last5: min(records.count, self.countLimit5)
-      case .last25: min(records.count, self.countLimit25)
-      case .last50: min(records.count, self.countLimit50)
-      case .last100: min(records.count, self.countLimit100)
-      case .last500: min(records.count, self.countLimit500)
-      case .past24Hours: self.countNewerThan(hours: self.hoursInDay, in: records)
-      case .pastWeek: self.countNewerThan(hours: self.hoursInWeek, in: records)
-      case .pastMonth: self.countNewerThan(hours: self.hoursInMonth, in: records)
-      case .forever: records.count
-      }
-    return records.count - retainedCount
+    return records.count - self.retainedRecords(for: policy, in: records).count
   }
 
   func applyRetentionPolicy() {
-    let policy = SharedSettings().retentionPolicy
-    let records = self.loadRecords()
-
-    let retained: [HistoryRecord] =
-      switch policy {
-      case .never: self.clearAllAudio(in: records)
-      case .last5: self.applyCountLimit(self.countLimit5, to: records)
-      case .last25: self.applyCountLimit(self.countLimit25, to: records)
-      case .last50: self.applyCountLimit(self.countLimit50, to: records)
-      case .last100: self.applyCountLimit(self.countLimit100, to: records)
-      case .last500: self.applyCountLimit(self.countLimit500, to: records)
-      case .past24Hours: self.removeOlderThan(hours: self.hoursInDay, from: records)
-      case .pastWeek: self.removeOlderThan(hours: self.hoursInWeek, from: records)
-      case .pastMonth: self.removeOlderThan(hours: self.hoursInMonth, from: records)
-      case .forever: records
-      }
-
+    guard let records = try? self.readRecords() else { return }
+    let retained = self.retainedRecords(for: SharedSettings().retentionPolicy, in: records)
+    let retainedIDs = Set(retained.map(\.id))
+    for record in records where !retainedIDs.contains(record.id) {
+      self.deleteAudioFile(named: record.audioFileName)
+    }
     self.writeRecords(retained)
   }
 
@@ -142,34 +146,8 @@ struct HistoryStore: Sendable {
     try? FileManager.default.removeItem(at: url)
   }
 
-  private func applyCountLimit(_ limit: Int, to records: [HistoryRecord]) -> [HistoryRecord] {
-    guard records.count > limit else { return records }
-
-    let excess = Array(records.suffix(from: limit))
-    for record in excess {
-      self.deleteAudioFile(named: record.audioFileName)
-    }
-    return Array(records.prefix(limit))
-  }
-
-  private func clearAllAudio(in records: [HistoryRecord]) -> [HistoryRecord] {
-    for record in records {
-      self.deleteAudioFile(named: record.audioFileName)
-    }
-    return []
-  }
-
-  private func countNewerThan(hours: Int, in records: [HistoryRecord]) -> Int {
-    let cutoff = Date().addingTimeInterval(-Double(hours) * 3600)
-    return records.filter { $0.date >= cutoff }.count
-  }
-
-  private func removeOlderThan(hours: Int, from records: [HistoryRecord]) -> [HistoryRecord] {
-    let cutoff = Date().addingTimeInterval(-Double(hours) * 3600)
-    let expired = records.filter { $0.date < cutoff }
-    for record in expired {
-      self.deleteAudioFile(named: record.audioFileName)
-    }
+  private func records(in records: [HistoryRecord], newerThan hours: Int, from now: Date) -> [HistoryRecord] {
+    let cutoff = now.addingTimeInterval(-Double(hours) * 3600)
     return records.filter { $0.date >= cutoff }
   }
 }

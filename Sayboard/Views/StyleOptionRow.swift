@@ -21,24 +21,34 @@ struct StyleOptionRow: View {
           .font(.title2)
           .foregroundStyle(self.isSelected ? Color.accentColor : .secondary)
       }
-      HStack(alignment: .center, spacing: 10) {
-        Text(LocalizedStringKey("AvatarLetter"))
-          .font(.caption.weight(.semibold))
-          .foregroundStyle(.white)
-          .frame(width: 28, height: 28)
-          .background(self.avatarColor)
-          .clipShape(Circle())
-        Text(LocalizedStringKey(self.style.exampleKey))
-          .font(.subheadline)
-          .foregroundStyle(.secondary)
-          .multilineTextAlignment(.leading)
-      }
-      .padding(10)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .background(Color(.tertiarySystemGroupedBackground))
-      .clipShape(RoundedRectangle(cornerRadius: 10))
+      StyleExampleBubble(style: self.style)
     }
     .contentShape(Rectangle())
+  }
+}
+
+struct StyleExampleBubble: View {
+
+  let style: WritingStyle
+
+  var body: some View {
+    HStack(alignment: .center, spacing: 10) {
+      Text(LocalizedStringKey("AvatarLetter"))
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(.white)
+        .frame(width: 28, height: 28)
+        .background(self.avatarColor)
+        .clipShape(Circle())
+        .accessibilityHidden(true)
+      Text(LocalizedStringKey(self.style.exampleKey))
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
+        .multilineTextAlignment(.leading)
+    }
+    .padding(10)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(Color(.tertiarySystemGroupedBackground))
+    .clipShape(RoundedRectangle(cornerRadius: 10))
   }
 
   private var avatarColor: Color {

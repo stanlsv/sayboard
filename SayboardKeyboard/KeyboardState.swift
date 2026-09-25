@@ -38,6 +38,7 @@ final class KeyboardState: ObservableObject {
   @Published var keyboardHapticsEnabled = true
   @Published var keyboardKind = KeyboardKind.standard
   @Published var isDictationLocked = false
+  @Published var showsMicHint = false
 
   var onStaleLevelDetected: (() -> Void)?
 
@@ -120,6 +121,21 @@ final class KeyboardState: ObservableObject {
     if self.isDictationLocked {
       self.showLLMActions = false
     }
+  }
+
+  func syncOnboardingPractice(hostProcessID: Int?) {
+    self.showsMicHint = self.settings.showsMicHint(hostProcessID: hostProcessID)
+    if self.settings.isOnboardingPracticeHost(hostProcessID) {
+      TranscriptionBridge.postDarwinNotification(DarwinNotificationName.keyboardShownInPractice)
+    }
+  }
+
+  func dismissMicHint() {
+    guard self.showsMicHint else { return }
+    withAnimation(.easeOut(duration: 0.2)) {
+      self.showsMicHint = false
+    }
+    self.settings.isMicHintDismissed = true
   }
 
   func toggleTranslationMode() {

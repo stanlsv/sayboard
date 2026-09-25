@@ -3,6 +3,8 @@ import UIKit
 
 struct MainTabView: View {
 
+  let isBehindOnboarding: Bool
+
   var body: some View {
     ZStack {
       self.tabsWithHandlers
@@ -15,7 +17,11 @@ struct MainTabView: View {
     .task {
       self.activeBanner = Self.initialBanner()
     }
+    .onChange(of: self.isBehindOnboarding) { _, isBehind in
+      if !isBehind { self.activeBanner = self.recheckBanner() }
+    }
     .onReceive(NotificationCenter.default.publisher(for: .purchaseScreenRequested)) { _ in
+      guard !self.isBehindOnboarding else { return }
       self.isPurchaseScreenPresented = true
     }
     .onChange(of: self.isDictationLocked) { _, isLocked in
@@ -29,18 +35,7 @@ struct MainTabView: View {
       if status == .unlocked { self.isPurchaseScreenPresented = false }
     }
     .purchaseScreen(isPresented: self.$isPurchaseScreenPresented)
-    .alert(
-      "AI Text Processing Enabled",
-      isPresented: self.$llmDownloadService.didEnableByDownload,
-    ) {
-      Button("OK") { }
-        .keyboardShortcut(.defaultAction)
-      Button("Turn Off") {
-        SharedSettings().llmEnabled = false
-      }
-    } message: {
-      Text("The AI button is now on the keyboard.")
-    }
+    .modifier(AIProcessingEnabledAlert())
   }
 
   private enum TabID: String {
@@ -84,9 +79,14 @@ struct MainTabView: View {
 
   private static let defaultLanguage = AppLanguageConfig.fallback
 
+  private static var isSpeechModelDownloading: Bool {
+    ModelVariant.allCases.contains {
+      BackgroundDownloadManager.shared.hasActiveDownload(variantRawValue: $0.rawValue, downloadType: .stt)
+    }
+  }
+
   @EnvironmentObject private var permissionService: PermissionService
   @EnvironmentObject private var pipTutorialService: PiPTutorialService
-  @EnvironmentObject private var llmDownloadService: LLMDownloadService
   @AppStorage(SharedKey.appLanguage) private var appLanguage = defaultLanguage
   @AppStorage(SharedKey.entitlementStatus, store: UserDefaults(suiteName: AppGroup.identifier))
   private var entitlementStatus = EntitlementStatus.unknown
@@ -115,10 +115,12 @@ struct MainTabView: View {
       self.handleTabDeepLink(url)
     }
     .onReceive(NotificationCenter.default.publisher(for: .dictationFailedNoModel)) { _ in
+      guard !self.isBehindOnboarding else { return }
       self.selectedTab = TabID.models.rawValue
       self.activeBanner = .noModel
     }
     .onReceive(NotificationCenter.default.publisher(for: .dictationFailedNoMic)) { _ in
+      guard !self.isBehindOnboarding else { return }
       self.resetSettingsStackIfIdle()
       self.selectedTab = TabID.history.rawValue
       self.activeBanner = .micDenied
@@ -136,19 +138,21 @@ struct MainTabView: View {
     TabView(selection: self.$selectedTab) {
       Tab("History", image: "tab-history", value: TabID.history.rawValue) {
         NavigationStack {
-          ContentView()
+          HistoryListView()
         }
       }
 
       Tab("Models", image: "tab-models", value: TabID.models.rawValue) {
         NavigationStack {
           ModelsView()
+            .equatable()
         }
       }
 
       Tab("Settings", image: "tab-settings", value: TabID.settings.rawValue) {
         NavigationStack {
           SettingsView()
+            .equatable()
         }
         .id(self.settingsStackID)
       }
@@ -158,7 +162,7 @@ struct MainTabView: View {
   private var legacyTabs: some View {
     TabView(selection: self.$selectedTab) {
       NavigationStack {
-        ContentView()
+        HistoryListView()
       }
       .tabItem {
         Label("History", image: "tab-history")
@@ -167,6 +171,7 @@ struct MainTabView: View {
 
       NavigationStack {
         ModelsView()
+          .equatable()
       }
       .tabItem {
         Label("Models", image: "tab-models")
@@ -175,6 +180,7 @@ struct MainTabView: View {
 
       NavigationStack {
         SettingsView()
+          .equatable()
       }
       .id(self.settingsStackID)
       .tabItem {
@@ -185,22 +191,26 @@ struct MainTabView: View {
   }
 
   private static func initialBanner() -> SetupBanner? {
-    let onboardingCompleted = UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding)
-    guard onboardingCompleted else { return nil }
     let settings = SharedSettings()
-    if !settings.isMicrophoneAuthorized {
-      return .micDenied
+    let checklist = SetupChecklist(
+      microphoneGranted: settings.isMicrophoneAuthorized,
+      keyboardAdded: PermissionService.isKeyboardAddedSync(),
+      fullAccessGranted: PermissionService.hasFullAccessSync(),
+      hasUsableModel: settings.hasUsableModel,
+    )
+    return Self.banner(for: checklist, isDictationLocked: settings.isDictationLocked)
+  }
+
+  private static func banner(for checklist: SetupChecklist, isDictationLocked: Bool) -> SetupBanner? {
+    guard UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding) else { return nil }
+    let postponed = OnboardingRecordStore().load().postponedSteps
+    if !checklist.microphoneGranted, !postponed.contains(.microphone) { return .micDenied }
+    if !checklist.keyboardAdded, !postponed.contains(.keyboard) { return .keyboardMissing }
+    if !checklist.fullAccessGranted, !postponed.contains(.keyboard) { return .fullAccessMissing }
+    if !checklist.hasUsableModel, !postponed.contains(.languages), !Self.isSpeechModelDownloading {
+      return SharedSettings().parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
     }
-    if !PermissionService.isKeyboardAddedSync() {
-      return .keyboardMissing
-    }
-    if !PermissionService.hasFullAccessSync() {
-      return .fullAccessMissing
-    }
-    if !settings.hasUsableModel {
-      return settings.parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
-    }
-    return settings.isDictationLocked ? .freeDictationUsedUp : nil
+    return isDictationLocked ? .freeDictationUsedUp : nil
   }
 
   private static func tutorialVideoForBanner(_ banner: SetupBanner) -> TutorialVideo? {
@@ -218,22 +228,8 @@ struct MainTabView: View {
   }
 
   private func recheckBanner() -> SetupBanner? {
-    let onboardingCompleted = UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding)
-    guard onboardingCompleted else { return nil }
-    if self.permissionService.microphoneState != .granted {
-      return .micDenied
-    }
-    if !self.permissionService.isKeyboardAdded {
-      return .keyboardMissing
-    }
-    if !self.permissionService.hasFullAccess {
-      return .fullAccessMissing
-    }
-    let settings = SharedSettings()
-    if !settings.hasUsableModel {
-      return settings.parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
-    }
-    return self.isDictationLocked ? .freeDictationUsedUp : nil
+    let checklist = SetupChecklist(permissions: self.permissionService, hasUsableModel: SharedSettings().hasUsableModel)
+    return Self.banner(for: checklist, isDictationLocked: self.isDictationLocked)
   }
 
   private func bannerView(for banner: SetupBanner) -> SetupBannerView {
@@ -304,7 +300,7 @@ struct MainTabView: View {
   }
 
   private func handleTabDeepLink(_ url: URL) {
-    guard url.scheme == DeepLink.scheme else { return }
+    guard url.scheme == DeepLink.scheme, !self.isBehindOnboarding else { return }
     switch url.host {
     case DeepLink.settingsHost:
       self.resetSettingsStackIfIdle()
@@ -326,116 +322,23 @@ struct MainTabView: View {
   }
 }
 
-private struct TabBarTapInterceptor: UIViewRepresentable {
+private struct AIProcessingEnabledAlert: ViewModifier {
 
-  final class InterceptorView: UIView {
-
-    init(coordinator: Coordinator) {
-      self.coordinator = coordinator
-      super.init(frame: .zero)
-      self.isHidden = true
-      self.isUserInteractionEnabled = false
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-      fatalError("init(coder:) is not supported")
-    }
-
-    override func didMoveToWindow() {
-      super.didMoveToWindow()
-      guard let window, !self.coordinator.isInstalled else { return }
-      self.coordinator.install(in: window)
-      if !self.coordinator.isInstalled {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-          guard let self, let window = self.window, !self.coordinator.isInstalled else { return }
-          self.coordinator.install(in: window)
-        }
+  func body(content: Content) -> some View {
+    content.alert(
+      "AI Text Processing Enabled",
+      isPresented: self.$llmDownloadService.didEnableByDownload,
+    ) {
+      Button("OK") { }
+        .keyboardShortcut(.defaultAction)
+      Button("Turn Off") {
+        SharedSettings().llmEnabled = false
       }
-    }
-
-    private let coordinator: Coordinator
-  }
-
-  @MainActor
-  final class Coordinator: NSObject, UIGestureRecognizerDelegate {
-
-    init(settingsTabIndex: Int, onSettingsTapped: @escaping () -> Void) {
-      self.settingsTabIndex = settingsTabIndex
-      self.onSettingsTapped = onSettingsTapped
-    }
-
-    private(set) var isInstalled = false
-
-    func install(in window: UIWindow) {
-      guard let tabBar = Self.findTabBar(in: window) else { return }
-      let tap = UITapGestureRecognizer(target: self, action: #selector(self.tabBarTapped(_:)))
-      tap.cancelsTouchesInView = false
-      tap.delegate = self
-      tabBar.addGestureRecognizer(tap)
-      self.isInstalled = true
-    }
-
-    func gestureRecognizer(
-      _: UIGestureRecognizer,
-      shouldRecognizeSimultaneouslyWith _: UIGestureRecognizer,
-    ) -> Bool {
-      true
-    }
-
-    private static let requiredTapCount = 7
-    private static let tapWindowSeconds: TimeInterval = 3
-
-    private let settingsTabIndex: Int
-    private let onSettingsTapped: () -> Void
-    private var tapTimestamps = [Date]()
-
-    private static func findTabBar(in view: UIView) -> UITabBar? {
-      if let tabBar = view as? UITabBar {
-        return tabBar
-      }
-      for subview in view.subviews {
-        if let found = findTabBar(in: subview) {
-          return found
-        }
-      }
-      return nil
-    }
-
-    @objc
-    private func tabBarTapped(_ gesture: UITapGestureRecognizer) {
-      guard let tabBar = gesture.view as? UITabBar else { return }
-      let itemCount = tabBar.items?.count ?? 1
-      let tabWidth = tabBar.bounds.width / CGFloat(itemCount)
-      let tappedIndex = Int(gesture.location(in: tabBar).x / tabWidth)
-      guard tappedIndex == self.settingsTabIndex else { return }
-      self.handleSettingsTap()
-    }
-
-    private func handleSettingsTap() {
-      let now = Date()
-      let cutoff = now.addingTimeInterval(-Self.tapWindowSeconds)
-      self.tapTimestamps = self.tapTimestamps.filter { $0 > cutoff }
-      self.tapTimestamps.append(now)
-      if self.tapTimestamps.count >= Self.requiredTapCount {
-        self.tapTimestamps.removeAll()
-        SharedSettings().useCustomSpaceBar.toggle()
-        self.onSettingsTapped()
-      }
+    } message: {
+      Text("The AI button is now on the keyboard.")
     }
   }
 
-  let settingsTabIndex: Int
-  let onSettingsTapped: () -> Void
-
-  func makeCoordinator() -> Coordinator {
-    Coordinator(settingsTabIndex: self.settingsTabIndex, onSettingsTapped: self.onSettingsTapped)
-  }
-
-  func makeUIView(context: Context) -> InterceptorView {
-    InterceptorView(coordinator: context.coordinator)
-  }
-
-  func updateUIView(_: InterceptorView, context _: Context) { }
+  @EnvironmentObject private var llmDownloadService: LLMDownloadService
 
 }

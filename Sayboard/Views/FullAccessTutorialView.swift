@@ -4,8 +4,59 @@ import SwiftUI
 struct FullAccessTutorialView: View {
 
   var includeFullAccessRow = true
+  var reservesFullHeight = false
 
   var body: some View {
+    ZStack(alignment: .top) {
+      if self.reservesFullHeight {
+        self.allRows
+          .hidden()
+      }
+      self.animatedRows
+    }
+    .padding(.horizontal, 32)
+    .coordinateSpace(name: Self.coordinateSpace)
+    .onPreferenceChange(RowCenterPreferenceKey.self) { centers in
+      self.rowCenters = centers
+    }
+    .overlay {
+      TutorialCursor(position: self.cursorPosition, isVisible: self.cursorVisible, isPressed: self.cursorPressed)
+    }
+    .allowsHitTesting(false)
+    .accessibilityHidden(true)
+    .task {
+      await self.runAnimationLoop()
+    }
+  }
+
+  fileprivate enum RowID: String {
+    case keyboards
+    case sayboardToggle
+    case fullAccessToggle
+  }
+
+  private static let coordinateSpace = "tutorial"
+
+  private static let initialDelay: UInt64 = 800_000_000
+  private static let cursorTravelDuration = 0.4
+  private static let prePressPause: UInt64 = 200_000_000
+  private static let pressDuration: UInt64 = 150_000_000
+  private static let postPressPause: UInt64 = 300_000_000
+  private static let toggleFlipPause: UInt64 = 800_000_000
+  private static let holdDelay: UInt64 = 1_500_000_000
+  private static let resetDelay: UInt64 = 400_000_000
+
+  @State private var showToggleRows = false
+  @State private var sayboardToggleOn = false
+  @State private var fullAccessToggleOn = false
+  @State private var isKeyboardsHighlighted = false
+
+  @State private var cursorPosition = CGPoint.zero
+  @State private var cursorVisible = false
+  @State private var cursorPressed = false
+  @State private var rowCenters = [String: CGPoint]()
+
+  private var animatedRows: some View {
     VStack(spacing: 0) {
       self.keyboardsRow
 
@@ -33,50 +84,19 @@ struct FullAccessTutorialView: View {
     }
     .background(Color(.secondarySystemGroupedBackground))
     .clipShape(RoundedRectangle(cornerRadius: 10))
-    .padding(.horizontal, 32)
-    .coordinateSpace(name: Self.coordinateSpace)
-    .onPreferenceChange(RowCenterPreferenceKey.self) { centers in
-      self.rowCenters = centers
-    }
-    .overlay {
-      self.cursorCircle
-    }
-    .allowsHitTesting(false)
-    .accessibilityHidden(true)
-    .task {
-      await self.runAnimationLoop()
-    }
   }
 
-  fileprivate enum RowID: String {
-    case keyboards
-    case sayboardToggle
-    case fullAccessToggle
+  private var allRows: some View {
+    VStack(spacing: 0) {
+      self.keyboardsRow
+      Divider()
+      self.toggleRow(title: "Sayboard", isOn: false, id: RowID.sayboardToggle)
+      if self.includeFullAccessRow {
+        Divider()
+        self.toggleRow(title: "Allow Full Access", isOn: false, id: RowID.fullAccessToggle)
+      }
+    }
   }
-
-  private static let coordinateSpace = "tutorial"
-
-  private static let initialDelay: UInt64 = 800_000_000
-  private static let cursorTravelDuration = 0.4
-  private static let prePressPause: UInt64 = 200_000_000
-  private static let pressDuration: UInt64 = 150_000_000
-  private static let postPressPause: UInt64 = 300_000_000
-  private static let toggleFlipPause: UInt64 = 800_000_000
-  private static let holdDelay: UInt64 = 1_500_000_000
-  private static let resetDelay: UInt64 = 400_000_000
-
-  private static let cursorSize: CGFloat = 36
-  private static let cursorPressedScale: CGFloat = 0.75
-
-  @State private var showToggleRows = false
-  @State private var sayboardToggleOn = false
-  @State private var fullAccessToggleOn = false
-  @State private var isKeyboardsHighlighted = false
-
-  @State private var cursorPosition = CGPoint.zero
-  @State private var cursorVisible = false
-  @State private var cursorPressed = false
-  @State private var rowCenters = [String: CGPoint]()
 
   private var keyboardsRow: some View {
     HStack {
@@ -93,17 +113,6 @@ struct FullAccessTutorialView: View {
     .padding(.vertical, 12)
     .background(self.isKeyboardsHighlighted ? Color(.systemGray4) : .clear)
     .reportCenter(id: .keyboards, coordinateSpace: Self.coordinateSpace)
-  }
-
-  private var cursorCircle: some View {
-    Circle()
-      .fill(Color.primary.opacity(self.cursorPressed ? 0.45 : 0.25))
-      .frame(width: Self.cursorSize, height: Self.cursorSize)
-      .scaleEffect(self.cursorPressed ? Self.cursorPressedScale : 1.0)
-      .shadow(color: .primary.opacity(0.1), radius: 4)
-      .position(self.cursorPosition)
-      .opacity(self.cursorVisible ? 1 : 0)
-      .animation(.easeOut(duration: 0.08), value: self.cursorPressed)
   }
 
   private func toggleRow(title: LocalizedStringKey, isOn: Bool, id: RowID) -> some View {

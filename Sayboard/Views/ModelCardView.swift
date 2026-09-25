@@ -146,7 +146,7 @@ struct ModelCardView: View, Equatable {
       onRetry: self.onRetry,
       onRemove: self.onRemove,
     )
-    .disabled(!self.variant.isSupportedOnCurrentDevice)
+    .disabled(!self.variant.isSupportedOnCurrentDevice && self.downloadState != .downloaded)
   }
 
   private var languageSelectionRow: some View {
@@ -203,7 +203,7 @@ struct ModelCardView: View, Equatable {
 
   private func handleTap() {
     switch self.downloadState {
-    case .downloaded:
+    case .downloaded where self.variant.isSupportedOnCurrentDevice:
       self.onSelect()
     case .notDownloaded where self.variant.isSupportedOnCurrentDevice:
       self.onDownload()

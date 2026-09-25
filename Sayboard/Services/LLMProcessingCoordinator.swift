@@ -56,6 +56,7 @@ final class LLMProcessingCoordinator: ObservableObject {
     let settings = SharedSettings()
     settings.isLLMProcessing = true
     TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingStarted)
+    let stylingHost = OnboardingTextEntry.stylingHost(settings.hostBundleId)
 
     defer {
       self.isProcessing = false
@@ -87,7 +88,7 @@ final class LLMProcessingCoordinator: ObservableObject {
     )
 
     if let result, !result.isEmpty {
-      let finalResult = self.styled(result, action: validated.request.action, settings: settings)
+      let finalResult = self.styled(result, action: validated.request.action, host: stylingHost, settings: settings)
       LLMBridge.writeResult(finalResult)
       TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingComplete)
       DiagnosticLog.write("llm: complete, result=\(finalResult.count) chars")
@@ -154,10 +155,10 @@ final class LLMProcessingCoordinator: ObservableObject {
     }
   }
 
-  private func styled(_ text: String, action: LLMAction, settings: SharedSettings) -> String {
+  private func styled(_ text: String, action: LLMAction, host: String?, settings: SharedSettings) -> String {
     guard action != .addPunctuation, action != .fixGrammar else { return text }
     let resolvedStyle = AppStyleStore().resolvedStyle(
-      hostBundleId: settings.hostBundleId,
+      hostBundleId: host,
       defaultStyle: settings.defaultWritingStyle,
     )
     return TextStyleFormatter.format(text, style: resolvedStyle)

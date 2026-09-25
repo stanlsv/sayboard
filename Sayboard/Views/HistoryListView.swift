@@ -5,19 +5,48 @@ struct HistoryListView: View {
   var body: some View {
     self.recordsList
       .overlay {
-        if self.records.isEmpty { self.emptyState }
+        if self.records.isEmpty, !self.showsSetupCard, !self.showsAIOffer { self.emptyState }
       }
-      .onAppear { self.loadRecords() }
+      .navigationTitle("History")
+      .onAppear { self.loadRecordsIfChanged() }
+      .onChange(of: self.setupChecklist) { OnboardingRecordStore().forgetFinishedPostponements(self.setupChecklist) }
       .onChange(of: self.speechService.historySaveGeneration) {
         self.loadRecords()
       }
+      .onChange(of: self.hasTextModel, initial: true) { if self.hasTextModel { self.isAIOfferClosed = true } }
   }
 
   @EnvironmentObject private var playerService: AudioPlayerService
   @EnvironmentObject private var speechService: SpeechRecognitionService
+  @EnvironmentObject private var permissionService: PermissionService
+  @AppStorage(SharedKey.hasCompletedOnboarding) private var hasCompletedOnboarding = false
+  @AppStorage(SharedKey.hasUsableModel, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var hasUsableModel = false
+  @AppStorage(SharedKey.hasUsableLLMModel, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var hasTextModel = false
+  @AppStorage(AIButtonOffer.closedKey) private var isAIOfferClosed = false
   @State private var records = [HistoryRecord]()
+  @State private var loadedModificationDate: Date?
 
   private let store = HistoryStore.shared
+
+  private var setupChecklist: SetupChecklist {
+    SetupChecklist(permissions: self.permissionService, hasUsableModel: self.hasUsableModel)
+  }
+
+  private var showsSetupCard: Bool {
+    self.hasCompletedOnboarding && !self.setupChecklist.isComplete
+  }
+
+  private var showsAIOffer: Bool {
+    guard !self.showsSetupCard else { return false }
+    return AIButtonOffer.isDue(
+      isClosed: self.isAIOfferClosed,
+      canRunModel: AIButtonOfferCard.variant.isSupportedOnCurrentDevice,
+      hasTextModel: self.hasTextModel,
+      isDictationLocked: SharedSettings().isDictationLocked,
+    )
+  }
 
   private var emptyState: some View {
     ContentUnavailableView {
@@ -60,6 +89,16 @@ struct HistoryListView: View {
   private var recordsList: some View {
     ScrollView {
       LazyVStack(spacing: 0) {
+        if self.showsSetupCard {
+          SetupCardView(checklist: self.setupChecklist)
+            .historyCard()
+        }
+        if self.showsAIOffer {
+          AIButtonOfferCard {
+            withAnimation { self.isAIOfferClosed = true }
+          }
+          .historyCard()
+        }
         self.privacyHeader
         ForEach(self.records) { record in
           VStack(spacing: 0) {
@@ -77,8 +116,16 @@ struct HistoryListView: View {
     }
   }
 
+  private func loadRecordsIfChanged() {
+    guard self.store.historyModificationDate() != self.loadedModificationDate else { return }
+    self.loadRecords()
+  }
+
   private func loadRecords() {
-    self.records = self.store.loadRecords()
+    let modified = self.store.historyModificationDate()
+    guard let records = try? self.store.readRecords() else { return }
+    self.records = records
+    self.loadedModificationDate = modified
   }
 
   private func deleteRecord(id: UUID) {
@@ -89,4 +136,15 @@ struct HistoryListView: View {
     }
   }
 
+}
+
+extension View {
+  fileprivate func historyCard() -> some View {
+    self
+      .padding(.horizontal, 16)
+      .padding(.vertical, 14)
+      .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+      .padding(.horizontal)
+      .padding(.top, 12)
+  }
 }

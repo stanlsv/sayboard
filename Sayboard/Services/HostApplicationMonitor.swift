@@ -5,6 +5,15 @@ import UIKit
 
 enum HostApplicationMonitor {
 
+  static func arbitrationMethods() -> [Method] {
+    let total = objc_getClassList(nil, 0)
+    guard total > 0 else { return [] }
+    let buffer = UnsafeMutablePointer<AnyClass>.allocate(capacity: Int(total))
+    defer { buffer.deallocate() }
+    let registered = objc_getClassList(AutoreleasingUnsafeMutablePointer<AnyClass>(buffer), total)
+    return (0..<Int(min(registered, total))).compactMap { self.ownArbitrationMethod(of: buffer[$0]) }
+  }
+
   static func start() {
     guard !self.didStart else { return }
     self.didStart = true
@@ -43,15 +52,8 @@ enum HostApplicationMonitor {
   }
 
   private static func installArbitrationHook() -> Int {
-    let total = objc_getClassList(nil, 0)
-    guard total > 0 else { return 0 }
-    let buffer = UnsafeMutablePointer<AnyClass>.allocate(capacity: Int(total))
-    defer { buffer.deallocate() }
-    let written = objc_getClassList(AutoreleasingUnsafeMutablePointer<AnyClass>(buffer), total)
-    var seen = Set<OpaquePointer>()
-    for index in 0..<Int(written) {
-      guard let method = class_getInstanceMethod(buffer[index], self.changedSelector) else { continue }
-      guard seen.insert(method).inserted else { continue }
+    let methods = self.arbitrationMethods()
+    for method in methods {
       typealias ArbitrationFn = @convention(c) (AnyObject, Selector, AnyObject?, AnyObject?) -> Void
       let callThrough = unsafeBitCast(method_getImplementation(method), to: ArbitrationFn.self)
       let block: @convention(block) (AnyObject, AnyObject?, AnyObject?) -> Void = { receiver, info, completion in
@@ -60,7 +62,14 @@ enum HostApplicationMonitor {
       }
       method_setImplementation(method, imp_implementationWithBlock(block))
     }
-    return seen.count
+    return methods.count
+  }
+
+  private static func ownArbitrationMethod(of cls: AnyClass) -> Method? {
+    var count: UInt32 = 0
+    guard let methods = class_copyMethodList(cls, &count) else { return nil }
+    defer { free(methods) }
+    return UnsafeBufferPointer(start: methods, count: Int(count)).first { method_getName($0) == self.changedSelector }
   }
 
   private static func record(from info: NSObject) {

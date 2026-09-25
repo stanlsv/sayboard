@@ -67,7 +67,7 @@ private struct RetentionPolicyListView: View {
   }
 }
 
-struct SettingsView: View {
+struct SettingsView: View, Equatable {
 
   init() {
     let shared = SharedSettings()
@@ -118,6 +118,10 @@ struct SettingsView: View {
     }
   }
 
+  nonisolated static func ==(_: Self, _: Self) -> Bool {
+    true
+  }
+
   private enum Route: Hashable {
     case setup
   }
@@ -137,6 +141,7 @@ struct SettingsView: View {
   @State private var showClearHistoryConfirmation = false
   @State private var showClearCacheConfirmation = false
   @State private var historyInfoText = ""
+  @State private var historyInfoModificationDate: Date?
   @State private var historyClearedTrigger = false
   @State private var cacheClearedTrigger = false
   @State private var showsLowStorageWarning = false
@@ -362,7 +367,10 @@ struct SettingsView: View {
   }
 
   private func refreshHistoryInfo() {
-    let count = HistoryStore.shared.loadRecords().count
+    let modified = HistoryStore.shared.historyModificationDate()
+    guard modified != self.historyInfoModificationDate else { return }
+    guard let count = try? HistoryStore.shared.readRecords().count else { return }
+    self.historyInfoModificationDate = modified
     guard count > 0 else { self.historyInfoText = ""
       return
     }

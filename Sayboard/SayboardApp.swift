@@ -95,6 +95,34 @@ private enum DeepLinkValidator {
   }
 }
 
+@MainActor
+private final class UnobservedOwner<Object: AnyObject>: ObservableObject {
+
+  init(_ object: Object) {
+    self.object = object
+  }
+
+  let object: Object
+
+}
+
+private struct ModelSelectionObserver: ViewModifier {
+  @ObservedObject var downloadService: ModelDownloadService
+
+  let onSelectedVariantChange: (_ oldVariant: ModelVariant, _ newVariant: ModelVariant) -> Void
+  let onDownloadedVariantsChange: () -> Void
+
+  func body(content: Content) -> some View {
+    content
+      .onChange(of: self.downloadService.selectedVariant) { oldVariant, newVariant in
+        self.onSelectedVariantChange(oldVariant, newVariant)
+      }
+      .onChange(of: self.downloadService.downloadedVariants) {
+        self.onDownloadedVariantsChange()
+      }
+  }
+}
+
 @main
 struct SayboardApp: App {
 
@@ -109,6 +137,7 @@ struct SayboardApp: App {
     settings.isRecording = false
     settings.isModelLoading = false
     settings.dictationSessionToken = nil
+    settings.onboardingPracticeProcessID = nil
     settings.mainAppHeartbeat = CFAbsoluteTimeGetCurrent()
     HistoryStore.shared.applyRetentionPolicy()
     ModelStorageManager.ensurePersistentCoreMLCache()
@@ -118,6 +147,8 @@ struct SayboardApp: App {
 
     let preShowHint = settings.hostBundleId == nil && settings.isKeyboardRequestRecent()
     self._showsHostReturnHint = State(initialValue: preShowHint)
+    Self.markOnboardingCompleteForEstablishedInstall()
+    self._isOnboardingPresented = State(initialValue: Self.shouldPresentOnboarding)
   }
 
   @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -136,15 +167,20 @@ struct SayboardApp: App {
   private static let languageApplyDelay = 0.2
   private static let overlayDismissDelay = 0.15
   private static let dismissToBackgroundDelay = 0.05
+  private static let onboardingFadeDuration = 0.35
 
   private static let hostResolveTimeout = 1.0
   private static let hostResolvePollInterval = 50
 
+  private static var shouldPresentOnboarding: Bool {
+    !UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding)
+  }
+
   @StateObject private var speechService = SpeechRecognitionService()
   @StateObject private var playerService = AudioPlayerService()
-  @StateObject private var downloadService = ModelDownloadService()
+  @StateObject private var downloadServiceOwner = UnobservedOwner(ModelDownloadService())
   @StateObject private var permissionService = PermissionService()
-  @StateObject private var llmDownloadService = LLMDownloadService()
+  @StateObject private var llmDownloadServiceOwner = UnobservedOwner(LLMDownloadService())
   @StateObject private var llmCoordinator = LLMProcessingCoordinator()
   @StateObject private var pipTutorialService = PiPTutorialService()
   @AppStorage(SharedKey.appLanguage) private var appLanguage = defaultLanguage
@@ -152,39 +188,60 @@ struct SayboardApp: App {
   @State private var isChangingLanguage = false
   @State private var pendingPiPTutorial: TutorialVideo?
   @State private var showsHostReturnHint = false
+  @State private var isOnboardingPresented = false
+
+  private var downloadService: ModelDownloadService {
+    self.downloadServiceOwner.object
+  }
+
+  private var llmDownloadService: LLMDownloadService {
+    self.llmDownloadServiceOwner.object
+  }
 
   private var rootView: some View {
     ZStack {
       self.mainTabContent
+      self.onboardingLayer
       self.hostReturnHintOverlay
       self.languageChangeOverlay
+    }
+    .environmentObject(self.speechService)
+    .environmentObject(self.playerService)
+    .environmentObject(self.downloadService)
+    .environmentObject(self.permissionService)
+    .environmentObject(self.llmDownloadService)
+    .environmentObject(self.llmCoordinator)
+    .environmentObject(self.pipTutorialService)
+    .environment(\.locale, Locale(identifier: self.appLanguage))
+  }
+
+  @ViewBuilder
+  private var onboardingLayer: some View {
+    if self.isOnboardingPresented {
+      OnboardingView { self.finishOnboarding() }
+        .accessibilityAddTraits(.isModal)
+        .transition(.opacity)
     }
   }
 
   private var mainTabContent: some View {
-    MainTabView()
+    MainTabView(isBehindOnboarding: self.isOnboardingPresented)
       .id(self.appLanguage)
-      .environmentObject(self.speechService)
-      .environmentObject(self.playerService)
-      .environmentObject(self.downloadService)
-      .environmentObject(self.permissionService)
-      .environmentObject(self.llmDownloadService)
-      .environmentObject(self.llmCoordinator)
-      .environmentObject(self.pipTutorialService)
-      .environment(\.locale, Locale(identifier: self.appLanguage))
+      .accessibilityHidden(self.isOnboardingPresented)
       .onReceive(NotificationCenter.default.publisher(for: AppDelegate.deepLinkNotification)) { notification in
         if let url = notification.object as? URL { self.handleDeepLink(url) }
       }
       .onOpenURL { self.handleDeepLink($0) }
       .onAppear { self.handleAppear() }
       .onChange(of: self.scenePhase) { _, newPhase in self.handleScenePhaseChange(newPhase) }
-      .onChange(of: self.downloadService.selectedVariant) { oldVariant, newVariant in
-        guard oldVariant != newVariant else { return }
-        Task { await self.handleSelectedVariantChange(oldVariant: oldVariant, newVariant: newVariant) }
-      }
-      .onChange(of: self.downloadService.downloadedVariants) {
-        self.handleVariantStatesChange()
-      }
+      .modifier(ModelSelectionObserver(
+        downloadService: self.downloadService,
+        onSelectedVariantChange: { oldVariant, newVariant in
+          guard oldVariant != newVariant else { return }
+          Task { await self.handleSelectedVariantChange(oldVariant: oldVariant, newVariant: newVariant) }
+        },
+        onDownloadedVariantsChange: { self.handleVariantStatesChange() },
+      ))
       .onChange(of: self.speechService.isRecording) { _, isRecording in
         if !isRecording { self.showsHostReturnHint = false }
       }
@@ -203,7 +260,6 @@ struct SayboardApp: App {
   private var hostReturnHintOverlay: some View {
     if self.showsHostReturnHint {
       HostReturnHintOverlay { self.showsHostReturnHint = false }
-        .environment(\.locale, Locale(identifier: self.appLanguage))
         .transition(.asymmetric(insertion: .identity, removal: .opacity))
     }
   }
@@ -216,6 +272,23 @@ struct SayboardApp: App {
     .opacity(self.isChangingLanguage ? 1 : 0)
     .animation(self.isChangingLanguage ? nil : .easeOut(duration: Self.overlayFadeDuration), value: self.isChangingLanguage)
     .allowsHitTesting(self.isChangingLanguage)
+  }
+
+  private static func markOnboardingCompleteForEstablishedInstall() {
+    guard !UserDefaults.standard.bool(forKey: SharedKey.hasCompletedOnboarding) else { return }
+    let hasRecord = UserDefaults.standard.data(forKey: SharedKey.onboardingRecord) != nil
+    let hasModel = ModelVariant.allCases.contains(where: ModelStorageManager.isDownloaded)
+    let hasHistory = !((try? HistoryStore.shared.readRecords()) ?? []).isEmpty
+    guard
+      OnboardingGate.marksCompleteForEstablishedInstall(
+        hasRecord: hasRecord,
+        hasModel: hasModel,
+        hasHistory: hasHistory,
+      )
+    else {
+      return
+    }
+    UserDefaults.standard.set(true, forKey: SharedKey.hasCompletedOnboarding)
   }
 
   private static func configureDefaultLanguageIfNeeded() {
@@ -233,6 +306,9 @@ struct SayboardApp: App {
     self.downloadService.verifyExistingModels()
     self.downloadService.checkForInterruptedDownloadOnLaunch()
     self.permissionService.refreshAll()
+    OnboardingRecordStore().forgetFinishedPostponements(
+      SetupChecklist(permissions: self.permissionService, hasUsableModel: SharedSettings().hasUsableModel)
+    )
     self.speechService.downloadService = self.downloadService
     self.downloadService.modelLoader = self.speechService
 
@@ -260,6 +336,9 @@ struct SayboardApp: App {
         self.pipTutorialService.stopTutorial()
       }
       self.permissionService.refreshAll()
+      OnboardingRecordStore().forgetFinishedPostponements(
+        SetupChecklist(permissions: self.permissionService, hasUsableModel: SharedSettings().hasUsableModel)
+      )
       self.downloadService.resumeInterruptedDownloadIfNeeded()
       self.llmDownloadService.resumeInterruptedDownloadIfNeeded()
 
@@ -373,7 +452,9 @@ struct SayboardApp: App {
   private func handleDictateDeepLink() {
     SharedSettings().dictationSessionToken = UUID().uuidString
 
-    if SharedSettings().hostBundleId == nil {
+    let staysInApp = OnboardingTextEntry.isVisible
+
+    if SharedSettings().hostBundleId == nil, !staysInApp {
       self.showsHostReturnHint = true
     }
 
@@ -382,7 +463,9 @@ struct SayboardApp: App {
       return
     }
 
-    self.returnToHostWhenResolved()
+    if !staysInApp {
+      self.returnToHostWhenResolved()
+    }
 
     Task { await self.loadModelInBackgroundIfNeeded() }
   }
@@ -462,6 +545,11 @@ struct SayboardApp: App {
     }
 
     settings.hasPreparedModelOnce = true
+  }
+
+  private func finishOnboarding() {
+    UserDefaults.standard.set(true, forKey: SharedKey.hasCompletedOnboarding)
+    withAnimation(.easeInOut(duration: Self.onboardingFadeDuration)) { self.isOnboardingPresented = false }
   }
 
   private func returnToHostApp() {

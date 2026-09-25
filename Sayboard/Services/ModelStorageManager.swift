@@ -114,11 +114,20 @@ enum ModelStorageManager {
     else {
       return
     }
+    self.ensurePersistentCoreMLCache(cachesURL: cachesURL, persistentURL: persistentURL)
+  }
 
+  static func ensurePersistentCoreMLCache(
+    cachesURL: URL,
+    persistentURL: URL,
+    trashDirectory: URL = FileManager.default.temporaryDirectory,
+  ) {
+    self.deleteDiscardedCaches(in: trashDirectory)
     do {
       let alreadyValid = try self.resolveExistingCachePath(
         cachesURL: cachesURL,
         persistentURL: persistentURL,
+        trashDirectory: trashDirectory,
       )
       guard !alreadyValid else { return }
       try self.createCacheSymlink(cachesURL: cachesURL, persistentURL: persistentURL)
@@ -127,12 +136,17 @@ enum ModelStorageManager {
 
   private static let e5rtCacheDirName = "com.apple.e5rt.e5bundlecache"
   private static let persistentCacheDirName = "CoreMLCache"
+  private static let discardedCachePrefix = "CoreMLCache-"
 
   private static var effectiveBundleId: String {
     Bundle.main.bundleIdentifier ?? "app.sayboard"
   }
 
-  private static func resolveExistingCachePath(cachesURL: URL, persistentURL: URL) throws -> Bool {
+  private static func resolveExistingCachePath(
+    cachesURL: URL,
+    persistentURL: URL,
+    trashDirectory: URL,
+  ) throws -> Bool {
     let fm = FileManager.default
     let cachesPath = cachesURL.path
 
@@ -151,6 +165,9 @@ enum ModelStorageManager {
         return true
       }
       try fm.removeItem(atPath: cachesPath)
+      if persistentExists {
+        self.discardStaleEntries(at: persistentURL, trashDirectory: trashDirectory)
+      }
     }
 
     if !cachesIsSymlink, cachesExists {
@@ -163,6 +180,38 @@ enum ModelStorageManager {
     }
 
     return false
+  }
+
+  private static func deleteDiscardedCaches(in trashDirectory: URL) {
+    let leftovers = (try? FileManager.default.contentsOfDirectory(
+      at: trashDirectory,
+      includingPropertiesForKeys: nil,
+    )) ?? []
+    let stale = leftovers.filter { $0.lastPathComponent.hasPrefix(self.discardedCachePrefix) }
+    guard !stale.isEmpty else { return }
+    DispatchQueue.global(qos: .utility).async {
+      for url in stale {
+        do {
+          try FileManager.default.removeItem(at: url)
+        } catch { }
+      }
+    }
+  }
+
+  private static func discardStaleEntries(at persistentURL: URL, trashDirectory: URL) {
+    let trashURL = trashDirectory
+      .appendingPathComponent("\(self.discardedCachePrefix)\(UUID().uuidString)", isDirectory: true)
+    do {
+      try FileManager.default.moveItem(at: persistentURL, to: trashURL)
+    } catch {
+      return
+    }
+    DispatchQueue.global(qos: .utility).async {
+      let _ = self.directorySize(at: trashURL)
+      do {
+        try FileManager.default.removeItem(at: trashURL)
+      } catch { }
+    }
   }
 
   private static func createCacheSymlink(cachesURL: URL, persistentURL: URL) throws {

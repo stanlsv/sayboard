@@ -5,6 +5,23 @@ import UIKit
 
 extension KeyboardViewController {
 
+  var hostProcess: (pid: Int, version: Int)? {
+    guard let parent else { return nil }
+    guard let ivar = class_getInstanceVariable(type(of: parent), "_hostAuditToken") else {
+      return nil
+    }
+    let base = Unmanaged.passUnretained(parent).toOpaque()
+    let token = base.advanced(by: ivar_getOffset(ivar)).assumingMemoryBound(to: audit_token_t.self)
+    let identity = withUnsafeBytes(of: token.pointee) { raw in
+      (
+        pid: Int(raw.load(fromByteOffset: Self.auditTokenPidOffset, as: UInt32.self)),
+        version: Int(raw.load(fromByteOffset: Self.auditTokenVersionOffset, as: UInt32.self)),
+      )
+    }
+    guard identity.pid > 0 else { return nil }
+    return identity
+  }
+
   func saveHostBundleId() {
     let process = self.saveHostProcess()
 
@@ -45,19 +62,7 @@ extension KeyboardViewController {
   private static let auditTokenVersionOffset = 7 * MemoryLayout<UInt32>.size
 
   private func saveHostProcess() -> (pid: Int, version: Int)? {
-    guard let parent else { return nil }
-    guard let ivar = class_getInstanceVariable(type(of: parent), "_hostAuditToken") else {
-      return nil
-    }
-    let base = Unmanaged.passUnretained(parent).toOpaque()
-    let token = base.advanced(by: ivar_getOffset(ivar)).assumingMemoryBound(to: audit_token_t.self)
-    let identity = withUnsafeBytes(of: token.pointee) { raw in
-      (
-        pid: Int(raw.load(fromByteOffset: Self.auditTokenPidOffset, as: UInt32.self)),
-        version: Int(raw.load(fromByteOffset: Self.auditTokenVersionOffset, as: UInt32.self)),
-      )
-    }
-    guard identity.pid > 0 else { return nil }
+    guard let identity = self.hostProcess else { return nil }
     RememberedHost.currentProcess = identity
     AppGroup.sharedDefaults?.synchronize()
     return identity

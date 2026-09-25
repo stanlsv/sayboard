@@ -68,6 +68,10 @@ enum SharedKey {
   static let audioLevel = "audioLevel"
   static let isMicrophoneAuthorized = "isMicrophoneAuthorized"
   static let hasCompletedOnboarding = "hasCompletedOnboarding"
+  static let onboardingRecord = "onboardingRecord"
+  static let onboardingPracticePid = "onboardingPracticePid"
+  static let onboardingPracticeAt = "onboardingPracticeAt"
+  static let micHintDismissed = "micHintDismissed"
   static let hasFullAccess = "hasFullAccess"
   static let isModelLoading = "isModelLoading"
   static let hasPreparedModelOnce = "hasPreparedModelOnce"
@@ -158,6 +162,7 @@ enum DarwinNotificationName {
   static let llmProcessingComplete = "app.sayboard.llmProcessingComplete"
   static let llmProcessingFailed = "app.sayboard.llmProcessingFailed"
   static let dictationLockChanged = "app.sayboard.dictationLockChanged"
+  static let keyboardShownInPractice = "app.sayboard.keyboardShownInPractice"
 }
 
 enum SessionAutoStopPolicy: String, CaseIterable, Sendable {

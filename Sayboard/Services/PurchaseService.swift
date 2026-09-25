@@ -142,8 +142,9 @@ final class PurchaseService: ObservableObject {
     case .confirmed:
       return StoreAnswer(fact: .ruledOut, environment: nil)
     case .ruledOut:
-      guard previous == .unlocked else { return StoreAnswer(fact: .ruledOut, environment: nil) }
-      return await self.latestPurchaseAnswer()
+      let latest = await self.latestPurchaseAnswer()
+      guard latest.fact == .unavailable, previous != .unlocked else { return latest }
+      return StoreAnswer(fact: .ruledOut, environment: nil)
     }
   }
 

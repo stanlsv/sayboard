@@ -15,7 +15,7 @@ struct MicrophoneTutorialView: View {
       self.rowCenters = centers
     }
     .overlay {
-      self.cursorCircle
+      TutorialCursor(position: self.cursorPosition, isVisible: self.cursorVisible, isPressed: self.cursorPressed)
     }
     .allowsHitTesting(false)
     .accessibilityHidden(true)
@@ -33,9 +33,6 @@ struct MicrophoneTutorialView: View {
   private static let pressDuration: UInt64 = 150_000_000
   private static let holdDelay: UInt64 = 1_500_000_000
   private static let resetDelay: UInt64 = 400_000_000
-
-  private static let cursorSize: CGFloat = 36
-  private static let cursorPressedScale: CGFloat = 0.75
 
   @State private var microphoneOn = false
   @State private var cursorPosition = CGPoint.zero
@@ -68,17 +65,6 @@ struct MicrophoneTutorialView: View {
     }
     .padding(.horizontal, 16)
     .padding(.vertical, 8)
-  }
-
-  private var cursorCircle: some View {
-    Circle()
-      .fill(Color.primary.opacity(self.cursorPressed ? 0.45 : 0.25))
-      .frame(width: Self.cursorSize, height: Self.cursorSize)
-      .scaleEffect(self.cursorPressed ? Self.cursorPressedScale : 1.0)
-      .shadow(color: .primary.opacity(0.1), radius: 4)
-      .position(self.cursorPosition)
-      .opacity(self.cursorVisible ? 1 : 0)
-      .animation(.easeOut(duration: 0.08), value: self.cursorPressed)
   }
 
   private func runAnimationLoop() async {

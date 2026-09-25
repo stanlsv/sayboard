@@ -51,20 +51,7 @@ struct LLMModelsSection: View {
       } else {
         self.catalogVariants
       }
-    let selected = self.effectiveSelectedVariant
-    return variants.sorted { lhs, rhs in
-      let lhsActive = selected == lhs && self.llmDownloadService.isDownloaded(lhs)
-      let rhsActive = selected == rhs && self.llmDownloadService.isDownloaded(rhs)
-      if lhsActive != rhsActive { return lhsActive }
-
-      let lhsDownloaded = self.llmDownloadService.isDownloaded(lhs)
-      let rhsDownloaded = self.llmDownloadService.isDownloaded(rhs)
-      if lhsDownloaded != rhsDownloaded { return lhsDownloaded }
-
-      if lhs.isRecommended != rhs.isRecommended { return lhs.isRecommended }
-
-      return lhs.catalogRank > rhs.catalogRank
-    }
+    return variants.sorted { self.sortKey(for: $0).precedes(self.sortKey(for: $1)) }
   }
 
   private var upgradeNoticeHeader: some View {
@@ -183,6 +170,17 @@ struct LLMModelsSection: View {
         self.selectedVariant = current
       }
     }
+  }
+
+  private func sortKey(for variant: LLMModelVariant) -> ModelListSortKey {
+    let isDownloaded = self.llmDownloadService.isDownloaded(variant)
+    return ModelListSortKey(
+      isActive: isDownloaded && variant == self.effectiveSelectedVariant,
+      isDownloaded: isDownloaded,
+      isSupported: variant.isSupportedOnCurrentDevice,
+      isRecommended: variant.isRecommended,
+      catalogRank: variant.catalogRank,
+    )
   }
 
   private func modelCard(for variant: LLMModelVariant) -> some View {

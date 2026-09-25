@@ -16,16 +16,16 @@ extension SpeechRecognitionService {
     )
   }
 
-  func styled(_ text: String) -> String {
+  func styled(_ text: String, host: String?) -> String {
     let resolvedStyle = AppStyleStore().resolvedStyle(
-      hostBundleId: self.settings.hostBundleId,
+      hostBundleId: host,
       defaultStyle: self.settings.defaultWritingStyle,
     )
     let formatted = TextStyleFormatter.format(text, style: resolvedStyle)
     return SnippetExpander.expand(formatted, snippets: self.settings.snippets)
   }
 
-  func runFinalTranscription(samples: [Float]) async {
+  func runFinalTranscription(samples: [Float], stylingHost: String?) async {
     let engine = self.settings.selectedVariant.engine
     let loadState = String(describing: self.activeLoadState)
 
@@ -55,7 +55,7 @@ extension SpeechRecognitionService {
 
     if case .text(let output) = result {
       let sanitizedText = TextSanitizer.sanitize(output.text)
-      let bridgeText = self.styled(sanitizedText)
+      let bridgeText = self.styled(sanitizedText, host: stylingHost)
       self.currentTranscription = bridgeText
 
       self.settings.chargeFreeWords(WordCounter.count(bridgeText))

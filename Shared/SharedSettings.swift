@@ -8,10 +8,7 @@ struct SharedSettings {
 
   init(defaults: UserDefaults) {
     self.defaults = defaults
-    self.defaults.register(defaults: [
-      SharedKey.showGlobeKey: true,
-      SharedKey.keyboardHapticsEnabled: true,
-    ])
+    _ = Self.registration
   }
 
   static let keyboardRequestTTL: TimeInterval = 3.0
@@ -429,4 +426,9 @@ struct SharedSettings {
   func synchronize() {
     self.defaults.synchronize()
   }
+
+  private static let registration: Void = UserDefaults.standard.register(defaults: [
+    SharedKey.showGlobeKey: true,
+    SharedKey.keyboardHapticsEnabled: true,
+  ])
 }

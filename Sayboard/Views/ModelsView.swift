@@ -8,7 +8,7 @@ enum ModelTab: String, CaseIterable {
   static let storageKey = "modelsTab"
 }
 
-struct ModelsView: View {
+struct ModelsView: View, Equatable {
 
   var body: some View {
     ScrollView {
@@ -62,6 +62,10 @@ struct ModelsView: View {
     }
   }
 
+  nonisolated static func ==(_: Self, _: Self) -> Bool {
+    true
+  }
+
   @EnvironmentObject private var downloadService: ModelDownloadService
   @SceneStorage(ModelTab.storageKey) private var selectedTab = ModelTab.speechRecognition
   @State private var selectedVariant: ModelVariant?
@@ -87,20 +91,7 @@ struct ModelsView: View {
       } else {
         Array(ModelVariant.allCases)
       }
-    let selected = self.effectiveSelectedVariant
-    return variants.sorted { lhs, rhs in
-      let lhsActive = selected == lhs && self.downloadService.isDownloaded(lhs)
-      let rhsActive = selected == rhs && self.downloadService.isDownloaded(rhs)
-      if lhsActive != rhsActive { return lhsActive }
-
-      let lhsDownloaded = self.downloadService.isDownloaded(lhs)
-      let rhsDownloaded = self.downloadService.isDownloaded(rhs)
-      if lhsDownloaded != rhsDownloaded { return lhsDownloaded }
-
-      if lhs.isRecommended != rhs.isRecommended { return lhs.isRecommended }
-
-      return lhs.catalogRank > rhs.catalogRank
-    }
+    return variants.sorted { self.sortKey(for: $0).precedes(self.sortKey(for: $1)) }
   }
 
   private var sttContent: some View {
@@ -215,6 +206,17 @@ struct ModelsView: View {
         self.selectedVariant = current
       }
     }
+  }
+
+  private func sortKey(for variant: ModelVariant) -> ModelListSortKey {
+    let isDownloaded = self.downloadService.isDownloaded(variant)
+    return ModelListSortKey(
+      isActive: isDownloaded && variant == self.effectiveSelectedVariant,
+      isDownloaded: isDownloaded,
+      isSupported: variant.isSupportedOnCurrentDevice,
+      isRecommended: variant.isRecommended,
+      catalogRank: variant.catalogRank,
+    )
   }
 
   private func modelCard(for variant: ModelVariant) -> some View {

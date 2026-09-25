@@ -16,6 +16,7 @@ struct WritingStyleListView: View {
     }
     .navigationTitle("Writing Style")
     .navigationBarTitleDisplayMode(.inline)
+    .onboardingTextEntry(isActive: true)
     .sheet(isPresented: self.$showDefaultStylePicker) {
       DefaultStylePickerView(selectedStyle: self.defaultStyleBinding)
     }
