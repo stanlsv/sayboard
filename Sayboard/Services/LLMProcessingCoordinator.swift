@@ -46,6 +46,12 @@ final class LLMProcessingCoordinator: ObservableObject {
     }
     DiagnosticLog.write("llm: request received")
 
+    guard !SharedSettings().isDictationLocked else {
+      LLMBridge.clearRequest()
+      TranscriptionBridge.postDarwinNotification(DarwinNotificationName.llmProcessingFailed)
+      return
+    }
+
     self.isProcessing = true
     let settings = SharedSettings()
     settings.isLLMProcessing = true

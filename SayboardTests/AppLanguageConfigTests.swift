@@ -1,5 +1,38 @@
 import Testing
 
+private let appLanguageCodes = [
+  "bg",
+  "cs",
+  "da",
+  "de",
+  "el",
+  "en",
+  "es",
+  "et",
+  "fi",
+  "fr",
+  "hi",
+  "hr",
+  "hu",
+  "it",
+  "ja",
+  "ko",
+  "lt",
+  "lv",
+  "nl",
+  "no",
+  "pl",
+  "pt",
+  "ro",
+  "ru",
+  "sk",
+  "sl",
+  "sv",
+  "tr",
+  "uk",
+  "zh",
+]
+
 @Suite("AppLanguageConfig.resolveLanguage")
 struct AppLanguageConfigTests {
 
@@ -67,5 +100,34 @@ struct AppLanguageConfigTests {
   func `ukrainian resolves to uk`() {
     let result = AppLanguageConfig.resolveLanguage(from: ["uk-UA"])
     #expect(result == "uk")
+  }
+
+  @Test
+  func `norwegian bokmal resolves to no`() {
+    let result = AppLanguageConfig.resolveLanguage(from: ["nb-NO"])
+    #expect(result == "no")
+  }
+
+  @Test
+  func `bare nb resolves to no`() {
+    let result = AppLanguageConfig.resolveLanguage(from: ["nb"])
+    #expect(result == "no")
+  }
+
+  @Test
+  func `legacy no identifier resolves to no`() {
+    let result = AppLanguageConfig.resolveLanguage(from: ["no"])
+    #expect(result == "no")
+  }
+
+  @Test
+  func `norwegian nynorsk resolves to no`() {
+    let result = AppLanguageConfig.resolveLanguage(from: ["nn-NO"])
+    #expect(result == "no")
+  }
+
+  @Test(arguments: appLanguageCodes)
+  func `every app language code resolves to itself`(code: String) {
+    #expect(AppLanguageConfig.resolveLanguage(from: [code]) == code)
   }
 }

@@ -3,12 +3,24 @@ import CoreML
 @preconcurrency import FluidAudio
 import Foundation
 
+private let evictionMarginBytes: UInt64 = 100_000_000
+
+private let warmUpSamples = [Float](repeating: 0, count: 16_000)
+
 @MainActor
 final class ParakeetTranscriptionService: ObservableObject {
 
   @Published private(set) var loadState = ModelLoadState.unloaded
 
+  nonisolated static func needsWarmUp(pagedInBytes: UInt64?, residentBytes: UInt64) -> Bool {
+    guard let pagedInBytes else { return true }
+    return residentBytes + evictionMarginBytes < pagedInBytes
+  }
+
   func transcribe(audioSamples: [Float]) async -> TranscriptionResult {
+    if let warmUpTask {
+      await warmUpTask.value
+    }
     guard let asrManager, loadState == .loaded else {
       let state = String(describing: loadState)
       DiagnosticLog.write("parakeet: ABORT — loadState=\(state)")
@@ -17,12 +29,13 @@ final class ParakeetTranscriptionService: ObservableObject {
     guard !audioSamples.isEmpty else { return .failed("no audio samples") }
 
     do {
-      var decoderState = try TdtDecoderState()
+      var decoderState = try Self.freshDecoderState()
       let result = try await asrManager.transcribe(
         audioSamples,
         decoderState: &decoderState,
         language: Self.scriptHint(),
       )
+      self.pagedInBytes = ProcessFootprint.fileBackedBytes()
       let text = result.text.trimmingCharacters(in: .whitespacesAndNewlines)
 
       guard !text.isEmpty else {
@@ -77,6 +90,9 @@ final class ParakeetTranscriptionService: ObservableObject {
           self.asrManager = manager
           self.currentVersion = version
           self.loadState = .loaded
+          self.warmUpTask?.cancel()
+          self.warmUpTask = nil
+          self.pagedInBytes = nil
           DiagnosticLog.write("parakeet: model loaded")
         }
       } catch {
@@ -99,8 +115,36 @@ final class ParakeetTranscriptionService: ObservableObject {
     await task.value
   }
 
+  func warmUpIfEvicted() {
+    guard
+      OperatingSystem.isBackgroundNeuralEngineBlocked,
+      let asrManager,
+      self.loadState == .loaded,
+      self.warmUpTask == nil,
+      Self.needsWarmUp(pagedInBytes: self.pagedInBytes, residentBytes: ProcessFootprint.fileBackedBytes())
+    else { return }
+
+    let generation = self.loadGeneration
+    self.warmUpTask = Task { [weak self] in
+      var sampledBytes: UInt64?
+      do {
+        var decoderState = try Self.freshDecoderState()
+        _ = try await asrManager.transcribe(warmUpSamples, decoderState: &decoderState, language: nil)
+        sampledBytes = ProcessFootprint.fileBackedBytes()
+      } catch { }
+      guard let self, generation == self.loadGeneration else { return }
+      if let sampledBytes {
+        self.pagedInBytes = sampledBytes
+      }
+      self.warmUpTask = nil
+    }
+  }
+
   func unloadModel() async {
     self.loadGeneration += 1
+    self.warmUpTask?.cancel()
+    self.warmUpTask = nil
+    self.pagedInBytes = nil
     self.loadTask?.cancel()
     self.loadTask = nil
     if let asrManager {
@@ -115,6 +159,8 @@ final class ParakeetTranscriptionService: ObservableObject {
   private var currentVersion: AsrModelVersion?
   private var loadTask: Task<Void, Never>?
   private var loadGeneration = 0
+  private var warmUpTask: Task<Void, Never>?
+  private var pagedInBytes: UInt64?
 
   private static nonisolated func normalizedModelDirectory(_ directory: URL) -> URL {
     let current = directory.lastPathComponent
@@ -134,6 +180,10 @@ final class ParakeetTranscriptionService: ObservableObject {
       DiagnosticLog.write("parakeet: RENAME FAILED \(error)")
       return directory
     }
+  }
+
+  private static func freshDecoderState() throws -> TdtDecoderState {
+    try TdtDecoderState()
   }
 
   private static func scriptHint() -> Language? {

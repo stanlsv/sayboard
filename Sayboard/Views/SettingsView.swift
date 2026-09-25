@@ -78,12 +78,12 @@ struct SettingsView: View {
 
   var body: some View {
     Form {
-      if self.needsSetup || self.showsLowStorageWarning {
+      if !self.setupChecklist.isComplete || self.showsLowStorageWarning {
         self.setupSection
       }
-      if self.speechService.isSessionActive {
-        SessionInfoView()
-      }
+      #if APPSTORE
+      PurchaseSection()
+      #endif
       self.sessionSection
       self.historySection
       TextOutputSection()
@@ -94,6 +94,9 @@ struct SettingsView: View {
     .sensoryFeedback(.success, trigger: self.historyClearedTrigger)
     .sensoryFeedback(.success, trigger: self.cacheClearedTrigger)
     .navigationTitle("Settings")
+    .navigationDestination(for: Route.self) { _ in
+      SetupView()
+    }
     .onAppear {
       self.refreshHistoryInfo()
       self.refreshCacheSize()
@@ -115,21 +118,18 @@ struct SettingsView: View {
     }
   }
 
+  private enum Route: Hashable {
+    case setup
+  }
+
   private static let defaultLanguage = AppLanguageConfig.fallback
 
   @AppStorage(SharedKey.appLanguage) private var selectedAppLanguage = defaultLanguage
-  @AppStorage(SharedKey.showGlobeKey, store: UserDefaults(suiteName: AppGroup.identifier))
-  private var showGlobeKey = true
-  @AppStorage(SharedKey.keyboardHapticsEnabled, store: UserDefaults(suiteName: AppGroup.identifier))
-  private var keyboardHapticsEnabled = true
-  @AppStorage(SharedKey.needsInputModeSwitchKey, store: UserDefaults(suiteName: AppGroup.identifier))
-  private var needsInputModeSwitchKey = false
   @AppStorage(SharedKey.hasUsableModel, store: UserDefaults(suiteName: AppGroup.identifier))
   private var hasUsableModel = false
   @Environment(\.locale) private var locale
   @EnvironmentObject private var speechService: SpeechRecognitionService
   @EnvironmentObject private var permissionService: PermissionService
-  @EnvironmentObject private var pipTutorialService: PiPTutorialService
   @State private var settings = SharedSettings()
   @State private var selectedRetentionPolicy: HistoryRetentionPolicy
   @State private var selectedAutoStopPolicy: SessionAutoStopPolicy
@@ -141,7 +141,6 @@ struct SettingsView: View {
   @State private var cacheClearedTrigger = false
   @State private var showsLowStorageWarning = false
   @State private var cacheSizeBytes: Int64 = 0
-  @SceneStorage("selectedTab") private var selectedTab = "history"
 
   private let clearHistoryMessage: LocalizedStringKey = "All recordings from the History tab, including transcription text and audio files stored on this device, will be permanently deleted."
 
@@ -164,26 +163,14 @@ struct SettingsView: View {
     )
   }
 
-  private var needsSetup: Bool {
-    self.permissionService.microphoneState != .granted
-      || !self.permissionService.isKeyboardAdded
-      || !self.permissionService.hasFullAccess
-      || !self.hasUsableModel
+  private var setupChecklist: SetupChecklist {
+    SetupChecklist(permissions: self.permissionService, hasUsableModel: self.hasUsableModel)
   }
 
   private var setupSection: some View {
     Section {
-      if self.permissionService.microphoneState != .granted {
-        self.microphoneSetupRow
-      }
-      if !self.permissionService.isKeyboardAdded {
-        self.keyboardSetupRow
-      }
-      if !self.permissionService.hasFullAccess {
-        self.fullAccessSetupRow
-      }
-      if !self.hasUsableModel {
-        self.modelSetupRow
+      if !self.setupChecklist.isComplete {
+        self.setupRow
       }
       if self.showsLowStorageWarning {
         self.lowStorageRow
@@ -191,25 +178,26 @@ struct SettingsView: View {
     } header: {
       Text("\u{26A0}\u{FE0F} Action Required")
     } footer: {
-      if self.needsSetup {
+      if !self.setupChecklist.isComplete {
         Text("Sayboard won’t work until these settings are configured")
       }
     }
   }
 
-  private var microphoneSetupRow: some View {
-    Button {
-      self.pipTutorialService.playTutorial(.microphone, language: self.selectedAppLanguage, thenOpenSettings: true)
-    } label: {
-      Label("Allow Microphone Access", systemImage: "mic.slash")
-    }
-  }
-
-  private var keyboardSetupRow: some View {
-    Button {
-      self.pipTutorialService.playTutorial(.addKeyboard, language: self.selectedAppLanguage, thenOpenSettings: true)
-    } label: {
-      Label("Add Sayboard Keyboard", systemImage: "keyboard")
+  private var setupRow: some View {
+    NavigationLink(value: Route.setup) {
+      HStack {
+        Text("Setup")
+        Spacer()
+        if self.setupChecklist.isComplete {
+          SetupCompletedMark()
+        } else {
+          let remaining = self.setupChecklist.remainingCount
+          Text(verbatim: "\(remaining)")
+            .foregroundStyle(.secondary)
+            .accessibilityLabel(Text("\(remaining) items need attention"))
+        }
+      }
     }
   }
 
@@ -227,22 +215,6 @@ struct SettingsView: View {
     }
   }
 
-  private var fullAccessSetupRow: some View {
-    Button {
-      self.pipTutorialService.playTutorial(.fullAccess, language: self.selectedAppLanguage, thenOpenSettings: true)
-    } label: {
-      Label("Allow Full Access for Keyboard", systemImage: "lock.open")
-    }
-  }
-
-  private var modelSetupRow: some View {
-    Button {
-      self.selectedTab = "models"
-    } label: {
-      Label("Download Speech Model", systemImage: "arrow.down.circle")
-    }
-  }
-
   private var sessionSection: some View {
     Section {
       Toggle("Active Session", isOn: self.sessionBinding)
@@ -251,6 +223,9 @@ struct SettingsView: View {
         ForEach(SessionAutoStopPolicy.allCases, id: \.self) { policy in
           Text(LocalizedStringKey(policy.displayNameKey)).tag(policy)
         }
+      }
+      NavigationLink("Active Session Info") {
+        SessionInfoView()
       }
     } header: {
       Text("Dictation")
@@ -306,20 +281,15 @@ struct SettingsView: View {
 
   private var keyboardSection: some View {
     Section {
-      Picker("Keyboard Type", selection: self.$selectedKeyboardKind) {
-        ForEach(KeyboardKind.allCases, id: \.self) { kind in
-          Text(LocalizedStringKey(kind.displayNameKey)).tag(kind)
+      NavigationLink {
+        KeyboardSettingsView(selectedKind: self.$selectedKeyboardKind)
+      } label: {
+        HStack {
+          Text("Keyboard")
+          Spacer()
+          Text(LocalizedStringKey(self.selectedKeyboardKind.displayNameKey))
+            .foregroundStyle(.secondary)
         }
-      }
-      Toggle("Haptic Feedback", isOn: self.$keyboardHapticsEnabled)
-      if !self.needsInputModeSwitchKey {
-        Toggle("Show Keyboard Switch Key", isOn: self.$showGlobeKey)
-      }
-    } header: {
-      Text("Keyboard")
-    } footer: {
-      if !self.needsInputModeSwitchKey {
-        Text("Display an extra globe key on the keyboard. Your device already provides one, so this is optional.")
       }
     }
   }
@@ -327,6 +297,14 @@ struct SettingsView: View {
   private var aboutSection: some View {
     Section("About") {
       self.appLanguageRow
+
+      if self.setupChecklist.isComplete {
+        self.setupRow
+      }
+
+      #if APPSTORE
+      FullVersionRow()
+      #endif
 
       Button(role: .destructive) {
         self.showClearCacheConfirmation = true

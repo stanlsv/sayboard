@@ -718,6 +718,1265 @@
         }
       }
     },
+    "%lld items need attention" : {
+      "comment" : "VoiceOver label for the number of unfinished setup steps on the Setup row in Settings.",
+      "localizations" : {
+        "bg" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld елемент изисква внимание"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld елемента изискват внимание"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položky vyžadují pozornost"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položky vyžaduje pozornost"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položka vyžaduje pozornost"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položek vyžaduje pozornost"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkt kræver opmærksomhed"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkter kræver opmærksomhed"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Punkt erfordert Aufmerksamkeit"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Punkte erfordern Aufmerksamkeit"
+                }
+              }
+            }
+          }
+        },
+        "el" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld στοιχείο χρειάζεται προσοχή"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld στοιχεία χρειάζονται προσοχή"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item needs attention"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld items need attention"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento requiere atención"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementos requieren atención"
+                }
+              }
+            }
+          }
+        },
+        "et" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkt vajab tähelepanu"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkti vajavad tähelepanu"
+                }
+              }
+            }
+          }
+        },
+        "fi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kohta vaatii huomiota"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kohtaa vaatii huomiota"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld élément requiert votre attention"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld éléments requièrent votre attention"
+                }
+              }
+            }
+          }
+        },
+        "hi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld आइटम पर ध्यान देना ज़रूरी है"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld आइटम पर ध्यान देना ज़रूरी है"
+                }
+              }
+            }
+          }
+        },
+        "hr" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld stavke zahtijevaju pažnju"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld stavka zahtijeva pažnju"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld stavki zahtijeva pažnju"
+                }
+              }
+            }
+          }
+        },
+        "hu" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elem figyelmet igényel"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elem figyelmet igényel"
+                }
+              }
+            }
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento richiede attenzione"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementi richiedono attenzione"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld件の項目に対応が必要です"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "조치가 필요한 항목 %lld개"
+                }
+              }
+            }
+          }
+        },
+        "lt" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementai reikalauja dėmesio"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento reikalauja dėmesio"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementas reikalauja dėmesio"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementų reikalauja dėmesio"
+                }
+              }
+            }
+          }
+        },
+        "lv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld vienums prasa uzmanību"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld vienumi prasa uzmanību"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld vienumu prasa uzmanību"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkt krever oppmerksomhet"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkter krever oppmerksomhet"
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld onderdeel vereist aandacht"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld onderdelen vereisen aandacht"
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementy wymagają uwagi"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementów wymaga uwagi"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld element wymaga uwagi"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementu wymaga uwagi"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item requer atenção"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld itens requerem atenção"
+                }
+              }
+            }
+          }
+        },
+        "ro" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemente necesită atenție"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld element necesită atenție"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld de elemente necesită atenție"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пункта требуют внимания"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пунктов требуют внимания"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пункт требует внимания"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пункта требуют внимания"
+                }
+              }
+            }
+          }
+        },
+        "sk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položky vyžadujú pozornosť"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položky vyžaduje pozornosť"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položka vyžaduje pozornosť"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld položiek vyžaduje pozornosť"
+                }
+              }
+            }
+          }
+        },
+        "sl" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementi zahtevajo pozornost"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld element zahteva pozornost"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementov zahteva pozornost"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementa zahtevata pozornost"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkt kräver uppmärksamhet"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld punkter kräver uppmärksamhet"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld öğe dikkat gerektiriyor"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld öğe dikkat gerektiriyor"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пункти потребують уваги"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пунктів потребують уваги"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пункт потребує уваги"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld пункту потребують уваги"
+                }
+              }
+            }
+          }
+        },
+        "zh" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld 项需要处理"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld words left" : {
+      "comment" : "Settings row value next to “Free Dictation”: how many free dictation words remain.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Остава %lld дума"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Остават %lld думи"
+                }
+              }
+            }
+          }
+        },
+        "cs" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zbývají %lld slova"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zbývá %lld slova"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zbývá %lld slovo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zbývá %lld slov"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ord tilbage"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ord tilbage"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noch %lld Wort"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Noch %lld Wörter"
+                }
+              }
+            }
+          }
+        },
+        "el" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Απομένει %lld λέξη"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Απομένουν %lld λέξεις"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld word left"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld words left"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Queda %lld palabra"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Quedan %lld palabras"
+                }
+              }
+            }
+          }
+        },
+        "et" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Jäänud %lld sõna"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Jäänud %lld sõna"
+                }
+              }
+            }
+          }
+        },
+        "fi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sana jäljellä"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sanaa jäljellä"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Il reste %lld mot"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Il reste %lld mots"
+                }
+              }
+            }
+          }
+        },
+        "hi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld शब्द बाकी"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld शब्द बाकी"
+                }
+              }
+            }
+          }
+        },
+        "hr" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Preostale su %lld riječi"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Preostala je %lld riječ"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Preostalo je %lld riječi"
+                }
+              }
+            }
+          }
+        },
+        "hu" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld szó maradt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld szó maradt"
+                }
+              }
+            }
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Resta %lld parola"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Restano %lld parole"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "残り%lld語"
+                }
+              }
+            }
+          }
+        },
+        "ko" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld단어 남음"
+                }
+              }
+            }
+          }
+        },
+        "lt" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Liko %lld žodžiai"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Liko %lld žodžio"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Liko %lld žodis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Liko %lld žodžių"
+                }
+              }
+            }
+          }
+        },
+        "lv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Atlicis %lld vārds"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Atlikuši %lld vārdi"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Atlicis %lld vārdu"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ord igjen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ord igjen"
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Nog %lld woord"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Nog %lld woorden"
+                }
+              }
+            }
+          }
+        },
+        "pl" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostały %lld słowa"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostało %lld słów"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostało %lld słowo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostało %lld słowa"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Resta %lld palavra"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Restam %lld palavras"
+                }
+              }
+            }
+          }
+        },
+        "ro" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Au mai rămas %lld cuvinte"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "A mai rămas %lld cuvânt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Au mai rămas %lld de cuvinte"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Осталось %lld слова"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Осталось %lld слов"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Осталось %lld слово"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Осталось %lld слова"
+                }
+              }
+            }
+          }
+        },
+        "sk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostávajú %lld slová"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostáva %lld slova"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostáva %lld slovo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Zostáva %lld slov"
+                }
+              }
+            }
+          }
+        },
+        "sl" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ostale so %lld besede"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ostala je %lld beseda"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ostalo je %lld besed"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ostali sta %lld besedi"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ord kvar"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ord kvar"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kelime kaldı"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld kelime kaldı"
+                }
+              }
+            }
+          }
+        },
+        "uk" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Залишилося %lld слова"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Залишилося %lld слів"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Залишилося %lld слово"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Залишилося %lld слова"
+                }
+              }
+            }
+          }
+        },
+        "zh" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "剩余 %lld 个词"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "⚠️ Action Required" : {
       "localizations" : {
         "bg" : {
@@ -3942,6 +5201,186 @@
         }
       }
     },
+    "A one-time purchase unlocks unlimited dictation and AI text processing for good and supports Sayboard’s development." : {
+      "comment" : "Explanation under the purchase screen title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Еднократна покупка отключва завинаги неограничена диктовка и AI обработка на текст и подкрепя развитието на Sayboard."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jednorázový nákup natrvalo odemkne neomezené diktování a zpracování textu AI a podpoří vývoj aplikace Sayboard."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et engangskøb låser permanent op for ubegrænset diktering og AI-tekstbehandling og støtter udviklingen af Sayboard."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein einmaliger Kauf schaltet unbegrenztes Diktieren und KI-Textverarbeitung dauerhaft frei und unterstützt die Entwicklung von Sayboard."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Μια εφάπαξ αγορά ξεκλειδώνει μόνιμα απεριόριστη υπαγόρευση και επεξεργασία κειμένου AI και στηρίζει την ανάπτυξη του Sayboard."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una compra única desbloquea para siempre el dictado ilimitado y el procesamiento de texto con IA, y apoya el desarrollo de Sayboard."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ühekordne ost avab jäädavalt piiramatu dikteerimise ja AI tekstitöötluse ning toetab Sayboardi arendamist."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kertaosto avaa pysyvästi rajattoman sanelun ja AI-tekstinkäsittelyn sekä tukee Sayboardin kehitystä."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un achat unique débloque définitivement la dictée illimitée et le traitement de texte IA, et soutient le développement de Sayboard."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एक बार की ख़रीदारी से असीमित डिक्टेशन और AI टेक्स्ट प्रोसेसिंग हमेशा के लिए अनलॉक हो जाती है और Sayboard के विकास में मदद मिलती है।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jednokratna kupnja trajno otključava neograničeno diktiranje i AI obradu teksta te podupire razvoj aplikacije Sayboard."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egyszeri vásárlással végleg feloldhatja a korlátlan diktálást és az AI szövegfeldolgozást, és támogatja a Sayboard fejlesztését."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un acquisto singolo sblocca per sempre la dettatura illimitata e l’elaborazione testo IA e sostiene lo sviluppo di Sayboard."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1回の購入で、無制限の音声入力とAIテキスト処理がずっと使えるようになり、Sayboardの開発を支えることにもなります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번 구입하면 무제한 받아쓰기와 AI 텍스트 처리를 계속 사용할 수 있으며, Sayboard 개발에도 힘이 됩니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vienkartinis pirkinys visam laikui atrakina neribotą diktavimą ir AI teksto apdorojimą bei padeda kurti Sayboard."
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vienreizējs pirkums uz visiem laikiem atbloķē neierobežotu diktēšanu un AI teksta apstrādi un atbalsta Sayboard attīstību."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et engangskjøp låser opp ubegrenset diktering og AI-tekstbehandling for godt og støtter utviklingen av Sayboard."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een eenmalige aankoop ontgrendelt voorgoed onbeperkt dicteren en AI-tekstverwerking en steunt de ontwikkeling van Sayboard."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jednorazowy zakup na zawsze odblokowuje nieograniczone dyktowanie i przetwarzanie tekstu AI oraz wspiera rozwój Sayboard."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma compra única desbloqueia para sempre o ditado ilimitado e o processamento de texto com IA, e apoia o desenvolvimento do Sayboard."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O achiziție unică deblochează definitiv dictarea nelimitată și procesarea textului cu AI și susține dezvoltarea Sayboard."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разовая покупка навсегда открывает безлимитную диктовку и обработку текста ИИ и поддерживает развитие Sayboard."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jednorazový nákup natrvalo odomkne neobmedzené diktovanie a spracovanie textu pomocou AI a podporí vývoj aplikácie Sayboard."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enkratni nakup za vedno odklene neomejeno narekovanje in obdelavo besedila z AI ter podpre razvoj aplikacije Sayboard."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett engångsköp låser upp obegränsad diktering och AI-textbearbetning för gott och stöder utvecklingen av Sayboard."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek seferlik bir satın alma, sınırsız dikte ve AI metin işlemeyi kalıcı olarak açar ve Sayboard’un geliştirilmesine destek olur."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разова покупка назавжди відкриває необмежене диктування та обробку тексту ШІ і підтримує розвиток Sayboard."
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次性购买即可永久解锁无限听写和 AI 文本处理，并支持 Sayboard 的开发。"
+          }
+        }
+      }
+    },
     "About" : {
       "localizations" : {
         "bg" : {
@@ -5007,190 +6446,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "会话信息"
-          }
-        }
-      }
-    },
-    "active_session_tip_message" : {
-      "localizations" : {
-        "bg" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Оранжевият индикатор означава, че сесията на микрофона е готова за мигновена диктовка. Няма скрит запис — микрофонът се включва само при натискане на бутона за запис. Превключването към приложението е необходимо, защото системата не позволява на разширенията на клавиатурата директен достъп до микрофона. Настройте „Автоматично спиране“, за да контролирате честотата на превключванията. Разходът на батерия е минимален."
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oranžový indikátor znamená, že relace mikrofonu je připravena k okamžitému diktování. Nedochází k žádnému skrytému nahrávání — mikrofon se zapne pouze při stisknutí tlačítka nahrávání. Přepnutí do aplikace je nutné, protože systém blokuje rozšířením klávesnice přístup k mikrofonu. Pomocí nastavení „Automatické zastavení“ si můžete řídit frekvenci přepínání. Spotřeba baterie je minimální."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Den orange indikator betyder, at mikrofonsessionen er klar til diktering med det samme. Der sker ingen skjult optagelse — mikrofonen aktiveres kun, når du trykker på optag. Skift til appen er nødvendigt, fordi systemet blokerer mikrofonadgang i tastaturudvidelser. Justér \"Automatisk stop\" for at styre, hvor ofte det sker. Batteriforbruget er minimalt."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der orangefarbene Indikator bedeutet, dass die Mikrofonsitzung für sofortiges Diktieren bereit ist. Keine versteckte Aufnahme — das Mikrofon wird nur aktiviert, wenn Sie die Aufnahmetaste drücken. Der App-Wechsel ist nötig, weil das System Tastaturerweiterungen den Mikrofonzugriff verwehrt. Über „Automatischer Stopp\" steuern Sie, wie oft das passiert. Der Akkuverbrauch ist minimal."
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ο πορτοκαλί δείκτης σημαίνει ότι η συνεδρία μικροφώνου είναι έτοιμη για άμεση υπαγόρευση. Δεν γίνεται κρυφή εγγραφή — το μικρόφωνο ενεργοποιείται μόνο όταν πατάτε το κουμπί εγγραφής. Η εναλλαγή στην εφαρμογή είναι απαραίτητη, καθώς το σύστημα δεν επιτρέπει στις επεκτάσεις πληκτρολογίου άμεση πρόσβαση στο μικρόφωνο. Χρησιμοποιήστε τη ρύθμιση «Αυτόματη διακοπή» για να ελέγξετε τη συχνότητα εναλλαγών. Η κατανάλωση μπαταρίας είναι ελάχιστη."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The orange indicator means the mic session is ready for instant dictation. No hidden recording — the mic only activates when you press record. App switching is required because the system blocks mic access in keyboard extensions. Adjust “Auto-Stop” to control how often this happens. Battery impact is minimal."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El indicador naranja significa que la sesión del micrófono está lista para un dictado inmediato. No hay grabación oculta — el micrófono solo se activa al pulsar el botón de grabar. Cambiar a la app es necesario, ya que el sistema bloquea el acceso al micrófono en las extensiones de teclado. Ajuste «Parada automática» para controlar la frecuencia de los cambios. El consumo de batería es mínimo."
-          }
-        },
-        "et" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oranž indikaator näitab, et mikrofoni seanss on valmis kohese dikteerimise jaoks. Salajast salvestamist ei toimu — mikrofon aktiveerub ainult siis, kui vajutate salvestamise nuppu. Rakenduse vahetus on vajalik, sest süsteem blokeerib klaviatuuri laienduste mikrofoni juurdepääsu. Reguleerige seadega „Automaatne peatamine\", kui sageli see juhtub. Aku mõju on minimaalne."
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oranssi merkki tarkoittaa, että mikrofoni-istunto on valmis välittömään saneluun. Salaista tallennusta ei tapahdu — mikrofoni aktivoituu vain, kun painat nauhoituspainiketta. Sovelluksen vaihto on tarpeen, koska järjestelmä estää näppäimistölaajennuksilta pääsyn mikrofoniin. Säädä asetusta „Automaattinen pysäytys\", joka ohjaa, kuinka usein tämä tapahtuu. Akun kulutus on vähäistä."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’indicateur orange signifie que la session du micro est prête pour une dictée immédiate. Aucun enregistrement caché — le micro ne s’active que lorsque vous appuyez sur enregistrer. Le changement d’app est nécessaire car le système bloque l’accès au micro dans les extensions de clavier. Ajustez « Arrêt automatique » pour contrôler la fréquence. L’impact sur la batterie est minimal."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "नारंगी संकेतक का मतलब है कि माइक्रोफ़ोन सत्र तुरंत डिक्टेशन के लिए तैयार है। कोई छिपी हुई रिकॉर्डिंग नहीं होती — माइक्रोफ़ोन केवल तभी सक्रिय होता है जब आप रिकॉर्ड बटन दबाते हैं। ऐप पर स्विच करना आवश्यक है क्योंकि सिस्टम कीबोर्ड एक्सटेंशन को सीधे माइक्रोफ़ोन एक्सेस की अनुमति नहीं देता। स्विच की आवृत्ति नियंत्रित करने के लिए “ऑटो-स्टॉप” समायोजित करें। बैटरी की खपत न्यूनतम है।"
-          }
-        },
-        "hr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Narančasti indikator znači da je sesija mikrofona spremna za trenutačno diktiranje. Nema skrivenog snimanja — mikrofon se uključuje samo kad pritisnete gumb za snimanje. Prebacivanje u aplikaciju je nužno jer sustav blokira proširenjima tipkovnice pristup mikrofonu. Pomoću postavke „Automatsko zaustavljanje\" upravljajte učestalošću prebacivanja. Potrošnja baterije je minimalna."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A narancssárga jelző azt jelenti, hogy a mikrofon-munkamenet készen áll az azonnali diktálásra. Nincs rejtett felvétel — a mikrofon csak a felvétel gomb megnyomásakor kapcsol be. Az alkalmazásra váltás azért szükséges, mert a rendszer nem engedi, hogy a billentyűzet-bővítmények közvetlenül hozzáférjenek a mikrofonhoz. A váltások gyakoriságát az „Automatikus leállítás\" beállítással szabályozhatja. Az akkumulátor-fogyasztás minimális."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’indicatore arancione segnala che la sessione del microfono è pronta per una dettatura immediata. Non avviene alcuna registrazione nascosta: il microfono si attiva solo quando preme il pulsante di registrazione. Il passaggio all’app è necessario perché il sistema non consente alle estensioni di tastiera l’accesso diretto al microfono. Regoli “Arresto automatico” per controllare la frequenza dei passaggi. Il consumo della batteria è minimo."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オレンジ色のインジケーターは、マイクセッションが即座の音声入力の準備ができていることを示します。隠れた録音は行われません — マイクは録音ボタンを押したときにのみ起動します。システムがキーボード拡張機能でマイクへのアクセスをブロックするため、アプリの切り替えが必要です。「自動停止」を調整して頻度を制御してください。バッテリーへの影響は最小限です。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "주황색 표시등은 마이크 세션이 즉시 받아쓰기를 준비했음을 의미합니다. 숨겨진 녹음은 없습니다 — 마이크는 녹음 버튼을 누를 때만 활성화됩니다. 시스템이 키보드 확장에서 마이크 접근을 차단하기 때문에 앱 전환이 필요합니다. 「자동 중지」를 조정하여 이런 일이 얼마나 자주 발생하는지 제어하세요. 배터리 소모는 미미합니다."
-          }
-        },
-        "lt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "— jei matote šį oranžinį indikatorių ekrano kampe, nesijaudinkite. Tai reiškia, kad Sayboard palaiko mikrofono sesiją paruoštą, kad klaviatūra galėtų pradėti diktavimą iškart. Joks paslėptas įrašymas nevyksta — mikrofonas suaktyvinamas tik tada, kai paspaudžiate įrašymo mygtuką. Primename: Jūsų balsas apdorojamas vietoje, Jūsų įrenginyje, ir niekada jo nepalieka.\n\nPerjungimas į programėlę paspaudus įrašymo mygtuką yra būtinas. Sistema neleidžia klaviatūros plėtiniams tiesiogiai pasiekti mikrofono, todėl Sayboard trumpam atsidaro, kad jį suaktyvintų, ir nedelsdamas grąžina Jus atgal. Norėdami matyti šiuos perjungimus rečiau, padidinkite laiką nustatyme „Automatinis sustabdymas“.\n\nBaterijos sąnaudos, kol oranžinis indikatorius įjungtas, per visą aktyvios sesijos dieną yra minimalios. Vis dėlto laiką galite sumažinti nustatyme „Automatinis sustabdymas“, tačiau atminkite: kuo mažesnė reikšmė, tuo dažniau programa Jus perjungs pirmyn ir atgal, kad suaktyvintų mikrofoną."
-          }
-        },
-        "lv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oranžais indikators nozīmē, ka mikrofona sesija ir gatava tūlītējai diktēšanai. Neviena slēpta ierakstīšana nenotiek — mikrofons ieslēdzas tikai tad, kad nospiežat ierakstīšanas pogu. Pārslēgšanās uz lietotni ir nepieciešama, jo sistēma neļauj tastatūras paplašinājumiem piekļūt mikrofonam. Iestatiet „Automātiska apturēšana”, lai kontrolētu pārslēgšanos biežumu. Baterijas patēriņš ir minimāls."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Den oransje indikatoren betyr at mikrofonøkten er klar for umiddelbar diktering. Ingen skjult opptak — mikrofonen aktiveres bare når du trykker på opptaksknappen. Bytting til app er nødvendig fordi systemet blokkerer mikrofontilgang i tastaturutvidelser. Juster «Automatisk stopp» for å kontrollere hvor ofte dette skjer. Batteripåvirkningen er minimal."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De oranje indicator betekent dat de microfoonsessie klaar is voor direct dicteren. Er wordt niet stiekem opgenomen — de microfoon wordt pas geactiveerd wanneer u op de opnameknop drukt. Overschakelen naar de app is noodzakelijk omdat het systeem toetsenbordextensies geen directe toegang tot de microfoon geeft. Pas “Automatisch stoppen” aan om de frequentie van overschakelingen te beheren. Het batterijverbruik is minimaal."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pomarańczowy wskaźnik oznacza, że sesja mikrofonu jest gotowa do błyskawicznego dyktowania. Nie odbywa się żadne ukryte nagrywanie — mikrofon włącza się dopiero po naciśnięciu przycisku nagrywania. Przełączenie do aplikacji jest konieczne, ponieważ system blokuje dostęp do mikrofonu w rozszerzeniach klawiatury. Skonfiguruj „Automatyczne zatrzymanie”, aby kontrolować częstotliwość przełączeń. Zużycie baterii jest minimalne."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O indicador laranja significa que a sessão do microfone está pronta para ditado instantâneo. Não há gravação oculta — o microfone só liga quando você toca no botão de gravação. A troca para o app é necessária porque o sistema bloqueia o acesso ao microfone em extensões de teclado. Use o ajuste \"Parada automática\" para controlar a frequência das trocas. O consumo de bateria é mínimo."
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indicatorul portocaliu înseamnă că sesiunea microfonului este gata pentru dictare imediată. Nicio înregistrare ascunsă — microfonul se activează doar când apăsați butonul de înregistrare. Comutarea între aplicații este necesară deoarece sistemul blochează accesul la microfon în extensiile de tastatură. Reglați „Oprire automată\" pentru a controla cât de des se întâmplă acest lucru. Impactul asupra bateriei este minim."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Оранжевый индикатор означает, что сессия микрофона готова для мгновенной диктовки. Скрытой записи нет — микрофон включается только при нажатии кнопки записи. Переключение в приложение необходимо, так как система блокирует доступ к микрофону в расширениях клавиатуры. Настройте «Автоотключение», чтобы контролировать частоту переключений. Расход батареи минимален."
-          }
-        },
-        "sk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oranžový indikátor znamená, že relácia mikrofónu je pripravená na okamžité diktovanie. Žiadne skryté nahrávanie neprebieha — mikrofón sa zapne iba pri stlačení tlačidla nahrávania. Prepnutie do aplikácie je nutné, pretože systém blokuje prístup k mikrofónu v rozšíreniach klávesnice. Nastavte „Automatické zastavenie\", aby ste mali pod kontrolou frekvenciu prepínaní. Spotreba batérie je minimálna."
-          }
-        },
-        "sl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oranžni indikator pomeni, da je seja mikrofona pripravljena za takojšnje narekovanje. Skritega snemanja ni — mikrofon se vklopi le, ko pritisnete gumb za snemanje. Preklop na aplikacijo je nujen, ker sistem onemogoča dostop do mikrofona v razširitvah tipkovnice. Nastavite „Samodejna zaustavitev\", da imate pod nadzorom pogostost preklopov. Poraba baterije je minimalna."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Den orange indikatorn betyder att mikrofonsessionen är redo för omedelbar diktering. Ingen dold inspelning pågår — mikrofonen aktiveras bara när du trycker på inspelningsknappen. Appbytet krävs eftersom systemet blockerar mikrofonåtkomst i tangentbordstillägg. Justera \"Automatiskt stopp\" för att styra hur ofta detta sker. Påverkan på batteriet är minimal."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Turuncu gösterge, mikrofon oturumunun anlık dikte için hazır olduğunu belirtir. Gizli bir kayıt yapılmaz — mikrofon yalnızca kayıt düğmesine bastığınızda etkinleşir. Sistem, klavye uzantılarının mikrofona doğrudan erişmesine izin vermediği için uygulamaya geçiş gereklidir. Geçişlerin sıklığını kontrol etmek için \"Otomatik Durdurma\" ayarını yapın. Pil tüketimi minimum düzeydedir."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Помаранчевий індикатор означає, що сесія мікрофона готова до миттєвого диктування. Прихованого запису немає — мікрофон вмикається лише при натисканні кнопки запису. Перехід до застосунку необхідний, оскільки система блокує доступ до мікрофона в розширеннях клавіатури. Налаштуйте «Автоматичну зупинку», щоб контролювати частоту переходів. Витрата батареї мінімальна."
-          }
-        },
-        "zh" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "橙色指示器表示麦克风会话已准备就绪，可立即听写。没有隐藏录音——只有当您按下录音按钮时麦克风才会激活。切换到应用是必要的，因为系统不允许键盘扩展直接访问麦克风。调整「自动停止」可以控制切换的频率。电池消耗很小。"
           }
         }
       }
@@ -7519,6 +8774,7 @@
       }
     },
     "Allow" : {
+      "extractionState" : "stale",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -12704,6 +13960,185 @@
         }
       }
     },
+    "Completed" : {
+      "comment" : "VoiceOver label for the checkmark on a finished setup step.",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завършено"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokončeno"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Færdig"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erledigt"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ολοκληρώθηκε"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completado"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tehtud"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suoritettu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पूर्ण"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dovršeno"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teljesítve"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료됨"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Įvykdyta"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izpildīts"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fullført"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltooid"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wykonane"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalizat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выполнено"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokončené"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokončano"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slutfört"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamamlandı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Виконано"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已完成"
+          }
+        }
+      }
+    },
     "Configured earlier" : {
       "localizations" : {
         "bg" : {
@@ -12884,7 +14319,6 @@
     },
     "Continue" : {
       "comment" : "Text for a button that allows the user to continue to the next step of the onboarding flow without granting microphone access.",
-      "extractionState" : "stale",
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "bg" : {
@@ -19315,6 +20749,365 @@
         }
       }
     },
+    "Free Dictation" : {
+      "comment" : "Settings row label; its value is the number of free dictation words left.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Безплатна диктовка"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezplatné diktování"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis diktering"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenloses Diktieren"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Δωρεάν υπαγόρευση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictado gratuito"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasuta dikteerimine"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilmainen sanelu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictée gratuite"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मुफ़्त डिक्टेशन"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Besplatno diktiranje"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingyenes diktálás"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dettatura gratuita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料の音声入力"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 받아쓰기"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nemokamas diktavimas"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezmaksas diktēšana"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis diktering"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis dicteren"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darmowe dyktowanie"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditado gratuito"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictare gratuită"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бесплатная диктовка"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezplatné diktovanie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brezplačno narekovanje"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis diktering"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ücretsiz Dikte"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Безплатне диктування"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费听写"
+          }
+        }
+      }
+    },
+    "Free Dictation Used Up" : {
+      "comment" : "Title of the banner shown once the free dictation allowance is spent.",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Безплатната диктовка е изчерпана"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezplatné diktování je vyčerpáno"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den gratis diktering er brugt op"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenloses Diktieren aufgebraucht"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η δωρεάν υπαγόρευση εξαντλήθηκε"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictado gratuito agotado"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasuta dikteerimine on otsas"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilmainen sanelu on käytetty loppuun"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictée gratuite épuisée"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मुफ़्त डिक्टेशन ख़त्म हो गया"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Besplatno diktiranje je potrošeno"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elfogyott az ingyenes diktálás"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dettatura gratuita esaurita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料の音声入力を使い切りました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 받아쓰기를 모두 사용함"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nemokamas diktavimas išnaudotas"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezmaksas diktēšana ir izlietota"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis diktering er brukt opp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis dicteren is op"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darmowe dyktowanie wykorzystane"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditado gratuito esgotado"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictarea gratuită s-a epuizat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бесплатная диктовка закончилась"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bezplatné diktovanie je vyčerpané"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brezplačno narekovanje je porabljeno"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis diktering är slut"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ücretsiz Dikte Hakkı Bitti"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Безплатне диктування закінчилося"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费听写已用完"
+          }
+        }
+      }
+    },
     "Full Access" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -19668,6 +21461,365 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要完全访问"
+          }
+        }
+      }
+    },
+    "Full Version" : {
+      "comment" : "Settings row in About, shown once the lifetime unlock is purchased.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пълна версия"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plná verze"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuld version"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollversion"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Πλήρης έκδοση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión completa"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täisversioon"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Täysi versio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version complète"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पूर्ण संस्करण"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puna verzija"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teljes verzió"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versione completa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フルバージョン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정식 버전"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilna versija"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilnā versija"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fullversjon"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volledige versie"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pełna wersja"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão completa"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versiune completă"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полная версия"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plná verzia"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polna različica"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fullversion"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam Sürüm"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Повна версія"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整版"
+          }
+        }
+      }
+    },
+    "Get Full Version" : {
+      "comment" : "Button that opens the purchase screen.",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вземете пълната версия"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Získat plnou verzi"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Få den fulde version"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollversion holen"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Απόκτηση πλήρους έκδοσης"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtener versión completa"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hangi täisversioon"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanki täysi versio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir la version complète"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पूर्ण संस्करण पाएँ"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nabavi punu verziju"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teljes verzió beszerzése"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni la versione completa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フルバージョンを入手"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정식 버전 받기"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gauti pilną versiją"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iegūt pilno versiju"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Få fullversjonen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volledige versie ophalen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uzyskaj pełną wersję"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obter versão completa"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obține versiunea completă"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Получить полную версию"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Získať plnú verziu"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pridobi polno različico"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skaffa fullversionen"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam Sürümü Al"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отримати повну версію"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取完整版"
           }
         }
       }
@@ -28088,6 +30240,186 @@
         }
       }
     },
+    "No purchases to restore" : {
+      "comment" : "Status after Restore Purchases finds nothing to restore.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Няма покупки за възстановяване"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žádné nákupy k obnovení"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen køb at gendanne"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Käufe zum Wiederherstellen"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Δεν υπάρχουν αγορές για επαναφορά"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay compras que restaurar"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taastatavaid oste pole"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ei palautettavia ostoja"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun achat à restaurer"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रीस्टोर करने के लिए कोई ख़रीदारी नहीं"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nema kupnji za obnavljanje"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nincs visszaállítható vásárlás"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun acquisto da ripristinare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "復元できる購入はありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복원할 구입 내역 없음"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nėra pirkinių, kuriuos būtų galima atkurti"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nav pirkumu, ko atjaunot"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen kjøp å gjenopprette"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen aankopen om te herstellen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brak zakupów do przywrócenia"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma compra para restaurar"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nu există achiziții de restaurat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупок для восстановления нет"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žiadne nákupy na obnovenie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ni nakupov za obnovitev"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inga köp att återställa"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri yüklenecek satın alma yok"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупок для відновлення немає"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有可恢复的购买项目"
+          }
+        }
+      }
+    },
     "No recordings yet" : {
       "localizations" : {
         "bg" : {
@@ -28975,6 +31307,185 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "存储空间不足。请释放空间后重试。"
+          }
+        }
+      }
+    },
+    "Not Now" : {
+      "comment" : "Button that dismisses the banner. Matches the iOS system label (UIKit).",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сега"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teď ne"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke nu"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Später"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Όχι τώρα"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitte praegu"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ei nyt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus tard"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अभी नहीं"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne sad"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most nem"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ora"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今はしない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 안 함"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne dabar"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne tagad"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke nå"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niet nu"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie teraz"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora Não"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nu acum"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не сейчас"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teraz nie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne zdaj"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inte nu"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şimdi Değil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не зараз"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以后"
           }
         }
       }
@@ -31485,6 +33996,366 @@
         }
       }
     },
+    "Purchased" : {
+      "comment" : "VoiceOver value of the Settings row “Full Version”, where a check mark shows it on screen. Agrees with “version” where the language inflects.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Закупена"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakoupena"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Købt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekauft"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αγοράστηκε"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprada"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostetud"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostettu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achetée"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ख़रीदा गया"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupljena"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Megvásárolva"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acquistata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구입함"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Įsigyta"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iegādāta"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kjøpt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekocht"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupiona"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprada"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cumpărată"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Куплена"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakúpená"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupljena"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Köpt"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın Alındı"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Придбана"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已购买"
+          }
+        }
+      }
+    },
+    "Purchases couldn’t be restored. Please try again." : {
+      "comment" : "Error after Restore Purchases fails to reach the App Store.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупките не можаха да бъдат възстановени. Опитайте отново."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nákupy se nepodařilo obnovit. Zkuste to prosím znovu."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Købene kunne ikke gendannes. Prøv igen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Käufe konnten nicht wiederhergestellt werden. Bitte versuchen Sie es erneut."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Δεν ήταν δυνατή η επαναφορά των αγορών. Δοκιμάστε ξανά."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se han podido restaurar las compras. Inténtelo de nuevo."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oste ei õnnestunud taastada. Proovige uuesti."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ostoja ei voitu palauttaa. Yritä uudelleen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de restaurer les achats. Veuillez réessayer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ख़रीदारी रीस्टोर नहीं हो सकी। कृपया फिर से कोशिश करें।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupnje nije bilo moguće obnoviti. Pokušajte ponovno."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A vásárlások visszaállítása nem sikerült. Próbálja újra."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile ripristinare gli acquisti. Riprovi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入を復元できませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구입 내역을 복원하지 못했습니다. 다시 시도해 주세요."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nepavyko atkurti pirkinių. Bandykite dar kartą."
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pirkumus neizdevās atjaunot. Lūdzu, mēģiniet vēlreiz."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kjøpene kunne ikke gjenopprettes. Prøv igjen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De aankopen konden niet worden hersteld. Probeer het opnieuw."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie udało się przywrócić zakupów. Spróbuj ponownie."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível restaurar as compras. Tente novamente."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achizițiile nu au putut fi restaurate. Încercați din nou."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось восстановить покупки. Попробуйте ещё раз."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nákupy sa nepodarilo obnoviť. Skúste to znova."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakupov ni bilo mogoče obnoviti. Poskusite znova."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Köpen kunde inte återställas. Försök igen."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın almalar geri yüklenemedi. Lütfen tekrar deneyin."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не вдалося відновити покупки. Спробуйте ще раз."
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法恢复购买项目。请再试一次。"
+          }
+        }
+      }
+    },
     "quality" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -33268,6 +36139,186 @@
         }
       }
     },
+    "Restore Purchases" : {
+      "comment" : "Button that restores an earlier In-App Purchase from the App Store.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Възстановете покупките"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovit nákupy"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gendan køb"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe wiederherstellen"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Επαναφορά αγορών"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar compras"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taasta ostud"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palauta ostot"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurer les achats"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ख़रीदारी रीस्टोर करें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovi kupnje"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vásárlások visszaállítása"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripristina acquisti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入を復元"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구입 내역 복원"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atkurti pirkinius"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atjaunot pirkumus"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjenopprett kjøp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aankopen herstellen"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Przywróć zakupy"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar compras"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurează achizițiile"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Восстановить покупки"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnoviť nákupy"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obnovi nakupe"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Återställ köp"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın Alımları Geri Yükle"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відновити покупки"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复购买"
+          }
+        }
+      }
+    },
     "Retry" : {
       "localizations" : {
         "bg" : {
@@ -34157,6 +37208,366 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sayboard 无法看到您已安装的应用。搜索通过 App Store 执行，请确保选择正确的应用。"
+          }
+        }
+      }
+    },
+    "Sayboard includes %lld free words of dictation so you can try it at your own pace. If you enjoy it, a one-time purchase keeps dictation going once they run out and supports its development, and we are sincerely grateful for it. If you would rather not pay, Sayboard is open source, and you can build it yourself free of charge." : {
+      "comment" : "Footer under the purchase section in Settings. The argument is always 3000, so write the noun in the form that number takes.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard включва %lld безплатни думи за диктовка, за да го изпробвате спокойно. Ако Ви хареса, еднократна покупка Ви позволява да диктувате и след като думите свършат, и подкрепя развитието му, за което сме Ви искрено благодарни. Ако предпочитате да не плащате, кодът на Sayboard е отворен и можете сами да компилирате приложението безплатно."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard nabízí %lld slov diktování zdarma, abyste si ho mohli v klidu vyzkoušet. Pokud se vám bude líbit, jednorázový nákup vám umožní diktovat i po jejich vyčerpání a podpoří jeho vývoj, za což vám budeme upřímně vděční. Pokud nechcete platit, Sayboard má otevřený zdrojový kód a aplikaci si můžete zdarma sestavit sami."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard indeholder %lld gratis ord til diktering, så du kan prøve appen i dit eget tempo. Hvis du kan lide den, lader et engangskøb dig diktere videre, når ordene er brugt op, og støtter udviklingen, hvilket vi er oprigtigt taknemmelige for. Hvis du helst ikke vil betale, er Sayboard open source, og du kan selv bygge appen gratis."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard enthält %lld kostenlose Wörter zum Diktieren, damit Sie die App in Ruhe ausprobieren können. Wenn sie Ihnen gefällt, können Sie mit einem einmaligen Kauf weiter diktieren, wenn die Wörter aufgebraucht sind, und unterstützen damit die Weiterentwicklung. Dafür sind wir Ihnen aufrichtig dankbar. Wenn Sie lieber nicht bezahlen möchten, ist Sayboard Open Source, und Sie können die App kostenlos selbst kompilieren."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το Sayboard περιλαμβάνει %lld δωρεάν λέξεις υπαγόρευσης, ώστε να το δοκιμάσετε με την ησυχία σας. Αν σας αρέσει, μια εφάπαξ αγορά σάς επιτρέπει να συνεχίσετε την υπαγόρευση όταν εξαντληθούν οι λέξεις και στηρίζει την ανάπτυξή του, και σας είμαστε ειλικρινά ευγνώμονες γι’ αυτό. Αν προτιμάτε να μην πληρώσετε, το Sayboard είναι ανοιχτού κώδικα και μπορείτε να το μεταγλωττίσετε μόνοι σας δωρεάν."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard incluye %lld palabras de dictado gratuitas para que pueda probarlo a su ritmo. Si le gusta, una compra única le permite seguir dictando cuando se agoten y apoya su desarrollo, y se lo agradecemos sinceramente. Si prefiere no pagar, Sayboard es de código abierto y puede compilarlo usted mismo gratis."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboardis on %lld tasuta dikteerimissõna, et saaksite rakendust rahulikult proovida. Kui see teile meeldib, saate ühekordse ostuga dikteerimist jätkata ka pärast sõnade lõppemist ning toetate selle arendamist, mille eest oleme siiralt tänulikud. Kui eelistate mitte maksta, on Sayboard avatud lähtekoodiga ja saate rakenduse ise tasuta kompileerida."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboardissa on %lld ilmaista sanelusanaa, jotta voit kokeilla sovellusta rauhassa. Jos pidät siitä, kertaostolla voit jatkaa sanelua sanojen loputtua ja tuet sen kehitystä, mistä olemme vilpittömästi kiitollisia. Jos et halua maksaa, Sayboard on avointa lähdekoodia, ja voit kääntää sovelluksen itse lähdekoodista ilmaiseksi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard inclut %lld mots de dictée gratuits pour que vous puissiez l’essayer à votre rythme. Si vous l’appréciez, un achat unique vous permet de continuer à dicter une fois ces mots épuisés et soutient son développement, et nous vous en sommes sincèrement reconnaissants. Si vous préférez ne pas payer, Sayboard est open source et vous pouvez le compiler vous-même gratuitement."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard में डिक्टेशन के लिए %lld मुफ़्त शब्द शामिल हैं, ताकि आप इसे आराम से आज़मा सकें। अगर यह आपको पसंद आए, तो एक बार की ख़रीदारी से आप ये शब्द ख़त्म होने के बाद भी डिक्टेशन जारी रख सकते हैं और इसके विकास में मदद करते हैं, और इसके लिए हम दिल से आभारी हैं। अगर आप भुगतान नहीं करना चाहते, तो Sayboard ओपन सोर्स है और आप इसे ख़ुद मुफ़्त में बिल्ड कर सकते हैं।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard uključuje %lld besplatnih riječi diktiranja kako biste ga mogli isprobati u miru. Ako vam se svidi, jednokratna kupnja omogućuje vam da nastavite diktirati kad se riječi potroše i podupire njegov razvoj, na čemu smo vam iskreno zahvalni. Ako radije ne želite platiti, Sayboard je otvorenog koda i možete ga sami besplatno izgraditi."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Sayboard %lld ingyenes diktálási szót tartalmaz, hogy nyugodtan kipróbálhassa. Ha tetszik, egy egyszeri vásárlással a szavak elfogyása után is diktálhat, és támogathatja a fejlesztését, amit őszintén köszönünk. Ha inkább nem fizetne, a Sayboard nyílt forráskódú, így a forráskódból ingyen, saját maga is lefordíthatja."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard include %lld parole di dettatura gratuite per provarlo con calma. Se Le piace, un acquisto singolo Le permette di continuare a dettare una volta esaurite le parole e ne sostiene lo sviluppo, e Le siamo sinceramente grati. Se preferisce non pagare, Sayboard è open source e può compilarlo da sé gratuitamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboardには%lld語分の無料音声入力が含まれているので、ご自分のペースでお試しいただけます。気に入っていただけたら、1回の購入で無料分を使い切った後も音声入力を続けられ、開発の支えにもなります。心より感謝いたします。お支払いを希望されない場合も、Sayboardはオープンソースなので、ご自身で無料でビルドできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard에는 무료 받아쓰기 %lld단어가 포함되어 있어 천천히 사용해 볼 수 있습니다. 마음에 드신다면 한 번의 구입으로 무료 단어를 다 쓴 후에도 계속 받아쓰기할 수 있고 개발에도 힘이 되며, 이에 진심으로 감사드립니다. 비용을 내고 싶지 않다면 Sayboard는 오픈 소스이므로 직접 무료로 빌드할 수 있습니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard suteikia %lld nemokamų diktavimo žodžių, kad galėtumėte ramiai jį išbandyti. Jei jis Jums patiks, vienkartinis pirkinys leis Jums diktuoti ir išnaudojus šiuos žodžius bei padės jį tobulinti, ir mes už tai nuoširdžiai dėkingi. Jei nenorite mokėti, Sayboard yra atvirojo kodo, todėl programėlę galite nemokamai susikompiliuoti patys."
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard ietver %lld bezmaksas diktēšanas vārdu, lai Jūs varētu to mierīgi izmēģināt. Ja tā Jums patiks, vienreizējs pirkums ļaus Jums turpināt diktēt arī pēc tam, kad vārdi būs izlietoti, un atbalstīs tās attīstību, par ko mēs būsim patiesi pateicīgi. Ja nevēlaties maksāt, Sayboard ir atvērtā pirmkoda lietotne, un Jūs varat to bez maksas nokompilēt paši."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard inneholder %lld gratis ord med diktering, slik at du kan prøve appen i ditt eget tempo. Hvis du liker den, lar et engangskjøp deg fortsette å diktere når ordene er brukt opp, og støtter videre utvikling, noe vi er oppriktig takknemlige for. Hvis du helst ikke vil betale, er Sayboard åpen kildekode, og du kan bygge appen selv gratis."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "U kunt met Sayboard %lld woorden gratis dicteren om de app in uw eigen tempo uit te proberen. Als de app u bevalt, kunt u met een eenmalige aankoop blijven dicteren als die woorden op zijn en steunt u de ontwikkeling, en daar zijn we u oprecht dankbaar voor. Als u liever niet betaalt, is Sayboard open source en kunt u de app gratis zelf compileren."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard daje %lld darmowych słów dyktowania na spokojne wypróbowanie aplikacji. Jeśli Ci się spodoba, jednorazowy zakup pozwoli Ci dyktować dalej po wykorzystaniu tych słów i wesprze jej rozwój, za co będziemy szczerze wdzięczni. Jeśli wolisz nie płacić, Sayboard ma otwarty kod źródłowy i możesz bezpłatnie samodzielnie zbudować aplikację."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Sayboard inclui %lld palavras de ditado gratuitas para você experimentar no seu ritmo. Se gostar, uma compra única permite continuar ditando quando as palavras acabarem e apoia o desenvolvimento, e somos sinceramente gratos por isso. Se preferir não pagar, o Sayboard é de código aberto e você pode compilar o app por conta própria gratuitamente."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard include %lld de cuvinte de dictare gratuite, ca să îl puteți încerca în ritmul dumneavoastră. Dacă vă place, o achiziție unică vă permite să dictați în continuare după ce cuvintele se termină și îi susține dezvoltarea, iar noi vă suntem sincer recunoscători pentru ea. Dacă preferați să nu plătiți, Sayboard este open source și îl puteți compila singur, gratuit."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В Sayboard %lld бесплатных слов диктовки, чтобы вы могли спокойно попробовать приложение. Если оно вам понравится, разовая покупка позволит диктовать и после того, как слова закончатся, и поддержит его развитие — мы будем за это искренне благодарны. Если же вы предпочитаете не платить, код Sayboard открыт, и приложение можно бесплатно собрать самостоятельно."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard obsahuje %lld slov bezplatného diktovania, aby ste si ho mohli pokojne vyskúšať. Ak sa vám zapáči, jednorazový nákup vám umožní diktovať aj po ich minutí a podporí jeho vývoj, za čo vám budeme úprimne vďační. Ak nechcete platiť, Sayboard má otvorený zdrojový kód a aplikáciu si môžete zadarmo zostaviť sami."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard vključuje %lld brezplačnih besed narekovanja, da ga lahko v miru preizkusite. Če Vam bo všeč, Vam enkratni nakup omogoči narekovanje tudi po porabi teh besed in podpre njegov razvoj, za kar smo Vam iskreno hvaležni. Če raje ne bi plačali, je Sayboard odprtokoden in ga lahko brezplačno zgradite sami."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard innehåller gratis diktering av %lld ord så att du kan prova appen i din egen takt. Om du gillar den kan du med ett engångsköp fortsätta diktera när orden är slut och samtidigt stödja utvecklingen, och det är vi uppriktigt tacksamma för. Om du hellre inte vill betala är Sayboard öppen källkod, och du kan bygga appen själv gratis."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard, uygulamayı kendi hızınızda deneyebilmeniz için %lld ücretsiz dikte kelimesi içerir. Beğenirseniz tek seferlik bir satın alma, kelimeler bittikten sonra da dikte etmeye devam etmenizi sağlar ve geliştirilmesine destek olur; bunun için içtenlikle teşekkür ederiz. Ödeme yapmak istemezseniz Sayboard açık kaynaklıdır ve uygulamayı kendiniz ücretsiz olarak derleyebilirsiniz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "У Sayboard є %lld безплатних слів диктування, щоб ви могли спокійно спробувати застосунок. Якщо він вам сподобається, разова покупка дозволить диктувати й після того, як слова закінчаться, і підтримає його розвиток — ми будемо за це щиро вдячні. Якщо ж ви не хочете платити, код Sayboard відкритий, і застосунок можна безплатно зібрати самостійно."
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard 提供 %lld 个词的免费听写，让您可以按自己的节奏慢慢试用。如果您喜欢，一次性购买可让您在免费词数用完后继续听写，同时支持它的开发，我们对此由衷感谢。如果您不想付费，Sayboard 是开源软件，您可以免费自行编译。"
+          }
+        }
+      }
+    },
+    "Sayboard is open source. If you would rather not pay, you can build it yourself for free." : {
+      "comment" : "Note on the purchase screen: the app can be compiled from its public source code at no cost.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кодът на Sayboard е отворен. Ако предпочитате да не плащате, можете сами да компилирате приложението безплатно."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard má otevřený zdrojový kód. Pokud nechcete platit, můžete si aplikaci zdarma sestavit sami."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard er open source. Hvis du helst ikke vil betale, kan du selv bygge appen gratis."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard ist Open Source. Wenn Sie lieber nicht bezahlen möchten, können Sie die App kostenlos selbst kompilieren."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το Sayboard είναι ανοιχτού κώδικα. Αν προτιμάτε να μην πληρώσετε, μπορείτε να μεταγλωττίσετε την εφαρμογή μόνοι σας δωρεάν."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard es de código abierto. Si prefiere no pagar, puede compilar la app usted mismo gratis."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard on avatud lähtekoodiga. Kui eelistate mitte maksta, saate rakenduse ise tasuta kompileerida."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard on avointa lähdekoodia. Jos et halua maksaa, voit kääntää sovelluksen itse lähdekoodista ilmaiseksi."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard est open source. Si vous préférez ne pas payer, vous pouvez compiler l’app vous-même gratuitement."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard ओपन सोर्स है। अगर आप भुगतान नहीं करना चाहते, तो आप इसे ख़ुद मुफ़्त में बिल्ड कर सकते हैं।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard je otvorenog koda. Ako radije ne želite platiti, aplikaciju možete sami besplatno izgraditi."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Sayboard nyílt forráskódú. Ha inkább nem fizetne, az alkalmazást a forráskódból ingyen, saját maga is lefordíthatja."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard è open source. Se preferisce non pagare, può compilare l’app da sé gratuitamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboardはオープンソースです。お支払いを希望されない場合は、ご自身で無料でビルドできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard는 오픈 소스입니다. 비용을 내고 싶지 않다면 직접 무료로 빌드할 수 있습니다."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard yra atvirojo kodo. Jei nenorite mokėti, programėlę galite nemokamai susikompiliuoti patys."
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard ir atvērtā pirmkoda lietotne. Ja nevēlaties maksāt, varat to bez maksas nokompilēt paši."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard er åpen kildekode. Hvis du helst ikke vil betale, kan du bygge appen selv gratis."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard is open source. Als u liever niet betaalt, kunt u de app gratis zelf compileren."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard ma otwarty kod źródłowy. Jeśli wolisz nie płacić, możesz bezpłatnie samodzielnie zbudować aplikację."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Sayboard é de código aberto. Se preferir não pagar, você pode compilar o app por conta própria gratuitamente."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard este open source. Dacă preferați să nu plătiți, puteți compila singur aplicația, gratuit."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Код Sayboard открыт. Если вы предпочитаете не платить, приложение можно бесплатно собрать самостоятельно."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard má otvorený zdrojový kód. Ak nechcete platiť, môžete si aplikáciu zadarmo zostaviť sami."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard je odprtokoden. Če raje ne bi plačali, lahko aplikacijo brezplačno zgradite sami."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard är öppen källkod. Om du hellre inte vill betala kan du bygga appen själv gratis."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard açık kaynaklıdır. Ödeme yapmak istemezseniz uygulamayı kendiniz ücretsiz olarak derleyebilirsiniz."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Код Sayboard відкритий. Якщо ви не хочете платити, застосунок можна безплатно зібрати самостійно."
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard 是开源软件。如果您不想付费，可以免费自行编译。"
           }
         }
       }
@@ -35764,9 +39175,7 @@
       }
     },
     "Setup" : {
-      "comment" : "A section header in the settings view that indicates settings related to the app's setup.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
+      "comment" : "Row in Settings and title of the screen listing the setup steps. Must not translate to the same word as Settings.",
       "localizations" : {
         "bg" : {
           "stringUnit" : {
@@ -35777,7 +39186,7 @@
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nastavení"
+            "value" : "Úvodní nastavení"
           }
         },
         "da" : {
@@ -35855,7 +39264,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정"
+            "value" : "초기 설정"
           }
         },
         "lt" : {
@@ -35933,13 +39342,13 @@
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Налаштування"
+            "value" : "Початкове налаштування"
           }
         },
         "zh" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "设置"
+            "value" : "初始设置"
           }
         }
       }
@@ -37909,6 +41318,186 @@
         }
       }
     },
+    "Source Code on GitHub" : {
+      "comment" : "Link to the public repository with the app’s source code.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изходен код в GitHub"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zdrojový kód na GitHubu"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kildekode på GitHub"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quellcode auf GitHub"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Πηγαίος κώδικας στο GitHub"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código fuente en GitHub"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lähtekood GitHubis"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lähdekoodi GitHubissa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code source sur GitHub"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub पर सोर्स कोड"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izvorni kod na GitHubu"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forráskód a GitHubon"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codice sorgente su GitHub"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHubのソースコード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub 소스 코드"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Šaltinio kodas „GitHub“ platformoje"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pirmkods vietnē GitHub"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kildekode på GitHub"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Broncode op GitHub"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kod źródłowy na GitHubie"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código-fonte no GitHub"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codul sursă pe GitHub"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Исходный код на GitHub"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zdrojový kód na GitHube"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izvorna koda na GitHubu"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Källkod på GitHub"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub’daki Kaynak Kod"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вихідний код на GitHub"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub 上的源代码"
+          }
+        }
+      }
+    },
     "Speech Recognition" : {
       "comment" : "The title of the section related to speech recognition models.",
       "isCommentAutoGenerated" : true,
@@ -39158,6 +42747,365 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "总结"
+          }
+        }
+      }
+    },
+    "Support Sayboard" : {
+      "comment" : "Title of the purchase screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подкрепете Sayboard"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podpořte Sayboard"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Støt Sayboard"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unterstützen Sie Sayboard"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Υποστηρίξτε το Sayboard"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoye Sayboard"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toetage Sayboardi"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tue Sayboardia"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soutenez Sayboard"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard का समर्थन करें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podržite Sayboard"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Támogassa a Sayboardot"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sostenga Sayboard"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboardを応援"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard 응원하기"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paremkite Sayboard"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atbalstiet Sayboard"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Støtt Sayboard"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steun Sayboard"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wesprzyj Sayboard"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoie o Sayboard"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Susțineți Sayboard"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержите Sayboard"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podporte Sayboard"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podprite Sayboard"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stöd Sayboard"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayboard’u Destekleyin"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтримайте Sayboard"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持 Sayboard"
+          }
+        }
+      }
+    },
+    "Support Sayboard with a one-time purchase to keep dictating." : {
+      "comment" : "Subtitle of the banner shown once the free dictation allowance is spent.",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подкрепете Sayboard с еднократна покупка, за да продължите да диктувате."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podpořte Sayboard jednorázovým nákupem a diktujte dál."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Støt Sayboard med et engangskøb for at blive ved med at diktere."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unterstützen Sie Sayboard mit einem einmaligen Kauf, um weiter zu diktieren."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Υποστηρίξτε το Sayboard με μια εφάπαξ αγορά για να συνεχίσετε την υπαγόρευση."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoye Sayboard con una compra única para seguir dictando."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toetage Sayboardi ühekordse ostuga, et edasi dikteerida."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tue Sayboardia kertaostolla, niin voit jatkaa sanelua."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soutenez Sayboard par un achat unique pour continuer à dicter."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "डिक्टेशन जारी रखने के लिए एक बार की ख़रीदारी से Sayboard का समर्थन करें।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podržite Sayboard jednokratnom kupnjom kako biste nastavili diktirati."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Támogassa a Sayboardot egy egyszeri vásárlással, hogy tovább diktálhasson."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sostenga Sayboard con un acquisto singolo per continuare a dettare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声入力を続けるには、1回の購入でSayboardを応援してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계속 받아쓰려면 한 번의 구입으로 Sayboard를 응원해 주세요."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paremkite Sayboard vienkartiniu pirkiniu, kad galėtumėte toliau diktuoti."
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atbalstiet Sayboard ar vienreizēju pirkumu, lai turpinātu diktēt."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Støtt Sayboard med et engangskjøp for å fortsette å diktere."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steun Sayboard met een eenmalige aankoop om te blijven dicteren."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wesprzyj Sayboard jednorazowym zakupem, aby dalej dyktować."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoie o Sayboard com uma compra única para continuar ditando."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Susțineți Sayboard printr-o achiziție unică pentru a continua dictarea."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поддержите Sayboard разовой покупкой, чтобы диктовать дальше."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podporte Sayboard jednorazovým nákupom a diktujte ďalej."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Podprite Sayboard z enkratnim nakupom, da boste lahko še naprej narekovali."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stöd Sayboard med ett engångsköp för att fortsätta diktera."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikte etmeye devam etmek için tek seferlik bir satın almayla Sayboard’u destekleyin."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Підтримайте Sayboard разовою покупкою, щоб диктувати далі."
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过一次性购买支持 Sayboard，即可继续听写。"
           }
         }
       }
@@ -40413,6 +44361,186 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当时没有活跃的麦克风会话，因此应用打开以开启麦克风。录音已经在进行中——直接返回即可。"
+          }
+        }
+      }
+    },
+    "The purchase didn’t go through. Please try again." : {
+      "comment" : "Error on the purchase screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупката не беше извършена. Опитайте отново."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nákup se nezdařil. Zkuste to prosím znovu."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Købet blev ikke gennemført. Prøv igen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Kauf wurde nicht abgeschlossen. Bitte versuchen Sie es erneut."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η αγορά δεν ολοκληρώθηκε. Δοκιμάστε ξανά."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La compra no se ha completado. Inténtelo de nuevo."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ost ei õnnestunud. Proovige uuesti."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Osto ei onnistunut. Yritä uudelleen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’achat n’a pas abouti. Veuillez réessayer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ख़रीदारी पूरी नहीं हो सकी। कृपया फिर से कोशिश करें।"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupnja nije uspjela. Pokušajte ponovno."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A vásárlás nem sikerült. Próbálja újra."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’acquisto non è andato a buon fine. Riprovi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入を完了できませんでした。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구입이 완료되지 않았습니다. 다시 시도해 주세요."
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pirkimas nepavyko. Bandykite dar kartą."
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pirkums neizdevās. Lūdzu, mēģiniet vēlreiz."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kjøpet ble ikke fullført. Prøv igjen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De aankoop is niet gelukt. Probeer het opnieuw."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakup się nie powiódł. Spróbuj ponownie."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A compra não foi concluída. Tente novamente."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achiziția nu a reușit. Încercați din nou."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупка не прошла. Попробуйте ещё раз."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nákup sa nepodaril. Skúste to znova."
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakup ni uspel. Poskusite znova."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Köpet gick inte igenom. Försök igen."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alma tamamlanamadı. Lütfen tekrar deneyin."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупка не пройшла. Спробуйте ще раз."
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买未能完成。请再试一次。"
           }
         }
       }
@@ -42023,6 +46151,186 @@
         }
       }
     },
+    "Unlock for %@" : {
+      "comment" : "Purchase button. The argument is the localized price from the App Store, with its currency.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отключете за %@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odemknout za %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lås op for %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für %@ freischalten"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ξεκλείδωμα με %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloquear por %@"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ava hinnaga %@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaa hintaan %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Débloquer pour %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ में अनलॉक करें"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otključaj za %@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feloldás: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sblocca a %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@でロック解除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에 잠금 해제"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atrakinti už %@"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atbloķēt par %@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lås opp for %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ontgrendel voor %@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odblokuj za %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloquear por %@"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deblochează pentru %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Разблокировать за %@"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odomknúť za %@"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odkleni za %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lås upp för %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Karşılığında Kilidi Aç"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розблокувати за %@"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以 %@ 解锁"
+          }
+        }
+      }
+    },
     "Update Sayboard to use this model." : {
       "localizations" : {
         "bg" : {
@@ -43091,6 +47399,186 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "等等，你看到了吗？他不敢相信这事居然发生了。"
+          }
+        }
+      }
+    },
+    "Waiting for purchase approval" : {
+      "comment" : "Status on the purchase screen while a purchase waits for approval, for example from a parent through Ask to Buy.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Покупката очаква одобрение"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nákup čeká na schválení"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Købet venter på godkendelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kauf wartet auf Genehmigung"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η αγορά αναμένει έγκριση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compra pendiente de aprobación"
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ost ootab kinnitamist"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Osto odottaa hyväksyntää"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achat en attente d’approbation"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ख़रीदारी की मंज़ूरी का इंतज़ार है"
+          }
+        },
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kupnja čeka odobrenje"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A vásárlás jóváhagyásra vár"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acquisto in attesa di approvazione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入の承認を待っています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구입 승인 대기 중"
+          }
+        },
+        "lt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pirkinys laukia patvirtinimo"
+          }
+        },
+        "lv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pirkums gaida apstiprinājumu"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kjøpet venter på godkjenning"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aankoop wacht op goedkeuring"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zakup czeka na zatwierdzenie"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compra aguardando aprovação"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achiziția așteaptă aprobarea"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ожидается подтверждение покупки"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nákup čaká na schválenie"
+          }
+        },
+        "sl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nakup čaka na odobritev"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Köpet väntar på godkännande"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alma onay bekliyor"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очікується підтвердження покупки"
+          }
+        },
+        "zh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买正在等待批准"
           }
         }
       }

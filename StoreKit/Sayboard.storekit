@@ -1,0 +1,29 @@
+{
+  "products" : [
+    {
+      "displayPrice" : "0.00",
+      "familyShareable" : true,
+      "internalID" : "8D41F0B6",
+      "localizations" : [
+        {
+          "description" : "Unlimited dictation and AI text processing.",
+          "displayName" : "Full Version",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "app.sayboard.fullversion",
+      "referenceName" : "Full Version",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 0
+  }
+}

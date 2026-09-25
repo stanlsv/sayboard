@@ -7,8 +7,19 @@ options:
   xcodeVersion: "26.2"
   generateEmptyDirectories: true
   groupSortPosition: top
+  # Unset, XcodeGen picks the alphabetically first config, AppStore, for builds that name no scheme.
+  defaultConfig: Debug
+
+# AppStore is the configuration the App Store archive is built with; it alone compiles the paywall.
+configs:
+  Debug: debug
+  Release: release
+  AppStore: release
 
 settings:
+  configs:
+    AppStore:
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) APPSTORE"
   base:
     SWIFT_VERSION: "6.1"
     SWIFT_STRICT_CONCURRENCY: complete
@@ -81,9 +92,6 @@ targets:
           "${SRCROOT}/scripts/lint-strings.sh"
         name: Lint String Catalogs
         basedOnDependencyAnalysis: false
-    scheme:
-      testTargets:
-        - SayboardTests
 
   SayboardTests:
     type: bundle.unit-test
@@ -91,12 +99,17 @@ targets:
     sources:
       - path: SayboardTests
       - path: Shared
+      - path: StoreKit/Sayboard.storekit
+        buildPhase: resources
     dependencies:
       - target: Sayboard
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.sayboard.tests
         GENERATE_INFOPLIST_FILE: "YES"
+        # StoreKitTest's own SKTestTransaction.h uses SKPaymentTransactionState, deprecated in iOS 18, and the
+        # explicit module build compiles it with -Werror (iOS 26.2 SDK, verified 2026-09-16).
+        OTHER_SWIFT_FLAGS: "$(inherited) -Xcc -Wno-error=deprecated-declarations"
 
   SayboardKeyboard:
     type: app-extension
@@ -124,3 +137,37 @@ targets:
         basedOnDependencyAnalysis: false
     scheme:
       testTargets: []
+
+schemes:
+  # Run and Test stay in Debug and never show the paywall; Archive always has it.
+  Sayboard:
+    build:
+      targets:
+        Sayboard: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - SayboardTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: AppStore
+
+  # For trying the purchase locally against StoreKit/Sayboard.storekit; not used for releases.
+  Sayboard StoreKit:
+    build:
+      targets:
+        Sayboard: all
+    run:
+      config: AppStore
+      storeKitConfiguration: StoreKit/Sayboard.storekit
+    profile:
+      config: AppStore
+    analyze:
+      config: AppStore
+    archive:
+      config: AppStore

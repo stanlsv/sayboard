@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 struct OnboardingView: View {
 
@@ -38,9 +37,13 @@ struct OnboardingView: View {
     .interactiveDismissDisabled()
   }
 
+  private static let defaultLanguage = AppLanguageConfig.fallback
+
   @EnvironmentObject private var permissionService: PermissionService
+  @EnvironmentObject private var pipTutorialService: PiPTutorialService
   @Environment(\.dismiss) private var dismiss
   @Environment(\.scenePhase) private var scenePhase
+  @AppStorage(SharedKey.appLanguage) private var appLanguage = defaultLanguage
   @State private var step = 0
 
   @ViewBuilder
@@ -51,9 +54,7 @@ struct OnboardingView: View {
         subtitle: "Enable microphone access so Sayboard can hear you. Your audio never leaves your device.",
         actions: [
           SetupBannerAction(title: "Open Settings", style: .primary) {
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-              UIApplication.shared.open(url)
-            }
+            self.pipTutorialService.playTutorial(.microphone, language: self.appLanguage, thenOpenSettings: true)
           },
           SetupBannerAction(title: "Skip", style: .secondary) {
             self.step = 1
@@ -66,7 +67,7 @@ struct OnboardingView: View {
         title: "Microphone Access",
         subtitle: "Enable microphone access so Sayboard can hear you. Your audio never leaves your device.",
         actions: [
-          SetupBannerAction(title: "Allow", style: .primary) {
+          SetupBannerAction(title: "Continue", style: .primary) {
             self.permissionService.requestMicrophonePermission()
           }
         ],
@@ -80,9 +81,7 @@ struct OnboardingView: View {
       subtitle: "Sayboard needs to be added as a keyboard to use voice dictation in any app.",
       actions: [
         SetupBannerAction(title: "Open Settings", style: .primary) {
-          if let url = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(url)
-          }
+          self.pipTutorialService.playTutorial(.fullAccess, language: self.appLanguage, thenOpenSettings: true)
         }
       ],
       tutorial: AnyView(FullAccessTutorialView(includeFullAccessRow: true)),

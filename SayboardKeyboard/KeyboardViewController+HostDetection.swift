@@ -6,16 +6,25 @@ import UIKit
 extension KeyboardViewController {
 
   func saveHostBundleId() {
-    self.saveHostProcess()
+    let process = self.saveHostProcess()
 
     if OperatingSystem.isHostBundleIdBroken {
       KBHostArbiterHook.activeArbiterCheck()
-      guard let host = KBHostArbiterHook.lastCapturedHostBundleId() else {
-        return
-      }
       let settings = SharedSettings()
-      settings.hostBundleId = host
-      settings.synchronize()
+      let previous = settings.hostBundleId
+      let capturedAt = KBHostArbiterHook.lastCapturedAt()
+      let capture = KBHostArbiterHook.lastCapturedHostBundleId().map { (bundleId: $0, at: capturedAt) }
+      let resolution = RememberedHost.resolveStored(
+        process: process,
+        capture: capture,
+        appearedAt: self.keyboardState.appearedAt,
+        previous: previous,
+      )
+      if resolution.bundleId != previous {
+        settings.hostBundleId = resolution.bundleId
+        settings.synchronize()
+      }
+      let _ = resolution.bundleId ?? "nil"
       return
     }
 
@@ -35,10 +44,10 @@ extension KeyboardViewController {
   private static let auditTokenPidOffset = 5 * MemoryLayout<UInt32>.size
   private static let auditTokenVersionOffset = 7 * MemoryLayout<UInt32>.size
 
-  private func saveHostProcess() {
-    guard let parent else { return }
+  private func saveHostProcess() -> (pid: Int, version: Int)? {
+    guard let parent else { return nil }
     guard let ivar = class_getInstanceVariable(type(of: parent), "_hostAuditToken") else {
-      return
+      return nil
     }
     let base = Unmanaged.passUnretained(parent).toOpaque()
     let token = base.advanced(by: ivar_getOffset(ivar)).assumingMemoryBound(to: audit_token_t.self)
@@ -48,9 +57,10 @@ extension KeyboardViewController {
         version: Int(raw.load(fromByteOffset: Self.auditTokenVersionOffset, as: UInt32.self)),
       )
     }
-    guard identity.pid > 0 else { return }
+    guard identity.pid > 0 else { return nil }
     RememberedHost.currentProcess = identity
     AppGroup.sharedDefaults?.synchronize()
+    return identity
   }
 
   private func detectHostBundleId() -> String? {

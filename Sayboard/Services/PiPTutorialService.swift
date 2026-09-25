@@ -21,35 +21,38 @@ final class PiPTutorialService: NSObject, ObservableObject {
 
     self.stopTutorial()
     self.setupPlayer(url: videoURL)
+    guard self.isActive else {
+      if thenOpenSettings { Self.openSystemSettings() }
+      return
+    }
+    guard thenOpenSettings else { return }
 
-    DispatchQueue.main.asyncAfter(deadline: .now() + Self.pipStartDelay) { [weak self] in
-      guard let self, self.isActive else { return }
-      self.startPiP()
-      if thenOpenSettings {
-        DispatchQueue.main.asyncAfter(deadline: .now() + Self.settingsOpenDelay) {
-          Self.openSystemSettings()
-        }
-      }
+    self.pendingSettingsOpen = true
+    let generation = self.generation
+    DispatchQueue.main.asyncAfter(deadline: .now() + Self.settingsFallbackDelay) { [weak self] in
+      guard let self, self.generation == generation else { return }
+      self.openSettingsIfPending()
     }
   }
 
   func stopTutorial() {
     guard self.isActive else { return }
+    self.pipController?.delegate = nil
     self.pipController?.stopPictureInPicture()
-    if self.pipController?.isPictureInPictureActive != true {
-      self.tearDown()
-    }
+    self.tearDown()
   }
 
-  private static let pipStartDelay: TimeInterval = 0.3
-  private static let pipRetryDelay: TimeInterval = 0.3
-  private static let settingsOpenDelay: TimeInterval = 0.2
+  private static let settingsFallbackDelay: TimeInterval = 2
 
   private var player: AVPlayer?
   private var playerLayer: AVPlayerLayer?
   private var pipController: AVPictureInPictureController?
   private var hostView: UIView?
   private var looperObserver: Any?
+  private var possibleObservation: NSKeyValueObservation?
+  private var startRequested = false
+  private var pendingSettingsOpen = false
+  private var generation = 0
 
   private static func openSystemSettings() {
     if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -58,6 +61,7 @@ final class PiPTutorialService: NSObject, ObservableObject {
   }
 
   private func configureAudioSessionForPiP() {
+    guard !SharedSettings().isSessionActive else { return }
     let session = AVAudioSession.sharedInstance()
     do {
       try session.setCategory(.playback, options: .mixWithOthers)
@@ -66,6 +70,7 @@ final class PiPTutorialService: NSObject, ObservableObject {
   }
 
   private func setupPlayer(url: URL) {
+    self.generation += 1
     self.configureAudioSessionForPiP()
 
     let playerItem = AVPlayerItem(url: url)
@@ -108,29 +113,43 @@ final class PiPTutorialService: NSObject, ObservableObject {
     controller.delegate = self
     controller.canStartPictureInPictureAutomaticallyFromInline = false
     self.pipController = controller
+    self.possibleObservation = controller.observe(
+      \.isPictureInPicturePossible,
+      options: [.initial, .new],
+    ) { @Sendable [weak self] _, change in
+      guard change.newValue == true, let self else { return }
+      Task { @MainActor in
+        self.startIfPossible()
+      }
+    }
 
     newPlayer.play()
     self.isActive = true
   }
 
-  private func startPiP() {
-    guard let controller = self.pipController else {
-      return
-    }
-    guard controller.isPictureInPicturePossible else {
-      DispatchQueue.main.asyncAfter(deadline: .now() + Self.pipRetryDelay) { [weak self] in
-        guard let self, self.isActive, self.pipController === controller else { return }
-        if controller.isPictureInPicturePossible {
-          controller.startPictureInPicture()
-        } else { }
-      }
-      return
-    }
+  private func startIfPossible() {
+    guard
+      self.isActive,
+      !self.startRequested,
+      let controller = self.pipController,
+      controller.isPictureInPicturePossible
+    else { return }
+    self.startRequested = true
     controller.startPictureInPicture()
+  }
+
+  private func openSettingsIfPending() {
+    guard self.pendingSettingsOpen else { return }
+    self.pendingSettingsOpen = false
+    Self.openSystemSettings()
   }
 
   private func tearDown() {
     guard self.isActive else { return }
+    self.possibleObservation?.invalidate()
+    self.possibleObservation = nil
+    self.startRequested = false
+    self.pendingSettingsOpen = false
     self.pipController?.delegate = nil
     self.pipController = nil
     self.player?.pause()
@@ -156,7 +175,11 @@ extension PiPTutorialService: AVPictureInPictureControllerDelegate {
 
   nonisolated func pictureInPictureControllerDidStartPictureInPicture(
     _: AVPictureInPictureController
-  ) { }
+  ) {
+    Task { @MainActor in
+      self.openSettingsIfPending()
+    }
+  }
 
   nonisolated func pictureInPictureControllerWillStopPictureInPicture(
     _: AVPictureInPictureController
@@ -175,6 +198,7 @@ extension PiPTutorialService: AVPictureInPictureControllerDelegate {
     failedToStartPictureInPictureWithError _: Error,
   ) {
     Task { @MainActor in
+      self.openSettingsIfPending()
       self.tearDown()
     }
   }

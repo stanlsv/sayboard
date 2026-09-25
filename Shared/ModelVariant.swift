@@ -241,6 +241,19 @@ enum ModelVariant: String, CaseIterable, Identifiable, Codable, Sendable {
     }
   }
 
+  func specializesForNeuralEngine(
+    neuralEngineBlocked: Bool = OperatingSystem.isBackgroundNeuralEngineBlocked
+  ) -> Bool {
+    guard !neuralEngineBlocked else { return false }
+    return switch self {
+    case .whisperTiny, .whisperBase, .whisperSmall, .parakeetV2, .parakeetV3:
+      true
+    case .whisperTurbo, .moonshineTiny, .moonshineBase, .moonshineTinyStreaming, .moonshineSmallStreaming,
+         .moonshineMediumStreaming:
+      false
+    }
+  }
+
   func formattedDownloadSize(locale: Locale = .current) -> String {
     self.downloadSizeMB.formattedAsBytes(locale: locale)
   }

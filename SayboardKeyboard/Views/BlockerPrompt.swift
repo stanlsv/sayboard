@@ -13,6 +13,7 @@ struct BlockerPrompt: View {
       Text(self.blocker.message)
         .font(.subheadline.weight(.semibold))
         .multilineTextAlignment(.center)
+        .minimumScaleFactor(Self.messageMinimumScale)
         .padding(.horizontal, Self.promptHorizontalPadding)
 
       if let url = self.blocker.linkURL {
@@ -29,6 +30,8 @@ struct BlockerPrompt: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
+
+  private static let messageMinimumScale: CGFloat = 0.8
 
   private static var promptIconSize: CGFloat {
     40.kbScaled

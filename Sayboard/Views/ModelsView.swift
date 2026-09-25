@@ -4,6 +4,8 @@ import UIKit
 enum ModelTab: String, CaseIterable {
   case speechRecognition
   case textProcessing
+
+  static let storageKey = "modelsTab"
 }
 
 struct ModelsView: View {
@@ -55,10 +57,13 @@ struct ModelsView: View {
     .onChange(of: self.downloadService.selectedVariant) {
       self.syncSelectedVariant()
     }
+    .onAppear {
+      self.preferences = Self.loadPreferences()
+    }
   }
 
   @EnvironmentObject private var downloadService: ModelDownloadService
-  @SceneStorage("modelsTab") private var selectedTab = ModelTab.speechRecognition
+  @SceneStorage(ModelTab.storageKey) private var selectedTab = ModelTab.speechRecognition
   @State private var selectedVariant: ModelVariant?
   @State private var selectedLanguageFilter: String?
   @State private var showLanguagePicker = false
@@ -245,6 +250,7 @@ struct ModelsView: View {
         }
       },
       onEditLanguages: {
+        self.preferences = Self.loadPreferences()
         self.languagePrefVariant = variant
       },
     )

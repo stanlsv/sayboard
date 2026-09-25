@@ -62,6 +62,7 @@ struct KeyboardStatusStrip: View {
               isLoading: self.keyboardState.isModelLoading,
               lowStorage: self.keyboardState.isLowDiskSpace,
               isFirstUse: !self.keyboardState.hasPreparedModelOnce,
+              rebuildsAfterUpdates: self.keyboardState.selectedVariantSpecializesForNeuralEngine,
             )
             .transition(.opacity)
           } else if let outcome = self.keyboardState.dictationOutcome {
@@ -69,11 +70,15 @@ struct KeyboardStatusStrip: View {
               self.keyboardState.dictationOutcome = nil
             }
             .transition(.opacity)
+          } else if self.keyboardState.isDictationLocked {
+            DictationLockedLabel()
+              .transition(.opacity)
           }
         }
         .animation(.easeOut(duration: 0.3), value: self.keyboardState.isModelLoading)
         .animation(.easeOut(duration: 0.3), value: self.keyboardState.isLowDiskSpace)
         .animation(.easeOut(duration: 0.3), value: self.keyboardState.dictationOutcome)
+        .animation(.easeOut(duration: 0.3), value: self.keyboardState.isDictationLocked)
         .background {
           GeometryReader { geo in
             Color.clear
@@ -130,7 +135,20 @@ struct KeyboardBottomRow: View {
 
 @MainActor
 enum KeyboardActions {
+
+  static func tapLLM(state: KeyboardState, proxy: KeyboardProxy) {
+    guard !state.isDictationLocked else {
+      self.openUnlock(proxy: proxy)
+      return
+    }
+    withAnimation { state.showLLMActions.toggle() }
+  }
+
   static func longPressLLM(state: KeyboardState, proxy: KeyboardProxy) {
+    guard !state.isDictationLocked else {
+      self.openUnlock(proxy: proxy)
+      return
+    }
     let resolved = state.longPressLLMAction.resolve(
       defaultAction: .rewrite,
       customPrompts: state.llmCustomPrompts,
@@ -141,5 +159,10 @@ enum KeyboardActions {
     } else {
       state.showLLMActions = true
     }
+  }
+
+  private static func openUnlock(proxy: KeyboardProxy) {
+    guard let url = DeepLink.unlockURL else { return }
+    proxy.openURL(url)
   }
 }

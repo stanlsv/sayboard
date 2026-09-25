@@ -119,13 +119,14 @@ struct MicAnimatedButton: View {
   private func handleTap() {
     if self.keyboardState.isRecording {
       self.proxy.stopDictation()
+    } else if self.keyboardState.isDictationLocked {
+      if let url = DeepLink.unlockURL { self.proxy.openURL(url) }
     } else if self.keyboardState.isSessionActive {
       self.proxy.startDictation()
     } else if let url = DeepLink.dictateURL {
       let settings = SharedSettings()
       if OperatingSystem.isHostBundleIdBroken {
-        KBHostArbiterHook.activeArbiterCheck()
-        if let host = KBHostArbiterHook.lastCapturedHostBundleId() { settings.hostBundleId = host }
+        self.proxy.resolveHost()
       }
       settings.keyboardRequestedDictationAt = CFAbsoluteTimeGetCurrent()
       settings.keyboardRequestedDictation = true

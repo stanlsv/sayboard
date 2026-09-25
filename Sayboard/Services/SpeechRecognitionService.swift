@@ -269,6 +269,9 @@ final class SpeechRecognitionService: ObservableObject {
     }
 
     self.session.activateTap(accumulator: self.accumulator, recorder: self.audioRecorder)
+    if self.settings.selectedVariant.engine == .parakeet {
+      self.parakeetService.warmUpIfEvicted()
+    }
   }
 
 }
@@ -329,6 +332,10 @@ extension SpeechRecognitionService {
           return
         }
         guard self.hasValidSessionToken(caller: "requestStartDictation") else { return }
+        guard !self.settings.isDictationLocked else {
+          TranscriptionBridge.postDarwinNotification(DarwinNotificationName.dictationLockChanged)
+          return
+        }
         let _ = String(describing: self.activeLoadState)
         await self.startRecordingAfterModelLoad()
       }
@@ -360,6 +367,9 @@ extension SpeechRecognitionService: ModelLoading {
     case .parakeet:
       let version = self.parakeetModelVersion(for: variant)
       await self.parakeetService.loadModel(from: url, version: version)
+      if self.isRecording {
+        self.parakeetService.warmUpIfEvicted()
+      }
       return self.parakeetService.loadState == .loaded
 
     case .moonshine:

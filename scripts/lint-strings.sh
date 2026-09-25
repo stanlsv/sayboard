@@ -37,6 +37,21 @@ COLOR_RESET = "\033[0m"
 # Lint Logic
 # ============================================================================
 
+def string_units(localization):
+    """Yield every stringUnit of one localization, including those nested under plural or device
+    variations. A case holding neither yields an empty unit, so the caller reports it as empty."""
+    variations = localization.get("variations", {})
+    if "stringUnit" in localization:
+        yield localization["stringUnit"]
+    elif not variations:
+        yield {}
+    for cases in variations.values():
+        if not cases:
+            yield {}
+        for case in cases.values():
+            yield from string_units(case)
+
+
 def lint_catalog(path):
     """Lint a single .xcstrings file. Returns (errors, warnings) counts."""
     rel_path = os.path.relpath(path)
@@ -79,12 +94,9 @@ def lint_catalog(path):
                 errors += 1
                 continue
 
-            lang_entry = localizations[lang]
-            string_unit = lang_entry.get("stringUnit", {})
-            value = string_unit.get("value", "")
-            state = string_unit.get("state", "")
+            units = list(string_units(localizations[lang]))
 
-            if value == "":
+            if not units or any(unit.get("value", "") == "" for unit in units):
                 print(
                     f"{COLOR_RED}ERROR{COLOR_RESET}  "
                     f"{COLOR_BOLD}{rel_path}{COLOR_RESET}: "
@@ -93,7 +105,17 @@ def lint_catalog(path):
                 )
                 errors += 1
 
-            if state == "needs_review":
+            plural = localizations[lang].get("variations", {}).get("plural")
+            if plural is not None and "other" not in plural:
+                print(
+                    f"{COLOR_RED}ERROR{COLOR_RESET}  "
+                    f"{COLOR_BOLD}{rel_path}{COLOR_RESET}: "
+                    f"key {COLOR_BOLD}\"{key}\"{COLOR_RESET} "
+                    f"[{lang}] plural has no \"other\" form"
+                )
+                errors += 1
+
+            if any(unit.get("state", "") == "needs_review" for unit in units):
                 print(
                     f"{COLOR_YELLOW}WARN {COLOR_RESET}  "
                     f"{COLOR_BOLD}{rel_path}{COLOR_RESET}: "

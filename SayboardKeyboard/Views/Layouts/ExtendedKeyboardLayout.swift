@@ -149,7 +149,7 @@ extension ExtendedKeyboardLayout {
       let isRecording = self.keyboardState.isRecording
       AIButton(
         fixedWidth: self.chrome.sideButtonWidth,
-        onTap: { withAnimation { self.keyboardState.showLLMActions.toggle() } },
+        onTap: { KeyboardActions.tapLLM(state: self.keyboardState, proxy: self.proxy) },
         onLongPress: { KeyboardActions.longPressLLM(state: self.keyboardState, proxy: self.proxy) },
         longPressEnabled: self.keyboardState.longPressLLMAction.isSet,
         isActive: self.keyboardState.showLLMActions,

@@ -54,6 +54,7 @@ final class KeyboardViewController: UIInputViewController {
     self.setupSessionObservers()
     self.setupForegroundObserver()
     self.setupLLMObservers()
+    self.setupDictationLockObserver()
     self.keyboardState.onStaleLevelDetected = { [weak self] in
       guard let self else { return }
       self.resetProcessingState()
@@ -74,6 +75,7 @@ final class KeyboardViewController: UIInputViewController {
     self.syncFullAccessIfChanged()
     self.pingMainAppForSessionStatus()
     self.pingValidator.startIfNeeded(for: self.keyboardState)
+    self.keyboardState.appearedAt = CFAbsoluteTimeGetCurrent()
     saveHostBundleId()
     self.insertTranscribedText()
     self.checkForPendingLLMResult()
@@ -167,6 +169,7 @@ final class KeyboardViewController: UIInputViewController {
         let _ = vc.keyboardState.isRecording
         let _ = vc.keyboardState.isProcessing
         vc.cancelProcessingTimeout()
+        vc.keyboardState.syncDictationLock()
         vc.insertTranscribedText()
         vc.finalizeProcessingPipeline()
       }
@@ -188,6 +191,7 @@ final class KeyboardViewController: UIInputViewController {
     self.keyboardState.refresh()
     self.pingMainAppForSessionStatus()
     self.pingValidator.startIfNeeded(for: self.keyboardState)
+    self.keyboardState.appearedAt = CFAbsoluteTimeGetCurrent()
     self.insertTranscribedText()
     self.checkForPendingLLMResult()
   }
@@ -227,6 +231,7 @@ final class KeyboardViewController: UIInputViewController {
         vc.keyboardState.stopLevelPolling()
         vc.keyboardState.isRecording = false
         vc.keyboardState.syncModelLoading()
+        vc.keyboardState.syncDictationLock()
         vc.insertTranscribedText()
         vc.finalizeProcessingPipeline()
       }
@@ -314,6 +319,7 @@ extension KeyboardViewController {
   func stopDictationViaDarwin() {
     let _ = self.keyboardState.isRecording
     let _ = self.keyboardState.isSessionActive
+    self.saveHostBundleId()
     self.keyboardState.isProcessing = true
     self.keyboardState.syncModelLoading()
     self.keyboardState.stopLevelPolling()
@@ -449,6 +455,9 @@ extension KeyboardViewController {
       stopDictation: { [weak self] in
         self?.stopDictationViaDarwin()
       },
+      resolveHost: { [weak self] in
+        self?.saveHostBundleId()
+      },
       requestLLMProcessing: { [weak self] action, customPromptId in
         self?.requestLLMProcessing(action: action, customPromptId: customPromptId)
       },
@@ -464,5 +473,35 @@ extension KeyboardViewController {
         self?.updateStatusStripHeight(height)
       },
     )
+  }
+}
+
+extension KeyboardViewController {
+
+  private static var dictationLockObserver: DarwinNotificationObserver?
+
+  private func setupDictationLockObserver() {
+    Self.dictationLockObserver?.stopObserving()
+    Self.dictationLockObserver = TranscriptionBridge.observeDarwinNotification(
+      DarwinNotificationName.dictationLockChanged
+    ) {
+      DispatchQueue.main.async {
+        guard let vc = Self.activeInstance else { return }
+        vc.keyboardState.syncDictationLock()
+        guard vc.keyboardState.isDictationLocked, vc.staleFallbackTimer?.isValid == true else { return }
+        vc.staleFallbackTimer?.invalidate()
+        vc.staleFallbackTimer = nil
+        vc.openUnlockLink()
+      }
+    }
+  }
+
+  private func openUnlockLink() {
+    guard let url = DeepLink.unlockURL else { return }
+    if let openAction = self.keyboardState.openURLAction {
+      openAction(url)
+    } else {
+      self.openURL(url)
+    }
   }
 }

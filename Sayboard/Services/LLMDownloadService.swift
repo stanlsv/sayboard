@@ -286,6 +286,8 @@ final class LLMDownloadService: ObservableObject {
     let settings = SharedSettings()
     let current = settings.selectedLLMVariant
 
+    guard !settings.isDictationLocked else { return }
+
     guard self.isDownloaded(current), let successor = current.successor else { return }
     guard !self.isDownloaded(successor) else { return }
     guard !settings.declinedLLMUpgrades.contains(successor) else { return }

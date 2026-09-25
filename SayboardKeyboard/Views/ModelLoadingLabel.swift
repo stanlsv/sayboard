@@ -5,6 +5,7 @@ struct ModelLoadingLabel: View {
   var isLoading: Bool
   var lowStorage: Bool
   var isFirstUse: Bool
+  var rebuildsAfterUpdates: Bool
 
   var body: some View {
     self.labelText
@@ -44,6 +45,8 @@ struct ModelLoadingLabel: View {
       "Storage critically low. Free up space so the model doesn’t keep rebuilding. Rebuilding it now"
     } else if self.isFirstUse {
       "Preparing speech model for first use"
+    } else if self.rebuildsAfterUpdates {
+      "After each update, the model is rebuilt once. Preparing speech model"
     } else {
       "Preparing speech model"
     }

@@ -1,14 +1,13 @@
 
 import SwiftUI
-import UIKit
 
 struct LLMSettingsView: View {
 
   var body: some View {
     Form {
       self.enableSection
-      if self.showNoModelBanner || (self.llmEnabled && !self.llmDownloadService.hasUsableModel) {
-        self.noModelBanner
+      if !self.llmDownloadService.hasUsableModel {
+        self.modelsSection
       } else if self.llmEnabled {
         self.promptsLink
         self.defaultActionSection
@@ -18,7 +17,6 @@ struct LLMSettingsView: View {
     .navigationTitle("AI Text Processing")
     .navigationBarTitleDisplayMode(.inline)
     .animation(.easeInOut(duration: 0.3), value: self.llmEnabled)
-    .animation(.easeInOut(duration: 0.3), value: self.showNoModelBanner)
     .onAppear {
       let shared = SharedSettings()
       self.defaultActionSelection = shared.defaultLLMActionSelection
@@ -29,12 +27,7 @@ struct LLMSettingsView: View {
         self.llmEnabled = false
       }
     }
-    .onDisappear {
-      self.showNoModelBanner = false
-    }
   }
-
-  private static let toggleRevertDelay: UInt64 = 200_000_000
 
   @EnvironmentObject private var llmDownloadService: LLMDownloadService
   @AppStorage(SharedKey.llmEnabled, store: UserDefaults(suiteName: AppGroup.identifier))
@@ -43,62 +36,25 @@ struct LLMSettingsView: View {
   @State private var customPrompts = [LLMCustomPrompt]()
   @State private var longPressAction = LLMActionSelection.none
   @State private var disabledActions = Set<LLMAction>()
-  @State private var showNoModelBanner = false
-
-  private var validatedToggleBinding: Binding<Bool> {
-    Binding(
-      get: { self.llmEnabled },
-      set: { newValue in
-        if newValue, !self.llmDownloadService.hasUsableModel {
-          self.llmEnabled = true
-          Task {
-            try? await Task.sleep(nanoseconds: Self.toggleRevertDelay)
-            self.llmEnabled = false
-            self.showNoModelBanner = true
-          }
-        } else {
-          self.llmEnabled = newValue
-          if !newValue {
-            self.showNoModelBanner = false
-          }
-        }
-      },
-    )
-  }
 
   private var enableSection: some View {
     Section {
-      Toggle("AI Text Processing", isOn: self.validatedToggleBinding)
+      Toggle("AI Text Processing", isOn: self.$llmEnabled)
+        .disabled(!self.llmDownloadService.hasUsableModel)
     } footer: {
       Text("Adds an AI button to the keyboard for rewriting, reformatting, and other text actions.")
     }
   }
 
-  private var noModelBanner: some View {
+  private var modelsSection: some View {
     Section {
-      HStack(spacing: 10) {
-        Image(systemName: "arrow.down.circle")
-          .font(.title3)
-          .foregroundStyle(.orange)
-        Text("Download a text processing model to enable AI features")
-          .font(.subheadline.weight(.medium))
-        Spacer(minLength: 4)
-        Button {
-          if let url = DeepLink.llmModelsURL {
-            UIApplication.shared.open(url)
-          }
-        } label: {
-          Text("Open Models")
-            .font(.caption.weight(.semibold))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(.white)
-            .foregroundStyle(.black)
-            .clipShape(Capsule())
-        }
-        .buttonStyle(.plain)
+      NavigationLink("Models") {
+        LLMModelsScreen()
       }
-      .listRowBackground(Color.orange.opacity(0.1))
+    } header: {
+      Text("Download a text processing model to enable AI features")
+        .textCase(nil)
+        .font(.footnote)
     }
   }
 
@@ -171,6 +127,20 @@ struct LLMSettingsView: View {
     }
   }
 
+}
+
+private struct LLMModelsScreen: View {
+  var body: some View {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 16) {
+        LLMModelsSection()
+      }
+      .padding()
+    }
+    .background(Color(.systemGroupedBackground))
+    .navigationTitle("Models")
+    .navigationBarTitleDisplayMode(.inline)
+  }
 }
 
 private struct LLMPromptsView: View {

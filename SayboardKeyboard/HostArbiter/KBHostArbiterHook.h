@@ -18,6 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// if it has not fired yet (or iOS < 26.4). Thread-safe.
 + (nullable NSString *)lastCapturedHostBundleId;
 
+/// When the swizzle last accepted a host, as `CFAbsoluteTimeGetCurrent()`; 0 if never.
++ (NSTimeInterval)lastCapturedAt;
+
 /// Pings the keyboard arbiter so it dispatches a destination-changed callback, giving the passive
 /// swizzle a chance to fire. Call it when the keyboard appears, so the host is captured before the
 /// user taps the mic. No-op < 26.4.

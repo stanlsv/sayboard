@@ -49,6 +49,7 @@ struct KeyboardProxy {
   let openURL: (URL) -> Void
   let startDictation: () -> Void
   let stopDictation: () -> Void
+  let resolveHost: () -> Void
   let requestLLMProcessing: (LLMAction, UUID?) -> Void
   let adjustTextPosition: (Int) -> Void
   let undoLLM: () -> Void
@@ -129,8 +130,16 @@ struct KeyboardView: View {
 
   var body: some View {
     if let blocker = self.activeBlocker {
-      BlockerPrompt(blocker: blocker)
-        .onAppear { self.proxy.setStatusStripHeight(0) }
+      VStack(spacing: 0) {
+        BlockerPrompt(blocker: blocker)
+        KeyboardBottomRow(
+          proxy: self.proxy,
+          metrics: KeyboardChromeMetrics(keyboardState: self.keyboardState),
+          keyboardState: self.keyboardState,
+        )
+      }
+      .onAppear { self.proxy.setStatusStripHeight(0) }
+      .environment(\.keyboardHapticsEnabled, self.keyboardState.keyboardHapticsEnabled)
     } else if let error = self.keyboardState.llmError {
       LLMErrorPrompt(error: error, keyboardState: self.keyboardState)
         .onAppear { self.proxy.setStatusStripHeight(0) }

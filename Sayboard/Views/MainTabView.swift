@@ -15,6 +15,20 @@ struct MainTabView: View {
     .task {
       self.activeBanner = Self.initialBanner()
     }
+    .onReceive(NotificationCenter.default.publisher(for: .purchaseScreenRequested)) { _ in
+      self.isPurchaseScreenPresented = true
+    }
+    .onChange(of: self.isDictationLocked) { _, isLocked in
+      if isLocked {
+        if self.activeBanner == nil { self.activeBanner = .freeDictationUsedUp }
+      } else {
+        self.recheckActiveBanner()
+      }
+    }
+    .onChange(of: self.entitlementStatus) { _, status in
+      if status == .unlocked { self.isPurchaseScreenPresented = false }
+    }
+    .purchaseScreen(isPresented: self.$isPurchaseScreenPresented)
     .alert(
       "AI Text Processing Enabled",
       isPresented: self.$llmDownloadService.didEnableByDownload,
@@ -41,6 +55,7 @@ struct MainTabView: View {
     case fullAccessMissing
     case noModel
     case modelRemovedByUpdate
+    case freeDictationUsedUp
 
     var title: LocalizedStringKey {
       switch self {
@@ -49,6 +64,7 @@ struct MainTabView: View {
       case .fullAccessMissing: "Full Access Required"
       case .noModel: "No Model Installed"
       case .modelRemovedByUpdate: "Model Update Required"
+      case .freeDictationUsedUp: "Free Dictation Used Up"
       }
     }
 
@@ -59,6 +75,7 @@ struct MainTabView: View {
       case .fullAccessMissing: "Sayboard needs Full Access to hear your voice from the keyboard."
       case .noModel: "Download a speech recognition model to start using voice input."
       case .modelRemovedByUpdate: "Parakeet v3 has been updated and needs to be downloaded again."
+      case .freeDictationUsedUp: "Support Sayboard with a one-time purchase to keep dictating."
       }
     }
   }
@@ -71,9 +88,20 @@ struct MainTabView: View {
   @EnvironmentObject private var pipTutorialService: PiPTutorialService
   @EnvironmentObject private var llmDownloadService: LLMDownloadService
   @AppStorage(SharedKey.appLanguage) private var appLanguage = defaultLanguage
+  @AppStorage(SharedKey.entitlementStatus, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var entitlementStatus = EntitlementStatus.unknown
+  @AppStorage(SharedKey.freeWordsUsed, store: UserDefaults(suiteName: AppGroup.identifier))
+  private var freeWordsUsed = 0
+  @Environment(\.scenePhase) private var scenePhase
   @SceneStorage("selectedTab") private var selectedTab = TabID.history.rawValue
-  @SceneStorage("modelsTab") private var modelsTab = ModelTab.speechRecognition
   @State private var activeBanner: SetupBanner?
+  @State private var settingsStackID = UUID()
+  @State private var isPurchaseScreenPresented = false
+
+  private var isDictationLocked: Bool {
+    StoreBuild.isEnabled
+      && DictationAllowance(status: self.entitlementStatus, wordsUsed: self.freeWordsUsed).isExhausted
+  }
 
   private var tabsWithHandlers: some View {
     Group {
@@ -91,7 +119,8 @@ struct MainTabView: View {
       self.activeBanner = .noModel
     }
     .onReceive(NotificationCenter.default.publisher(for: .dictationFailedNoMic)) { _ in
-      self.selectedTab = TabID.settings.rawValue
+      self.resetSettingsStackIfIdle()
+      self.selectedTab = TabID.history.rawValue
       self.activeBanner = .micDenied
     }
     .onReceive(self.permissionService.objectWillChange.receive(on: RunLoop.main)) { _ in
@@ -121,6 +150,7 @@ struct MainTabView: View {
         NavigationStack {
           SettingsView()
         }
+        .id(self.settingsStackID)
       }
     }
   }
@@ -146,6 +176,7 @@ struct MainTabView: View {
       NavigationStack {
         SettingsView()
       }
+      .id(self.settingsStackID)
       .tabItem {
         Label("Settings", image: "tab-settings")
       }
@@ -169,7 +200,7 @@ struct MainTabView: View {
     if !settings.hasUsableModel {
       return settings.parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
     }
-    return nil
+    return settings.isDictationLocked ? .freeDictationUsedUp : nil
   }
 
   private static func tutorialVideoForBanner(_ banner: SetupBanner) -> TutorialVideo? {
@@ -177,7 +208,7 @@ struct MainTabView: View {
     case .micDenied: .microphone
     case .keyboardMissing: .addKeyboard
     case .fullAccessMissing: .fullAccess
-    case .noModel, .modelRemovedByUpdate: nil
+    case .noModel, .modelRemovedByUpdate, .freeDictationUsedUp: nil
     }
   }
 
@@ -202,17 +233,40 @@ struct MainTabView: View {
     if !settings.hasUsableModel {
       return settings.parakeetV3NeedsRedownload ? .modelRemovedByUpdate : .noModel
     }
-    return nil
+    return self.isDictationLocked ? .freeDictationUsedUp : nil
   }
 
   private func bannerView(for banner: SetupBanner) -> SetupBannerView {
-    let primaryAction =
-      if banner == .noModel || banner == .modelRemovedByUpdate {
+    SetupBannerView(
+      title: banner.title,
+      subtitle: banner.subtitle,
+      actions: self.bannerActions(for: banner),
+      tutorial: self.tutorialView(for: banner),
+    )
+  }
+
+  private func bannerActions(for banner: SetupBanner) -> [SetupBannerAction] {
+    switch banner {
+    case .noModel, .modelRemovedByUpdate:
+      [
         SetupBannerAction(title: "Open Models", style: .primary) {
           self.activeBanner = nil
           self.selectedTab = TabID.models.rawValue
         }
-      } else {
+      ]
+
+    case .freeDictationUsedUp:
+      [
+        SetupBannerAction(title: "Get Full Version", style: .primary) {
+          self.isPurchaseScreenPresented = true
+        },
+        SetupBannerAction(title: "Not Now", style: .secondary) {
+          self.activeBanner = nil
+        },
+      ]
+
+    case .micDenied, .keyboardMissing, .fullAccessMissing:
+      [
         SetupBannerAction(title: "Open Settings", style: .primary) {
           self.activeBanner = nil
           if let video = Self.tutorialVideoForBanner(banner) {
@@ -221,13 +275,8 @@ struct MainTabView: View {
             self.openSystemSettings()
           }
         }
-      }
-    return SetupBannerView(
-      title: banner.title,
-      subtitle: banner.subtitle,
-      actions: [primaryAction],
-      tutorial: self.tutorialView(for: banner),
-    )
+      ]
+    }
   }
 
   private func tutorialView(for banner: SetupBanner) -> AnyView? {
@@ -238,7 +287,7 @@ struct MainTabView: View {
       AnyView(FullAccessTutorialView(includeFullAccessRow: false))
     case .fullAccessMissing:
       AnyView(FullAccessTutorialView())
-    case .noModel, .modelRemovedByUpdate:
+    case .noModel, .modelRemovedByUpdate, .freeDictationUsedUp:
       nil
     }
   }
@@ -249,22 +298,27 @@ struct MainTabView: View {
     }
   }
 
+  private func resetSettingsStackIfIdle() {
+    guard self.scenePhase != .active || self.selectedTab != TabID.settings.rawValue else { return }
+    self.settingsStackID = UUID()
+  }
+
   private func handleTabDeepLink(_ url: URL) {
     guard url.scheme == DeepLink.scheme else { return }
     switch url.host {
     case DeepLink.settingsHost:
+      self.resetSettingsStackIfIdle()
       self.selectedTab = TabID.settings.rawValue
 
     case DeepLink.modelsHost:
       self.selectedTab = TabID.models.rawValue
       self.activeBanner = .noModel
 
-    case DeepLink.llmModelsHost:
-      self.selectedTab = TabID.models.rawValue
-      self.modelsTab = .textProcessing
-
     case DeepLink.setupMicHost:
       self.activeBanner = nil
+
+    case DeepLink.unlockHost:
+      if self.isDictationLocked { self.isPurchaseScreenPresented = true }
 
     default:
       break

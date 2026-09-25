@@ -58,6 +58,8 @@ extension SpeechRecognitionService {
       let bridgeText = self.styled(sanitizedText)
       self.currentTranscription = bridgeText
 
+      self.settings.chargeFreeWords(WordCounter.count(bridgeText))
+
       TranscriptionBridge.writeTranscription(bridgeText)
 
       if let start = output.firstWordStart, let end = output.lastWordEnd {

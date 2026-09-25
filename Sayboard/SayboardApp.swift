@@ -1,7 +1,6 @@
 import FluidAudio
 
 import SwiftUI
-import TipKit
 import UIKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
@@ -113,8 +112,9 @@ struct SayboardApp: App {
     settings.mainAppHeartbeat = CFAbsoluteTimeGetCurrent()
     HistoryStore.shared.applyRetentionPolicy()
     ModelStorageManager.ensurePersistentCoreMLCache()
-    try? Tips.resetDatastore()
-    try? Tips.configure()
+    #if APPSTORE
+    PurchaseService.shared.start()
+    #endif
 
     let preShowHint = settings.hostBundleId == nil && settings.isKeyboardRequestRecent()
     self._showsHostReturnHint = State(initialValue: preShowHint)
@@ -333,7 +333,7 @@ struct SayboardApp: App {
       }
       Task { await self.speechService.stopRecording() }
 
-    case DeepLink.settingsHost, DeepLink.llmModelsHost:
+    case DeepLink.settingsHost, DeepLink.unlockHost:
       break
 
     case DeepLink.modelsHost:
@@ -404,6 +404,11 @@ struct SayboardApp: App {
     let isRec = self.speechService.isRecording
 
     guard !isRec else { return false }
+
+    guard !SharedSettings().isDictationLocked else {
+      NotificationCenter.default.post(name: .purchaseScreenRequested, object: nil)
+      return false
+    }
 
     self.permissionService.refreshMicrophoneState()
     guard self.permissionService.microphoneState == .granted else {

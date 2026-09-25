@@ -18,6 +18,7 @@ final class KeyboardState: ObservableObject {
   @Published var useCustomSpaceBar = false
   @Published var isTranslationMode = false
   @Published var selectedVariantSupportsTranslation = false
+  @Published var selectedVariantSpecializesForNeuralEngine = false
   @Published var audioLevel: Float = 0
   @Published var isLowDiskSpace = false
   @Published var hasUsableLLMModel = false
@@ -36,10 +37,13 @@ final class KeyboardState: ObservableObject {
   @Published var showGlobeKey = true
   @Published var keyboardHapticsEnabled = true
   @Published var keyboardKind = KeyboardKind.standard
+  @Published var isDictationLocked = false
 
   var onStaleLevelDetected: (() -> Void)?
 
   var openURLAction: ((URL) -> Void)?
+
+  var appearedAt: CFAbsoluteTime = 0
 
   var canUndoLLM: Bool {
     self.llmHistoryIndex > 0
@@ -84,6 +88,7 @@ final class KeyboardState: ObservableObject {
     self.keyboardKind = self.settings.keyboardKind
     let selectedVariant = self.settings.selectedVariant
     self.selectedVariantSupportsTranslation = selectedVariant.supportsTranslation
+    self.selectedVariantSpecializesForNeuralEngine = selectedVariant.specializesForNeuralEngine()
     if !selectedVariant.supportsTranslation {
       self.isTranslationMode = false
       self.settings.isTranslationMode = false
@@ -98,6 +103,7 @@ final class KeyboardState: ObservableObject {
     self.disabledLLMActions = self.settings.disabledLLMActions
     self.showGlobeKey = self.settings.showGlobeKey
     self.keyboardHapticsEnabled = self.settings.keyboardHapticsEnabled
+    self.syncDictationLock()
     self.checkDiskSpace()
     let _ = self.displayLink != nil
   }
@@ -106,6 +112,14 @@ final class KeyboardState: ObservableObject {
     self.settings.synchronize()
     self.isModelLoading = self.settings.isModelLoading
     self.hasPreparedModelOnce = self.settings.hasPreparedModelOnce
+  }
+
+  func syncDictationLock() {
+    self.settings.synchronize()
+    self.isDictationLocked = self.settings.isDictationLocked
+    if self.isDictationLocked {
+      self.showLLMActions = false
+    }
   }
 
   func toggleTranslationMode() {

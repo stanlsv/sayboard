@@ -18,8 +18,8 @@ enum DeepLink {
   static let stopHost = "stop"
   static let settingsHost = "settings"
   static let modelsHost = "models"
-  static let llmModelsHost = "llm-models"
   static let setupMicHost = "setup-mic"
+  static let unlockHost = "unlock"
 
   static var dictateURL: URL? {
     URL(string: "\(scheme)://\(dictateHost)")
@@ -33,12 +33,12 @@ enum DeepLink {
     URL(string: "\(scheme)://\(modelsHost)")
   }
 
-  static var llmModelsURL: URL? {
-    URL(string: "\(scheme)://\(llmModelsHost)")
-  }
-
   static var setupMicURL: URL? {
     URL(string: "\(scheme)://\(setupMicHost)")
+  }
+
+  static var unlockURL: URL? {
+    URL(string: "\(scheme)://\(unlockHost)")
   }
 }
 
@@ -59,7 +59,7 @@ enum SharedKey {
   static let canResolveHostApplication = "canResolveHostApplication"
   static let hostPid = "hostPid"
   static let hostPidVersion = "hostPidVersion"
-  static let rememberedHosts = "rememberedHosts"
+  static let rememberedHostsByProcess = "rememberedHostsByProcess"
   static let downloadInProgressVariants = "downloadInProgressVariants"
   static let downloadStartedAt = "downloadStartedAt"
   static let preferredLanguagesPerVariant = "preferredLanguagesPerVariant"
@@ -94,6 +94,9 @@ enum SharedKey {
   static let alsoCopyToClipboard = "alsoCopyToClipboard"
   static let keyboardKind = "keyboardKind"
   static let keyboardHapticsEnabled = "keyboardHapticsEnabled"
+  static let entitlementStatus = "entitlementStatus"
+  static let entitlementEnvironment = "entitlementEnvironment"
+  static let freeWordsUsed = "freeWordsUsed"
 }
 
 enum HistoryRetentionPolicy: String, CaseIterable, Sendable {
@@ -154,6 +157,7 @@ enum DarwinNotificationName {
   static let llmProcessingStarted = "app.sayboard.llmProcessingStarted"
   static let llmProcessingComplete = "app.sayboard.llmProcessingComplete"
   static let llmProcessingFailed = "app.sayboard.llmProcessingFailed"
+  static let dictationLockChanged = "app.sayboard.dictationLockChanged"
 }
 
 enum SessionAutoStopPolicy: String, CaseIterable, Sendable {
@@ -200,9 +204,11 @@ extension Notification.Name {
   static let appLanguageChangeRequested = Notification.Name("app.sayboard.appLanguageChangeRequested")
   static let dictationFailedNoModel = Notification.Name("app.sayboard.dictationFailedNoModel")
   static let dictationFailedNoMic = Notification.Name("app.sayboard.dictationFailedNoMic")
+  static let purchaseScreenRequested = Notification.Name("app.sayboard.purchaseScreenRequested")
 }
 
 enum AppLanguageConfig {
+
   static let supported: Set = [
     "en",
     "ru",
@@ -241,8 +247,12 @@ enum AppLanguageConfig {
     let systemLanguage = preferredLanguages.first
       .flatMap { Locale(identifier: $0).language.languageCode?.identifier }
       ?? self.fallback
-    return self.supported.contains(systemLanguage) ? systemLanguage : self.fallback
+    let appLanguage = self.systemLanguageAliases[systemLanguage] ?? systemLanguage
+    return self.supported.contains(appLanguage) ? appLanguage : self.fallback
   }
+
+  private static let systemLanguageAliases = ["nb": "no", "nn": "no"]
+
 }
 
 enum AnimationSpeed {

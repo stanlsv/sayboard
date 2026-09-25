@@ -26,6 +26,7 @@ static NSArray<NSString *> *ArbiterClientClassNames(void) {
 
 static os_unfair_lock sHookLock = OS_UNFAIR_LOCK_INIT;
 static NSString *_Nullable sLastCapturedBundleId = nil;
+static CFAbsoluteTime sLastCapturedAt = 0;
 static NSMutableDictionary<NSString *, NSValue *> *sOriginalIMPs = nil; // class name -> original IMP
 static BOOL sInstalled = NO;
 
@@ -44,8 +45,10 @@ static BOOL IsAcceptableBundleId(NSString *_Nullable bid) {
 
 static void CommitHostBundleId(NSString *bid) {
   if (!IsAcceptableBundleId(bid)) return;
+  CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
   os_unfair_lock_lock(&sHookLock);
   sLastCapturedBundleId = [bid copy];
+  sLastCapturedAt = now;
   os_unfair_lock_unlock(&sHookLock);
 }
 
@@ -131,6 +134,13 @@ static BOOL AlwaysEnabledIMP(__unused id self, __unused SEL _cmd) {
   NSString *bid = [sLastCapturedBundleId copy];
   os_unfair_lock_unlock(&sHookLock);
   return IsAcceptableBundleId(bid) ? bid : nil;
+}
+
++ (NSTimeInterval)lastCapturedAt {
+  os_unfair_lock_lock(&sHookLock);
+  CFAbsoluteTime at = sLastCapturedAt;
+  os_unfair_lock_unlock(&sHookLock);
+  return at;
 }
 
 + (void)activeArbiterCheck {

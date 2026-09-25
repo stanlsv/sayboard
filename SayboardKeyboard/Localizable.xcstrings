@@ -180,6 +180,185 @@
         }
       }
     },
+    "After each update, the model is rebuilt once. Preparing speech model": {
+      "extractionState": "manual",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "След всяко обновяване моделът се преизгражда еднократно. Подготовка на речевия модел"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po každé aktualizaci se model jedenkrát znovu sestaví. Příprava řečového modelu"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efter hver opdatering genopbygges modellen én gang. Forbereder talemodel"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach jedem Update wird das Modell einmal neu erstellt. Sprachmodell wird vorbereitet"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μετά από κάθε ενημέρωση, το μοντέλο αναδημιουργείται μία φορά. Προετοιμασία μοντέλου ομιλίας"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tras cada actualización, el modelo se reconstruye una vez. Preparando modelo de voz"
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pärast iga uuendust ehitatakse mudel üks kord uuesti. Kõnemudeli ettevalmistus"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jokaisen päivityksen jälkeen malli rakennetaan kerran uudelleen. Valmistellaan puhemallia"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Après chaque mise à jour, le modèle est reconstruit une fois. Préparation du modèle vocal"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "हर अपडेट के बाद मॉडल एक ही बार फिर से बनता है। स्पीच मॉडल तैयार हो रहा है"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nakon svakog ažuriranja model se jednom ponovno izgrađuje. Priprema govornog modela"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minden frissítés után a modell egyszer újraépül. Beszédmodell előkészítése"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopo ogni aggiornamento il modello viene ricostruito una volta. Preparazione modello vocale"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新のたびに、モデルを一度再構築します。音声モデルを準備中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "업데이트할 때마다 모델이 한 번 재구축됩니다. 음성 모델 준비 중"
+          }
+        },
+        "lt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po kiekvieno atnaujinimo modelis perkuriamas vieną kartą. Ruošiamas kalbos modelis"
+          }
+        },
+        "lv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pēc katra atjauninājuma modelis tiek pārbūvēts vienreiz. Sagatavo runas modeli"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na elke update wordt het model één keer opnieuw opgebouwd. Spraakmodel voorbereiden"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etter hver oppdatering gjenoppbygges modellen én gang. Forbereder talemodell"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po każdej aktualizacji model odbudowuje się jeden raz. Przygotowywanie modelu mowy"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Após cada atualização, o modelo é reconstruído uma vez. Preparando modelo de voz"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "După fiecare actualizare, modelul se reconstruiește o dată. Se pregătește modelul vocal"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После каждого обновления модель один раз пересобирается. Подготовка модели речи"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po každej aktualizácii sa model jedenkrát znova zostaví. Príprava rečového modelu"
+          }
+        },
+        "sl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po vsaki posodobitvi se model enkrat znova zgradi. Priprava govornega modela"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efter varje uppdatering byggs modellen om en gång. Förbereder talmodell"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her güncellemeden sonra model bir kez yeniden oluşturulur. Konuşma modeli hazırlanıyor"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Після кожного оновлення модель один раз перезбирається. Підготовка моделі мовлення"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每次更新后，模型都会重建一次。语音模型准备中"
+          }
+        }
+      }
+    },
     "Bullet points": {
       "extractionState": "stale",
       "localizations": {
@@ -1428,6 +1607,185 @@
           "stringUnit": {
             "state": "translated",
             "value": "Formalno"
+          }
+        }
+      }
+    },
+    "Free dictation is used up. Open Sayboard to continue": {
+      "comment": "Standing note in the keyboard status strip once the free dictation allowance is spent. Like every multi-sentence status here, no final period.",
+      "localizations": {
+        "bg": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Безплатната диктовка е изчерпана. Отворете Sayboard, за да продължите"
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezplatné diktování je vyčerpáno. Otevřete Sayboard a pokračujte"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den gratis diktering er brugt op. Åbn Sayboard for at fortsætte"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das kostenlose Diktieren ist aufgebraucht. Öffnen Sie Sayboard, um fortzufahren"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Η δωρεάν υπαγόρευση εξαντλήθηκε. Ανοίξτε το Sayboard για να συνεχίσετε"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El dictado gratuito se ha agotado. Abra Sayboard para continuar"
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasuta dikteerimine on otsas. Jätkamiseks avage rakendus Sayboard"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ilmainen sanelu on käytetty loppuun. Avaa Sayboard-ohjelma jatkaaksesi"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La dictée gratuite est épuisée. Ouvrez Sayboard pour continuer"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मुफ़्त डिक्टेशन ख़त्म हो गया है। जारी रखने के लिए Sayboard खोलें"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besplatno diktiranje je potrošeno. Otvorite Sayboard za nastavak"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elfogyott az ingyenes diktálás. A folytatáshoz nyissa meg a Sayboard alkalmazást"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La dettatura gratuita è esaurita. Apra Sayboard per continuare"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無料の音声入力を使い切りました。続けるにはSayboardを開いてください"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무료 받아쓰기를 모두 사용했습니다. 계속하려면 Sayboard를 여세요"
+          }
+        },
+        "lt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nemokamas diktavimas išnaudotas. Norėdami tęsti, atidarykite Sayboard programėlę"
+          }
+        },
+        "lv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezmaksas diktēšana ir izlietota. Lai turpinātu, atveriet Sayboard lietotni"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gratis diktering er brukt opp. Åpne Sayboard for å fortsette"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gratis dicteren is op. Open Sayboard om verder te gaan"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Darmowe dyktowanie zostało wykorzystane. Otwórz Sayboard, aby kontynuować"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O ditado gratuito acabou. Abra o Sayboard para continuar"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dictarea gratuită s-a epuizat. Deschideți aplicația Sayboard pentru a continua"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бесплатная диктовка закончилась. Откройте Sayboard, чтобы продолжить"
+          }
+        },
+        "sk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bezplatné diktovanie je vyčerpané. Otvorte Sayboard a pokračujte"
+          }
+        },
+        "sl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brezplačno narekovanje je porabljeno. Za nadaljevanje odprite Sayboard"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gratis diktering är slut. Öppna Sayboard för att fortsätta"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ücretsiz dikte hakkınız bitti. Devam etmek için Sayboard’u açın"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Безплатне диктування закінчилося. Відкрийте Sayboard, щоб продовжити"
+          }
+        },
+        "zh": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免费听写已用完。请打开 Sayboard 继续"
           }
         }
       }

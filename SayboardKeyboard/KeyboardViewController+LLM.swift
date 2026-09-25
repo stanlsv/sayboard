@@ -43,6 +43,7 @@ extension KeyboardViewController {
   func autoApplyLLMIfNeeded(directText: String? = nil) -> Bool {
     guard self.keyboardState.llmEnabled else { return false }
     guard self.keyboardState.hasUsableLLMModel else { return false }
+    guard !self.keyboardState.isDictationLocked else { return false }
     guard !self.keyboardState.isLLMProcessing else { return false }
 
     let selection = self.keyboardState.defaultLLMActionSelection

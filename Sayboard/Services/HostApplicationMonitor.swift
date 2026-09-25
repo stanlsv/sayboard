@@ -24,15 +24,13 @@ enum HostApplicationMonitor {
     "app.sayboard.keyboard",
   ]
 
-  private static let rememberedHostTTL: TimeInterval = 12 * 60 * 60
-
   private static let changedSelector = NSSelectorFromString("queue_keyboardChanged:onComplete:")
   private static let sourceBundleIvar = "_sourceBundleIdentifier"
 
   private nonisolated(unsafe) static var didStart = false
 
   private static func recoveredHost() -> String? {
-    guard let host = RememberedHost.matchingCurrentProcess(ttl: self.rememberedHostTTL) else {
+    guard let host = RememberedHost.matchingCurrentProcess() else {
       return nil
     }
     DiagnosticLog.write("host recovered: \(host.bundleId) pid=\(host.pid)")
@@ -85,7 +83,6 @@ enum HostApplicationMonitor {
     let settings = SharedSettings()
     guard settings.hostBundleId != bundleId else { return }
     settings.hostBundleId = bundleId
-    RememberedHost.remember(bundleId)
     settings.synchronize()
     DiagnosticLog.write("host resolved: \(bundleId)")
   }

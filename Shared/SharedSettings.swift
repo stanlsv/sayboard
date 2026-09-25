@@ -16,6 +16,8 @@ struct SharedSettings {
 
   static let keyboardRequestTTL: TimeInterval = 3.0
 
+  let defaults: UserDefaults
+
   var selectedVariant: ModelVariant {
     get {
       guard
@@ -427,6 +429,4 @@ struct SharedSettings {
   func synchronize() {
     self.defaults.synchronize()
   }
-
-  private let defaults: UserDefaults
 }

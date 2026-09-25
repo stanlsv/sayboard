@@ -33,21 +33,22 @@ private struct PillContent: View {
 struct SessionInfoView: View {
 
   var body: some View {
-    Section {
-      self.expandableText
-        .listRowInsets(EdgeInsets())
+    ScrollView {
+      self.composedText
+        .onAppear { self.renderPill() }
+        .onReceive(self.timer) { _ in
+          self.showingMic.toggle()
+          self.renderPill()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
     }
-    .listRowBackground(Self.rowTint)
+    .navigationTitle("Active Session Info")
+    .navigationBarTitleDisplayMode(.inline)
   }
 
-  private static let rowPadding: CGFloat = 16
-  private static let collapsedLineLimit = 4
   private static let toggleInterval: TimeInterval = 3
-  private static let chevronSize: CGFloat = 12
   private static let pillTrailingPad: CGFloat = 10
-
-  private static let pageBackground = Color(.systemGroupedBackground)
-  private static let rowTint = Color.orange.opacity(0.08)
 
   private static let pillBaselineOffset: CGFloat = {
     let bodyFont = UIFont.preferredFont(forTextStyle: .body)
@@ -60,7 +61,6 @@ struct SessionInfoView: View {
 
   @Environment(\.displayScale) private var displayScale
 
-  @State private var isExpanded = false
   @State private var showingMic = true
   @State private var pillImage: Image?
 
@@ -73,63 +73,6 @@ struct SessionInfoView: View {
       Text(image).baselineOffset(Self.pillBaselineOffset) + Text(Self.infoText)
     } else {
       Text(Self.infoText)
-    }
-  }
-
-  private var chevron: some View {
-    Image(systemName: "chevron.down")
-      .font(.system(size: Self.chevronSize, weight: .semibold))
-      .foregroundStyle(.primary)
-      .rotationEffect(.degrees(self.isExpanded ? 180 : 0))
-      .frame(maxWidth: .infinity)
-      .padding(.vertical, 16)
-      .padding(.horizontal, Self.rowPadding)
-  }
-
-  @ViewBuilder
-  private var fadeOverlay: some View {
-    if !self.isExpanded {
-      ZStack {
-        Self.pageBackground
-        Self.rowTint
-      }
-      .mask(
-        LinearGradient(
-          stops: [
-            .init(color: .clear, location: 0.5),
-            .init(color: .black, location: 1.0),
-          ],
-          startPoint: .top,
-          endPoint: .bottom,
-        )
-      )
-      .allowsHitTesting(false)
-    }
-  }
-
-  private var expandableText: some View {
-    VStack(spacing: 0) {
-      self.composedText
-        .font(.subheadline)
-        .foregroundStyle(.secondary)
-        .lineLimit(self.isExpanded ? nil : Self.collapsedLineLimit)
-        .onAppear { self.renderPill() }
-        .onReceive(self.timer) { _ in
-          self.showingMic.toggle()
-          self.renderPill()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Self.rowPadding)
-        .overlay { self.fadeOverlay }
-        .overlay(alignment: .bottom) {
-          if !self.isExpanded { self.chevron }
-        }
-
-      if self.isExpanded { self.chevron }
-    }
-    .contentShape(Rectangle())
-    .onTapGesture {
-      self.isExpanded.toggle()
     }
   }
 

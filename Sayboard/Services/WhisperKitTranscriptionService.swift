@@ -158,7 +158,7 @@ final class WhisperKitTranscriptionService: ObservableObject {
   private var loadGeneration = 0
 
   private static nonisolated func computeOptions(for variant: ModelVariant) -> ModelComputeOptions? {
-    guard OperatingSystem.isBackgroundNeuralEngineBlocked || variant == .whisperTurbo else { return nil }
+    guard !variant.specializesForNeuralEngine() else { return nil }
     return ModelComputeOptions(
       melCompute: .cpuOnly,
       audioEncoderCompute: .cpuOnly,
